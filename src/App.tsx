@@ -2,26 +2,23 @@ import { useState, useEffect } from 'react';
 import { supabase } from './supabase';
 
 export default function App() {
-  // Γενικά States
   const [employees, setEmployees] = useState<any[]>([]);
   const [selectedUser, setSelectedUser] = useState<any>(null);
   const [pin, setPin] = useState('');
   const [error, setError] = useState('');
   const [loggedInUser, setLoggedInUser] = useState<any>(null);
 
-  // States για τη φόρμα καταγραφής
   const [storeLocation, setStoreLocation] = useState('Hellas');
   const [shiftDate, setShiftDate] = useState(new Date().toISOString().split('T')[0]);
   const [hours, setHours] = useState('');
+  const [woltStars, setWoltStars] = useState(''); // Νέο state για τα αστεράκια Wolt
   const [submitMsg, setSubmitMsg] = useState('');
 
-  // States για τον πίνακα Admin
   const [viewMode, setViewMode] = useState<'form' | 'dashboard'>('form');
   const [shifts, setShifts] = useState<any[]>([]);
   const [dateFilter, setDateFilter] = useState<'week' | 'month' | 'year'>('month');
   const [storeFilter, setStoreFilter] = useState<'All' | 'Hellas' | 'Nordic'>('All');
 
-  // Φόρτωση εργαζομένων κατά το άνοιγμα
   useEffect(() => {
     const fetchEmployees = async () => {
       const { data, error } = await supabase.from('employees').select('*');
@@ -49,14 +46,20 @@ export default function App() {
       return;
     }
 
-    const { error } = await supabase.from('shifts').insert([
-      {
-        employee_id: loggedInUser.id,
-        store_location: storeLocation,
-        shift_date: shiftDate,
-        hours_worked: Number(hours)
-      }
-    ]);
+    // Φτιάχνουμε τα δεδομένα προς αποθήκευση
+    const payload: any = {
+      employee_id: loggedInUser.id,
+      store_location: storeLocation,
+      shift_date: shiftDate,
+      hours_worked: Number(hours)
+    };
+
+    // Αν ο χρήστης επέλεξε αστεράκια, τα προσθέτουμε στα δεδομένα
+    if (woltStars) {
+      payload.wolt_stars = Number(woltStars);
+    }
+
+    const { error } = await supabase.from('shifts').insert([payload]);
 
     if (error) {
       setSubmitMsg('Υπήρξε σφάλμα κατά την αποθήκευση.');
@@ -64,15 +67,14 @@ export default function App() {
     } else {
       setSubmitMsg('Οι ώρες αποθηκεύτηκαν επιτυχώς!');
       setHours('');
+      setWoltStars(''); // Καθαρισμός πεδίου μετά την αποθήκευση
       setTimeout(() => setSubmitMsg(''), 3000);
     }
   };
 
-  // Φόρτωση βαρδιών (Κρύβουμε όσες έχουν is_deleted = true)
   const loadDashboard = async () => {
     const { data, error } = await supabase.from('shifts').select('*');
     if (data) {
-      // Φιλτράρουμε τις διαγραμμένες. Αν το is_deleted είναι null (παλιές εγγραφές) τις κρατάμε.
       const activeShifts = data.filter(s => s.is_deleted !== true);
       setShifts(activeShifts);
     }
@@ -80,12 +82,10 @@ export default function App() {
     setViewMode('dashboard');
   };
 
-  // Ασφαλής Διαγραφή Βάρδιας (Soft Delete)
   const handleDeleteShift = async (shiftId: string) => {
     const confirmDelete = window.confirm("Σίγουρα θέλεις να διαγράψεις αυτή τη βάρδια;");
     if (!confirmDelete) return;
 
-    // Αντί για .delete(), κάνουμε .update() και αλλάζουμε το is_deleted σε true
     const { error } = await supabase.from('shifts').update({ is_deleted: true }).eq('id', shiftId);
     
     if (error) {
@@ -96,20 +96,25 @@ export default function App() {
     }
   };
 
-  // Εξαγωγή σε CSV (Διορθωμένο για το Excel)
   const handleExportCSV = (filteredShifts: any[]) => {
     if (filteredShifts.length === 0) {
       alert('Δεν υπάρχουν δεδομένα για εξαγωγή.');
       return;
     }
 
-    // Χρησιμοποιούμε ελληνικό ερωτηματικό (;) για να χωρίζει το Excel τις στήλες
-    let csvContent = "\uFEFFΥπάλληλος;Κατάστημα;Ημερομηνία;Ώρες\n";
+    // Προσθέσαμε τη στήλη για τα αστεράκια Wolt στο Excel
+    let csvContent = "\uFEFFΥπάλληλος;Κατάστημα;Ημερομηνία;Ώρες;Αστεράκια Wolt\n";
 
     filteredShifts.forEach(shift => {
       const emp = employees.find(e => e.id === shift.employee_id);
       const empName = emp ? emp.name : 'Άγνωστος';
-      csvContent += `${empName};${shift.store_location};${shift.shift_date};${shift.hours_worked}\n`;
+      
+      const [year, month, day] = shift.shift_date.split('-');
+      const formattedDate = `${day}/${month}/${year}`;
+      
+      const stars = shift.wolt_stars ? shift.wolt_stars : '-';
+      
+      csvContent += `${empName};${shift.store_location};${formattedDate};${shift.hours_worked};${stars}\n`;
     });
 
     const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
@@ -122,7 +127,6 @@ export default function App() {
     document.body.removeChild(link);
   };
 
-  // Φιλτράρισμα βαρδιών
   const getFilteredShifts = () => {
     const now = new Date();
     const currentYear = now.getFullYear();
@@ -152,11 +156,9 @@ export default function App() {
     });
   };
 
-  // ---------------- Οθόνη 3: Dashboard Admin ----------------
   if (loggedInUser && viewMode === 'dashboard') {
     const filteredShifts = getFilteredShifts();
     
-    // Υπολογισμός Συνόλων
     const totals: Record<string, number> = {};
     filteredShifts.forEach(shift => {
       const emp = employees.find(e => e.id === shift.employee_id);
@@ -206,11 +208,10 @@ export default function App() {
               onClick={() => handleExportCSV(filteredShifts)}
               className="bg-green-600 hover:bg-green-700 text-white font-semibold py-2 px-4 rounded text-sm transition-colors"
             >
-              📥 Εξαγωγή σε Excel (CSV)
+              📥 Εξαγωγή σε Excel
             </button>
           </div>
 
-          {/* Πίνακας Συνολικών Ωρών */}
           <div className="bg-gray-50 border border-gray-200 rounded p-4 mb-8">
             <h3 className="text-gray-700 font-bold mb-3 border-b pb-2">Σύνολα</h3>
             {Object.keys(totals).length === 0 ? (
@@ -229,7 +230,6 @@ export default function App() {
             )}
           </div>
 
-          {/* Λίστα Αναλυτικών Βαρδιών */}
           <div className="bg-white border border-gray-200 rounded p-4 shadow-sm">
             <h3 className="text-gray-700 font-bold mb-3 border-b pb-2">Αναλυτικές Καταχωρήσεις</h3>
             {sortedShifts.length === 0 ? (
@@ -243,6 +243,7 @@ export default function App() {
                       <th className="pb-2">Υπάλληλος</th>
                       <th className="pb-2">Κατάστημα</th>
                       <th className="pb-2 text-center">Ώρες</th>
+                      <th className="pb-2 text-center">Wolt</th>
                       <th className="pb-2 text-center">Διαγραφή</th>
                     </tr>
                   </thead>
@@ -257,6 +258,9 @@ export default function App() {
                           <td className="py-2 font-medium">{empName}</td>
                           <td className="py-2">{shift.store_location}</td>
                           <td className="py-2 text-center font-semibold">{shift.hours_worked}</td>
+                          <td className="py-2 text-center text-orange-500 font-bold">
+                            {shift.wolt_stars ? `${shift.wolt_stars} ⭐` : '-'}
+                          </td>
                           <td className="py-2 text-center">
                             <button 
                               onClick={() => handleDeleteShift(shift.id)}
@@ -279,7 +283,6 @@ export default function App() {
     );
   }
 
-  // ---------------- Οθόνη 2: Φόρμα Καταγραφής Ωρών ----------------
   if (loggedInUser) {
     return (
       <div className="min-h-screen bg-gray-100 flex items-center justify-center p-4">
@@ -289,7 +292,7 @@ export default function App() {
               Γεια σου, {loggedInUser.name}!
             </h2>
             <button 
-              onClick={() => { setLoggedInUser(null); setSubmitMsg(''); setHours(''); }}
+              onClick={() => { setLoggedInUser(null); setSubmitMsg(''); setHours(''); setWoltStars(''); }}
               className="text-sm text-[#8B5A2B] hover:text-orange-600 font-semibold transition-colors"
             >
               Αποσύνδεση
@@ -331,6 +334,23 @@ export default function App() {
               />
             </div>
 
+            {/* Νέο προαιρετικό πεδίο για τα αστεράκια Wolt */}
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">Αστεράκια Wolt (Προαιρετικό)</label>
+              <select 
+                value={woltStars} 
+                onChange={(e) => setWoltStars(e.target.value)}
+                className="w-full p-2 border border-gray-300 rounded focus:outline-none focus:border-orange-500"
+              >
+                <option value="">-- Κανένα --</option>
+                <option value="1">1 ⭐</option>
+                <option value="2">2 ⭐⭐</option>
+                <option value="3">3 ⭐⭐⭐</option>
+                <option value="4">4 ⭐⭐⭐⭐</option>
+                <option value="5">5 ⭐⭐⭐⭐⭐</option>
+              </select>
+            </div>
+
             <button 
               onClick={handleSaveShift}
               className="w-full bg-orange-500 hover:bg-orange-600 text-white font-bold py-3 rounded transition-colors mt-4"
@@ -358,7 +378,6 @@ export default function App() {
     );
   }
 
-  // ---------------- Οθόνη 1: Επιλογή Υπαλλήλου / PIN (Αρχική) ----------------
   return (
     <div className="min-h-screen bg-gray-100 flex flex-col items-center justify-center p-4">
       <div className="bg-white p-6 md:p-8 rounded-lg shadow-lg border-b-4 border-[#8B5A2B] max-w-md w-full">
