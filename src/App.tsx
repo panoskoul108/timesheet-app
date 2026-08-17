@@ -100,9 +100,9 @@ export default function App() {
       const emp = employees.find(e => e.id === shift.employee_id);
       const empName = emp ? emp.name : 'Άγνωστος';
       
-      // Αλλαγή μορφής ημερομηνίας για τέλεια εμφάνιση στο Excel (ΗΗ/ΜΜ/ΕΕΕΕ)
       const [year, month, day] = shift.shift_date.split('-');
-      const formattedDate = `${day}/${month}/${year}`;
+      // Το "κόλπο" για το Excel: Βάζουμε την ημερομηνία μέσα σε ="..." 
+      const formattedDate = `="${day}/${month}/${year}"`;
       
       csvContent += `${empName};${shift.store_location};${formattedDate};${shift.hours_worked}\n`;
     });
@@ -111,7 +111,7 @@ export default function App() {
     const url = URL.createObjectURL(blob);
     const link = document.createElement("a");
     link.href = url;
-    link.setAttribute("download", `ShiftSheet_export_${dateFilter}_${storeFilter}.csv`);
+    link.setAttribute("download", `ShiftSheets_export_${dateFilter}_${storeFilter}.csv`);
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
@@ -146,6 +146,7 @@ export default function App() {
     });
   };
 
+  // ---------------- Οθόνη 3: Dashboard Admin ----------------
   if (loggedInUser && viewMode === 'dashboard') {
     const filteredShifts = getFilteredShifts();
     
@@ -161,53 +162,53 @@ export default function App() {
     );
 
     return (
-      <div className="min-h-screen bg-gray-100 p-4 flex justify-center items-start pt-10">
-        <div className="bg-white p-6 md:p-8 rounded-lg shadow-md border-t-4 border-orange-500 max-w-2xl w-full">
+      <div className="min-h-screen bg-gray-100 p-3 sm:p-4 flex justify-center items-start pt-6 sm:pt-10">
+        <div className="bg-white p-4 sm:p-8 rounded-lg shadow-md border-t-4 border-orange-500 max-w-2xl w-full">
           <div className="flex justify-between items-center mb-6">
-            <h2 className="text-xl font-bold text-gray-800">Στατιστικά Ωρών</h2>
-            <div className="space-x-3">
+            <h2 className="text-lg sm:text-xl font-bold text-gray-800">Στατιστικά</h2>
+            <div className="space-x-2 sm:space-x-3">
               <button 
                 onClick={() => setViewMode('form')}
-                className="text-sm text-gray-600 hover:text-gray-800 font-semibold transition-colors"
+                className="text-xs sm:text-sm text-gray-600 hover:text-gray-800 font-semibold p-2"
               >
                 Πίσω
               </button>
               <button 
                 onClick={() => { setLoggedInUser(null); setViewMode('form'); }}
-                className="text-sm text-[#8B5A2B] hover:text-orange-600 font-semibold transition-colors"
+                className="text-xs sm:text-sm text-[#8B5A2B] hover:text-orange-600 font-semibold p-2"
               >
-                Αποσύνδεση
+                Έξοδος
               </button>
             </div>
           </div>
 
-          <div className="flex gap-2 mb-3">
-            <button onClick={() => setDateFilter('week')} className={`flex-1 py-2 rounded text-sm font-bold transition-colors ${dateFilter === 'week' ? 'bg-orange-500 text-white' : 'bg-gray-200 text-gray-700 hover:bg-gray-300'}`}>Εβδομάδα</button>
-            <button onClick={() => setDateFilter('month')} className={`flex-1 py-2 rounded text-sm font-bold transition-colors ${dateFilter === 'month' ? 'bg-orange-500 text-white' : 'bg-gray-200 text-gray-700 hover:bg-gray-300'}`}>Μήνας</button>
-            <button onClick={() => setDateFilter('year')} className={`flex-1 py-2 rounded text-sm font-bold transition-colors ${dateFilter === 'year' ? 'bg-orange-500 text-white' : 'bg-gray-200 text-gray-700 hover:bg-gray-300'}`}>Χρονιά</button>
+          <div className="flex gap-1 sm:gap-2 mb-3">
+            <button onClick={() => setDateFilter('week')} className={`flex-1 py-3 sm:py-2 rounded text-xs sm:text-sm font-bold transition-colors ${dateFilter === 'week' ? 'bg-orange-500 text-white' : 'bg-gray-200 text-gray-700'}`}>Εβδομάδα</button>
+            <button onClick={() => setDateFilter('month')} className={`flex-1 py-3 sm:py-2 rounded text-xs sm:text-sm font-bold transition-colors ${dateFilter === 'month' ? 'bg-orange-500 text-white' : 'bg-gray-200 text-gray-700'}`}>Μήνας</button>
+            <button onClick={() => setDateFilter('year')} className={`flex-1 py-3 sm:py-2 rounded text-xs sm:text-sm font-bold transition-colors ${dateFilter === 'year' ? 'bg-orange-500 text-white' : 'bg-gray-200 text-gray-700'}`}>Χρονιά</button>
           </div>
 
-          <div className="flex gap-2 mb-6">
-            <button onClick={() => setStoreFilter('All')} className={`flex-1 py-2 rounded border-2 text-sm font-bold transition-colors ${storeFilter === 'All' ? 'border-[#8B5A2B] text-[#8B5A2B] bg-orange-50' : 'border-gray-200 text-gray-500 hover:border-gray-300'}`}>Όλα τα Μαγαζιά</button>
-            <button onClick={() => setStoreFilter('Hellas')} className={`flex-1 py-2 rounded border-2 text-sm font-bold transition-colors ${storeFilter === 'Hellas' ? 'border-[#8B5A2B] text-[#8B5A2B] bg-orange-50' : 'border-gray-200 text-gray-500 hover:border-gray-300'}`}>Hellas</button>
-            <button onClick={() => setStoreFilter('Nordic')} className={`flex-1 py-2 rounded border-2 text-sm font-bold transition-colors ${storeFilter === 'Nordic' ? 'border-[#8B5A2B] text-[#8B5A2B] bg-orange-50' : 'border-gray-200 text-gray-500 hover:border-gray-300'}`}>Nordic</button>
+          <div className="flex gap-1 sm:gap-2 mb-6">
+            <button onClick={() => setStoreFilter('All')} className={`flex-1 py-3 sm:py-2 rounded border-2 text-xs sm:text-sm font-bold transition-colors ${storeFilter === 'All' ? 'border-[#8B5A2B] text-[#8B5A2B] bg-orange-50' : 'border-gray-200 text-gray-500'}`}>Όλα</button>
+            <button onClick={() => setStoreFilter('Hellas')} className={`flex-1 py-3 sm:py-2 rounded border-2 text-xs sm:text-sm font-bold transition-colors ${storeFilter === 'Hellas' ? 'border-[#8B5A2B] text-[#8B5A2B] bg-orange-50' : 'border-gray-200 text-gray-500'}`}>Hellas</button>
+            <button onClick={() => setStoreFilter('Nordic')} className={`flex-1 py-3 sm:py-2 rounded border-2 text-xs sm:text-sm font-bold transition-colors ${storeFilter === 'Nordic' ? 'border-[#8B5A2B] text-[#8B5A2B] bg-orange-50' : 'border-gray-200 text-gray-500'}`}>Nordic</button>
           </div>
 
           <div className="flex justify-end mb-4">
             <button 
               onClick={() => handleExportCSV(filteredShifts)}
-              className="bg-green-600 hover:bg-green-700 text-white font-semibold py-2 px-4 rounded text-sm transition-colors"
+              className="bg-green-600 hover:bg-green-700 text-white font-semibold py-3 px-4 rounded text-sm w-full sm:w-auto shadow-sm"
             >
               📥 Εξαγωγή σε Excel
             </button>
           </div>
 
-          <div className="bg-gray-50 border border-gray-200 rounded p-4 mb-8">
-            <h3 className="text-gray-700 font-bold mb-3 border-b pb-2">Σύνολα</h3>
+          <div className="bg-gray-50 border border-gray-200 rounded p-3 sm:p-4 mb-6">
+            <h3 className="text-gray-700 font-bold mb-3 border-b pb-2 text-sm sm:text-base">Σύνολα</h3>
             {Object.keys(totals).length === 0 ? (
-              <p className="text-center text-gray-500 py-2">Δεν βρέθηκαν βάρδιες.</p>
+              <p className="text-center text-gray-500 py-2 text-sm">Δεν βρέθηκαν βάρδιες.</p>
             ) : (
-              <table className="w-full text-left">
+              <table className="w-full text-left text-sm sm:text-base">
                 <tbody>
                   {Object.entries(totals).map(([name, totalHours]) => (
                     <tr key={name} className="border-b border-gray-200 last:border-0">
@@ -220,20 +221,20 @@ export default function App() {
             )}
           </div>
 
-          <div className="bg-white border border-gray-200 rounded p-4 shadow-sm">
-            <h3 className="text-gray-700 font-bold mb-3 border-b pb-2">Αναλυτικές Καταχωρήσεις</h3>
+          <div className="bg-white border border-gray-200 rounded p-3 sm:p-4 shadow-sm">
+            <h3 className="text-gray-700 font-bold mb-3 border-b pb-2 text-sm sm:text-base">Αναλυτικά</h3>
             {sortedShifts.length === 0 ? (
-              <p className="text-center text-gray-500 py-2">Δεν υπάρχουν καταχωρήσεις.</p>
+              <p className="text-center text-gray-500 py-2 text-sm">Δεν υπάρχουν καταχωρήσεις.</p>
             ) : (
-              <div className="overflow-x-auto">
-                <table className="w-full text-left text-sm">
+              <div className="overflow-x-auto -mx-3 sm:mx-0 px-3 sm:px-0">
+                <table className="w-full text-left text-xs sm:text-sm min-w-[350px]">
                   <thead>
                     <tr className="text-gray-500 border-b">
                       <th className="pb-2">Ημ/νία</th>
                       <th className="pb-2">Υπάλληλος</th>
-                      <th className="pb-2">Κατάστημα</th>
+                      <th className="pb-2">Μαγαζί</th>
                       <th className="pb-2 text-center">Ώρες</th>
-                      <th className="pb-2 text-center">Διαγραφή</th>
+                      <th className="pb-2 text-center"></th>
                     </tr>
                   </thead>
                   <tbody>
@@ -243,15 +244,14 @@ export default function App() {
                       
                       return (
                         <tr key={shift.id} className="border-b last:border-0 hover:bg-gray-50">
-                          <td className="py-2">{new Date(shift.shift_date).toLocaleDateString('el-GR')}</td>
-                          <td className="py-2 font-medium">{empName}</td>
-                          <td className="py-2">{shift.store_location}</td>
-                          <td className="py-2 text-center font-semibold">{shift.hours_worked}</td>
-                          <td className="py-2 text-center">
+                          <td className="py-3">{new Date(shift.shift_date).toLocaleDateString('el-GR').slice(0, 5)}</td>
+                          <td className="py-3 font-medium truncate max-w-[80px] sm:max-w-none">{empName}</td>
+                          <td className="py-3">{shift.store_location}</td>
+                          <td className="py-3 text-center font-semibold">{shift.hours_worked}</td>
+                          <td className="py-3 text-center">
                             <button 
                               onClick={() => handleDeleteShift(shift.id)}
-                              className="text-red-500 hover:text-red-700 font-bold text-lg px-2"
-                              title="Ασφαλής Διαγραφή"
+                              className="text-red-500 hover:text-red-700 font-bold text-lg px-2 p-1"
                             >
                               ✕
                             </button>
@@ -269,29 +269,30 @@ export default function App() {
     );
   }
 
+  // ---------------- Οθόνη 2: Φόρμα Καταγραφής Ωρών ----------------
   if (loggedInUser) {
     return (
       <div className="min-h-screen bg-gray-100 flex items-center justify-center p-4">
-        <div className="bg-white p-6 md:p-8 rounded-lg shadow-md border-t-4 border-orange-500 max-w-md w-full">
+        <div className="bg-white p-6 sm:p-8 rounded-lg shadow-md border-t-4 border-orange-500 max-w-md w-full">
           <div className="flex justify-between items-center mb-6">
             <h2 className="text-xl font-bold text-gray-800">
               Γεια σου, {loggedInUser.name}!
             </h2>
             <button 
               onClick={() => { setLoggedInUser(null); setSubmitMsg(''); setHours(''); }}
-              className="text-sm text-[#8B5A2B] hover:text-orange-600 font-semibold transition-colors"
+              className="text-sm text-[#8B5A2B] hover:text-orange-600 font-semibold p-2"
             >
               Αποσύνδεση
             </button>
           </div>
 
-          <div className="space-y-4">
+          <div className="space-y-5">
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">Κατάστημα</label>
               <select 
                 value={storeLocation} 
                 onChange={(e) => setStoreLocation(e.target.value)}
-                className="w-full p-2 border border-gray-300 rounded focus:outline-none focus:border-orange-500"
+                className="w-full p-3 border border-gray-300 rounded focus:outline-none focus:border-orange-500 text-base bg-white"
               >
                 <option value="Hellas">Hellas</option>
                 <option value="Nordic">Nordic</option>
@@ -304,7 +305,7 @@ export default function App() {
                 type="date" 
                 value={shiftDate}
                 onChange={(e) => setShiftDate(e.target.value)}
-                className="w-full p-2 border border-gray-300 rounded focus:outline-none focus:border-orange-500"
+                className="w-full p-3 border border-gray-300 rounded focus:outline-none focus:border-orange-500 text-base"
               />
             </div>
 
@@ -316,19 +317,19 @@ export default function App() {
                 placeholder="π.χ. 6 ή 6.5"
                 value={hours}
                 onChange={(e) => setHours(e.target.value)}
-                className="w-full p-2 border border-gray-300 rounded focus:outline-none focus:border-orange-500"
+                className="w-full p-3 border border-gray-300 rounded focus:outline-none focus:border-orange-500 text-base"
               />
             </div>
 
             <button 
               onClick={handleSaveShift}
-              className="w-full bg-orange-500 hover:bg-orange-600 text-white font-bold py-3 rounded transition-colors mt-4"
+              className="w-full bg-orange-500 hover:bg-orange-600 text-white font-bold py-4 rounded transition-colors mt-2 shadow-sm text-lg"
             >
               Καταχώρηση Ωρών
             </button>
 
             {submitMsg && (
-              <p className={`text-center text-sm font-medium mt-3 ${submitMsg.includes('επιτυχώς') ? 'text-green-600' : 'text-red-600'}`}>
+              <p className={`text-center text-sm font-medium mt-2 ${submitMsg.includes('επιτυχώς') ? 'text-green-600' : 'text-red-600'}`}>
                 {submitMsg}
               </p>
             )}
@@ -336,7 +337,7 @@ export default function App() {
             {loggedInUser.role?.toLowerCase() === 'admin' && (
               <button 
                 onClick={loadDashboard}
-                className="w-full bg-gray-100 hover:bg-gray-200 text-gray-800 font-bold py-3 rounded transition-colors mt-6 border-2 border-gray-300"
+                className="w-full bg-gray-100 hover:bg-gray-200 text-gray-800 font-bold py-4 rounded transition-colors mt-6 border-2 border-gray-300 shadow-sm"
               >
                 📊 Πίνακας Ωρών (Admin)
               </button>
@@ -347,23 +348,24 @@ export default function App() {
     );
   }
 
+  // ---------------- Οθόνη 1: Επιλογή Υπαλλήλου / PIN (Αρχική) ----------------
   return (
     <div className="min-h-screen bg-gray-100 flex flex-col items-center justify-center p-4">
-      <div className="bg-white p-6 md:p-8 rounded-lg shadow-lg border-b-4 border-[#8B5A2B] max-w-md w-full">
-        <h1 className="text-2xl font-bold text-gray-800 text-center mb-6">
-         ShiftSheets
+      <div className="bg-white p-6 sm:p-8 rounded-lg shadow-lg border-b-4 border-[#8B5A2B] max-w-md w-full">
+        <h1 className="text-2xl sm:text-3xl font-bold text-gray-800 text-center mb-6 sm:mb-8">
+          ShiftSheets
         </h1>
 
         {!selectedUser ? (
-          <div className="grid grid-cols-2 gap-3">
+          <div className="grid grid-cols-1 min-[400px]:grid-cols-2 gap-3 sm:gap-4">
             {employees.length === 0 ? (
-              <p className="col-span-2 text-center text-gray-500 text-sm">Φόρτωση υπαλλήλων...</p>
+              <p className="col-span-1 min-[400px]:col-span-2 text-center text-gray-500 text-sm">Φόρτωση υπαλλήλων...</p>
             ) : (
               employees.map((emp) => (
                 <button
                   key={emp.id}
                   onClick={() => setSelectedUser(emp)}
-                  className="bg-gray-50 hover:bg-orange-100 text-gray-700 font-medium py-4 rounded border border-gray-200 hover:border-orange-500 transition-colors"
+                  className="bg-gray-50 hover:bg-orange-100 text-gray-800 font-semibold py-5 rounded-lg border-2 border-gray-200 hover:border-orange-500 transition-colors text-lg active:bg-orange-200"
                 >
                   {emp.name}
                 </button>
@@ -372,7 +374,7 @@ export default function App() {
           </div>
         ) : (
           <div className="flex flex-col items-center">
-            <h2 className="text-xl text-gray-700 mb-4">
+            <h2 className="text-xl text-gray-700 mb-6">
               Γεια σου, <span className="font-bold text-orange-600">{selectedUser.name}</span>
             </h2>
             <input
@@ -381,20 +383,21 @@ export default function App() {
               value={pin}
               onChange={(e) => setPin(e.target.value)}
               placeholder="****"
-              className="w-32 text-center text-3xl tracking-[0.5em] p-2 border-2 border-gray-300 rounded mb-4 focus:outline-none focus:border-orange-500"
+              className="w-40 text-center text-4xl tracking-[0.5em] p-4 border-2 border-gray-300 rounded-lg mb-6 focus:outline-none focus:border-orange-500 bg-gray-50"
+              autoFocus
             />
-            {error && <p className="text-red-500 text-sm mb-4">{error}</p>}
+            {error && <p className="text-red-500 text-sm mb-4 font-medium">{error}</p>}
             
-            <div className="flex w-full gap-3">
+            <div className="flex w-full gap-3 sm:gap-4">
               <button
                 onClick={() => { setSelectedUser(null); setPin(''); setError(''); }}
-                className="flex-1 bg-gray-200 hover:bg-gray-300 text-gray-700 font-bold py-3 rounded transition-colors"
+                className="flex-1 bg-gray-200 hover:bg-gray-300 text-gray-800 font-bold py-4 rounded-lg transition-colors text-lg"
               >
                 Πίσω
               </button>
               <button
                 onClick={handleLogin}
-                className="flex-1 bg-orange-500 hover:bg-orange-600 text-white font-bold py-3 rounded transition-colors"
+                className="flex-1 bg-orange-500 hover:bg-orange-600 text-white font-bold py-4 rounded-lg transition-colors text-lg shadow-sm"
               >
                 Είσοδος
               </button>
