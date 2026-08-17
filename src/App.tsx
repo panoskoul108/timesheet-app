@@ -11,7 +11,6 @@ export default function App() {
   const [storeLocation, setStoreLocation] = useState('Hellas');
   const [shiftDate, setShiftDate] = useState(new Date().toISOString().split('T')[0]);
   const [hours, setHours] = useState('');
-  const [woltStars, setWoltStars] = useState(''); // Νέο state για τα αστεράκια Wolt
   const [submitMsg, setSubmitMsg] = useState('');
 
   const [viewMode, setViewMode] = useState<'form' | 'dashboard'>('form');
@@ -46,20 +45,14 @@ export default function App() {
       return;
     }
 
-    // Φτιάχνουμε τα δεδομένα προς αποθήκευση
-    const payload: any = {
-      employee_id: loggedInUser.id,
-      store_location: storeLocation,
-      shift_date: shiftDate,
-      hours_worked: Number(hours)
-    };
-
-    // Αν ο χρήστης επέλεξε αστεράκια, τα προσθέτουμε στα δεδομένα
-    if (woltStars) {
-      payload.wolt_stars = Number(woltStars);
-    }
-
-    const { error } = await supabase.from('shifts').insert([payload]);
+    const { error } = await supabase.from('shifts').insert([
+      {
+        employee_id: loggedInUser.id,
+        store_location: storeLocation,
+        shift_date: shiftDate,
+        hours_worked: Number(hours)
+      }
+    ]);
 
     if (error) {
       setSubmitMsg('Υπήρξε σφάλμα κατά την αποθήκευση.');
@@ -67,7 +60,6 @@ export default function App() {
     } else {
       setSubmitMsg('Οι ώρες αποθηκεύτηκαν επιτυχώς!');
       setHours('');
-      setWoltStars(''); // Καθαρισμός πεδίου μετά την αποθήκευση
       setTimeout(() => setSubmitMsg(''), 3000);
     }
   };
@@ -102,26 +94,24 @@ export default function App() {
       return;
     }
 
-    // Προσθέσαμε τη στήλη για τα αστεράκια Wolt στο Excel
-    let csvContent = "\uFEFFΥπάλληλος;Κατάστημα;Ημερομηνία;Ώρες;Αστεράκια Wolt\n";
+    let csvContent = "\uFEFFΥπάλληλος;Κατάστημα;Ημερομηνία;Ώρες\n";
 
     filteredShifts.forEach(shift => {
       const emp = employees.find(e => e.id === shift.employee_id);
       const empName = emp ? emp.name : 'Άγνωστος';
       
+      // Αλλαγή μορφής ημερομηνίας για τέλεια εμφάνιση στο Excel (ΗΗ/ΜΜ/ΕΕΕΕ)
       const [year, month, day] = shift.shift_date.split('-');
       const formattedDate = `${day}/${month}/${year}`;
       
-      const stars = shift.wolt_stars ? shift.wolt_stars : '-';
-      
-      csvContent += `${empName};${shift.store_location};${formattedDate};${shift.hours_worked};${stars}\n`;
+      csvContent += `${empName};${shift.store_location};${formattedDate};${shift.hours_worked}\n`;
     });
 
     const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
     const url = URL.createObjectURL(blob);
     const link = document.createElement("a");
     link.href = url;
-    link.setAttribute("download", `servato_export_${dateFilter}_${storeFilter}.csv`);
+    link.setAttribute("download", `ShiftSheet_export_${dateFilter}_${storeFilter}.csv`);
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
@@ -243,7 +233,6 @@ export default function App() {
                       <th className="pb-2">Υπάλληλος</th>
                       <th className="pb-2">Κατάστημα</th>
                       <th className="pb-2 text-center">Ώρες</th>
-                      <th className="pb-2 text-center">Wolt</th>
                       <th className="pb-2 text-center">Διαγραφή</th>
                     </tr>
                   </thead>
@@ -258,9 +247,6 @@ export default function App() {
                           <td className="py-2 font-medium">{empName}</td>
                           <td className="py-2">{shift.store_location}</td>
                           <td className="py-2 text-center font-semibold">{shift.hours_worked}</td>
-                          <td className="py-2 text-center text-orange-500 font-bold">
-                            {shift.wolt_stars ? `${shift.wolt_stars} ⭐` : '-'}
-                          </td>
                           <td className="py-2 text-center">
                             <button 
                               onClick={() => handleDeleteShift(shift.id)}
@@ -292,7 +278,7 @@ export default function App() {
               Γεια σου, {loggedInUser.name}!
             </h2>
             <button 
-              onClick={() => { setLoggedInUser(null); setSubmitMsg(''); setHours(''); setWoltStars(''); }}
+              onClick={() => { setLoggedInUser(null); setSubmitMsg(''); setHours(''); }}
               className="text-sm text-[#8B5A2B] hover:text-orange-600 font-semibold transition-colors"
             >
               Αποσύνδεση
@@ -334,23 +320,6 @@ export default function App() {
               />
             </div>
 
-            {/* Νέο προαιρετικό πεδίο για τα αστεράκια Wolt */}
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Αστεράκια Wolt (Προαιρετικό)</label>
-              <select 
-                value={woltStars} 
-                onChange={(e) => setWoltStars(e.target.value)}
-                className="w-full p-2 border border-gray-300 rounded focus:outline-none focus:border-orange-500"
-              >
-                <option value="">-- Κανένα --</option>
-                <option value="1">1 ⭐</option>
-                <option value="2">2 ⭐⭐</option>
-                <option value="3">3 ⭐⭐⭐</option>
-                <option value="4">4 ⭐⭐⭐⭐</option>
-                <option value="5">5 ⭐⭐⭐⭐⭐</option>
-              </select>
-            </div>
-
             <button 
               onClick={handleSaveShift}
               className="w-full bg-orange-500 hover:bg-orange-600 text-white font-bold py-3 rounded transition-colors mt-4"
@@ -382,7 +351,7 @@ export default function App() {
     <div className="min-h-screen bg-gray-100 flex flex-col items-center justify-center p-4">
       <div className="bg-white p-6 md:p-8 rounded-lg shadow-lg border-b-4 border-[#8B5A2B] max-w-md w-full">
         <h1 className="text-2xl font-bold text-gray-800 text-center mb-6">
-          Servato
+         ShiftSheets
         </h1>
 
         {!selectedUser ? (
