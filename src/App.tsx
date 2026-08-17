@@ -19,7 +19,7 @@ export default function App() {
   const [viewMode, setViewMode] = useState<'form' | 'dashboard'>('form');
   const [shifts, setShifts] = useState<any[]>([]);
   const [dateFilter, setDateFilter] = useState<'week' | 'month' | 'year'>('month');
-  const [storeFilter, setStoreFilter] = useState<'All' | 'Hellas' | 'Nordic'>('All'); // Νέο state για το μαγαζί
+  const [storeFilter, setStoreFilter] = useState<'All' | 'Hellas' | 'Nordic'>('All');
 
   // Φόρτωση εργαζομένων κατά το άνοιγμα
   useEffect(() => {
@@ -76,16 +76,57 @@ export default function App() {
     setViewMode('dashboard');
   };
 
-  // Φιλτράρισμα και υπολογισμός ωρών ανάλογα με την επιλογή χρόνου & μαγαζιού
-  const getFilteredTotals = () => {
+  // Διαγραφή Βάρδιας
+  const handleDeleteShift = async (shiftId: string) => {
+    const confirmDelete = window.confirm("Σίγουρα θέλεις να διαγράψεις αυτή τη βάρδια;");
+    if (!confirmDelete) return;
+
+    const { error } = await supabase.from('shifts').delete().eq('id', shiftId);
+    
+    if (error) {
+      console.error(error);
+      alert('Υπήρξε σφάλμα κατά τη διαγραφή.');
+    } else {
+      // Αφαιρούμε τη βάρδια από την οθόνη χωρίς να χρειαστεί reload
+      setShifts(shifts.filter(s => s.id !== shiftId));
+    }
+  };
+
+  // Εξαγωγή σε CSV
+  const handleExportCSV = (filteredShifts: any[]) => {
+    if (filteredShifts.length === 0) {
+      alert('Δεν υπάρχουν δεδομένα για εξαγωγή.');
+      return;
+    }
+
+    // Προσθέτουμε BOM (\uFEFF) για να διαβάζει σωστά τα Ελληνικά το Excel
+    let csvContent = "\uFEFFΥπάλληλος,Κατάστημα,Ημερομηνία,Ώρες\n";
+
+    filteredShifts.forEach(shift => {
+      const emp = employees.find(e => e.id === shift.employee_id);
+      const empName = emp ? emp.name : 'Άγνωστος';
+      csvContent += `${empName},${shift.store_location},${shift.shift_date},${shift.hours_worked}\n`;
+    });
+
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.href = url;
+    link.setAttribute("download", `servato_export_${dateFilter}_${storeFilter}.csv`);
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
+
+  // Φιλτράρισμα βαρδιών
+  const getFilteredShifts = () => {
     const now = new Date();
     const currentYear = now.getFullYear();
     const currentMonth = now.getMonth();
     
-    const filtered = shifts.filter(shift => {
+    return shifts.filter(shift => {
       const sDate = new Date(shift.shift_date);
       
-      // 1. Έλεγχος Ημερομηνίας
       let dateMatch = true;
       if (dateFilter === 'year') {
         dateMatch = sDate.getFullYear() === currentYear;
@@ -98,30 +139,32 @@ export default function App() {
         dateMatch = sDate >= startOfWeek;
       }
 
-      // 2. Έλεγχος Μαγαζιού
       let storeMatch = true;
       if (storeFilter !== 'All') {
         storeMatch = shift.store_location === storeFilter;
       }
 
-      // Επιστρέφει true μόνο αν ταιριάζουν ΚΑΙ τα δύο φίλτρα
       return dateMatch && storeMatch;
     });
-
-    // Ομαδοποίηση ωρών ανά υπάλληλο
-    const totals: Record<string, number> = {};
-    filtered.forEach(shift => {
-      const emp = employees.find(e => e.id === shift.employee_id);
-      const empName = emp ? emp.name : 'Άγνωστος';
-      totals[empName] = (totals[empName] || 0) + shift.hours_worked;
-    });
-    
-    return totals;
   };
 
   // ---------------- Οθόνη 3: Dashboard Admin ----------------
   if (loggedInUser && viewMode === 'dashboard') {
-    const totals = getFilteredTotals();
+    const filteredShifts = getFilteredShifts();
+    
+    // Υπολογισμός Συνόλων
+    const totals: Record<string, number> = {};
+    filteredShifts.forEach(shift => {
+      const emp = employees.find(e => e.id === shift.employee_id);
+      const empName = emp ? emp.name : 'Άγνωστος';
+      totals[empName] = (totals[empName] || 0) + shift.hours_worked;
+    });
+
+    // Ταξινόμηση αναλυτικών βαρδιών από την πιο πρόσφατη στην παλαιότερη
+    const sortedShifts = [...filteredShifts].sort((a, b) => 
+      new Date(b.shift_date).getTime() - new Date(a.shift_date).getTime()
+    );
+
     return (
       <div className="min-h-screen bg-gray-100 p-4 flex justify-center items-start pt-10">
         <div className="bg-white p-6 md:p-8 rounded-lg shadow-md border-t-4 border-orange-500 max-w-2xl w-full">
@@ -143,40 +186,89 @@ export default function App() {
             </div>
           </div>
 
-          {/* Φίλτρα Ημερομηνίας */}
           <div className="flex gap-2 mb-3">
             <button onClick={() => setDateFilter('week')} className={`flex-1 py-2 rounded text-sm font-bold transition-colors ${dateFilter === 'week' ? 'bg-orange-500 text-white' : 'bg-gray-200 text-gray-700 hover:bg-gray-300'}`}>Εβδομάδα</button>
             <button onClick={() => setDateFilter('month')} className={`flex-1 py-2 rounded text-sm font-bold transition-colors ${dateFilter === 'month' ? 'bg-orange-500 text-white' : 'bg-gray-200 text-gray-700 hover:bg-gray-300'}`}>Μήνας</button>
             <button onClick={() => setDateFilter('year')} className={`flex-1 py-2 rounded text-sm font-bold transition-colors ${dateFilter === 'year' ? 'bg-orange-500 text-white' : 'bg-gray-200 text-gray-700 hover:bg-gray-300'}`}>Χρονιά</button>
           </div>
 
-          {/* Φίλτρα Μαγαζιού */}
           <div className="flex gap-2 mb-6">
             <button onClick={() => setStoreFilter('All')} className={`flex-1 py-2 rounded border-2 text-sm font-bold transition-colors ${storeFilter === 'All' ? 'border-[#8B5A2B] text-[#8B5A2B] bg-orange-50' : 'border-gray-200 text-gray-500 hover:border-gray-300'}`}>Όλα τα Μαγαζιά</button>
             <button onClick={() => setStoreFilter('Hellas')} className={`flex-1 py-2 rounded border-2 text-sm font-bold transition-colors ${storeFilter === 'Hellas' ? 'border-[#8B5A2B] text-[#8B5A2B] bg-orange-50' : 'border-gray-200 text-gray-500 hover:border-gray-300'}`}>Hellas</button>
             <button onClick={() => setStoreFilter('Nordic')} className={`flex-1 py-2 rounded border-2 text-sm font-bold transition-colors ${storeFilter === 'Nordic' ? 'border-[#8B5A2B] text-[#8B5A2B] bg-orange-50' : 'border-gray-200 text-gray-500 hover:border-gray-300'}`}>Nordic</button>
           </div>
 
-          <div className="bg-gray-50 border border-gray-200 rounded p-4">
+          <div className="flex justify-end mb-4">
+            <button 
+              onClick={() => handleExportCSV(filteredShifts)}
+              className="bg-green-600 hover:bg-green-700 text-white font-semibold py-2 px-4 rounded text-sm transition-colors"
+            >
+              📥 Εξαγωγή σε Excel (CSV)
+            </button>
+          </div>
+
+          {/* Πίνακας Συνολικών Ωρών */}
+          <div className="bg-gray-50 border border-gray-200 rounded p-4 mb-8">
+            <h3 className="text-gray-700 font-bold mb-3 border-b pb-2">Σύνολα</h3>
             {Object.keys(totals).length === 0 ? (
-              <p className="text-center text-gray-500 py-4">Δεν βρέθηκαν βάρδιες για αυτόν τον συνδυασμό φίλτρων.</p>
+              <p className="text-center text-gray-500 py-2">Δεν βρέθηκαν βάρδιες.</p>
             ) : (
               <table className="w-full text-left">
-                <thead>
-                  <tr className="border-b border-gray-300">
-                    <th className="pb-2 font-semibold text-gray-700">Υπάλληλος</th>
-                    <th className="pb-2 font-semibold text-gray-700 text-right">Σύνολο Ωρών</th>
-                  </tr>
-                </thead>
                 <tbody>
                   {Object.entries(totals).map(([name, totalHours]) => (
                     <tr key={name} className="border-b border-gray-200 last:border-0">
-                      <td className="py-3 text-gray-800 font-medium">{name}</td>
-                      <td className="py-3 text-right font-bold text-orange-600">{totalHours} ώρες</td>
+                      <td className="py-2 text-gray-800 font-medium">{name}</td>
+                      <td className="py-2 text-right font-bold text-orange-600">{totalHours} ώρες</td>
                     </tr>
                   ))}
                 </tbody>
               </table>
+            )}
+          </div>
+
+          {/* Λίστα Αναλυτικών Βαρδιών με κουμπί Διαγραφής */}
+          <div className="bg-white border border-gray-200 rounded p-4 shadow-sm">
+            <h3 className="text-gray-700 font-bold mb-3 border-b pb-2">Αναλυτικές Καταχωρήσεις</h3>
+            {sortedShifts.length === 0 ? (
+              <p className="text-center text-gray-500 py-2">Δεν υπάρχουν καταχωρήσεις.</p>
+            ) : (
+              <div className="overflow-x-auto">
+                <table className="w-full text-left text-sm">
+                  <thead>
+                    <tr className="text-gray-500 border-b">
+                      <th className="pb-2">Ημ/νία</th>
+                      <th className="pb-2">Υπάλληλος</th>
+                      <th className="pb-2">Κατάστημα</th>
+                      <th className="pb-2 text-center">Ώρες</th>
+                      <th className="pb-2 text-center">Διαγραφή</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {sortedShifts.map((shift) => {
+                      const emp = employees.find(e => e.id === shift.employee_id);
+                      const empName = emp ? emp.name : 'Άγνωστος';
+                      
+                      return (
+                        <tr key={shift.id} className="border-b last:border-0 hover:bg-gray-50">
+                          <td className="py-2">{new Date(shift.shift_date).toLocaleDateString('el-GR')}</td>
+                          <td className="py-2 font-medium">{empName}</td>
+                          <td className="py-2">{shift.store_location}</td>
+                          <td className="py-2 text-center font-semibold">{shift.hours_worked}</td>
+                          <td className="py-2 text-center">
+                            <button 
+                              onClick={() => handleDeleteShift(shift.id)}
+                              className="text-red-500 hover:text-red-700 font-bold text-lg px-2"
+                              title="Διαγραφή βάρδιας"
+                            >
+                              ✕
+                            </button>
+                          </td>
+                        </tr>
+                      );
+                    })}
+                  </tbody>
+                </table>
+              </div>
             )}
           </div>
         </div>
@@ -249,7 +341,6 @@ export default function App() {
               </p>
             )}
 
-            {/* Εμφανίζεται ΜΟΝΟ αν ο χρήστης είναι Admin */}
             {loggedInUser.role?.toLowerCase() === 'admin' && (
               <button 
                 onClick={loadDashboard}
@@ -269,7 +360,7 @@ export default function App() {
     <div className="min-h-screen bg-gray-100 flex flex-col items-center justify-center p-4">
       <div className="bg-white p-6 md:p-8 rounded-lg shadow-lg border-b-4 border-[#8B5A2B] max-w-md w-full">
         <h1 className="text-2xl font-bold text-gray-800 text-center mb-6">
-          Παρουσιολόγιο
+          Servato
         </h1>
 
         {!selectedUser ? (
