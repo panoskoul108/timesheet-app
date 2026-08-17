@@ -68,44 +68,48 @@ export default function App() {
     }
   };
 
-  // Φόρτωση βαρδιών για το Dashboard
+  // Φόρτωση βαρδιών (Κρύβουμε όσες έχουν is_deleted = true)
   const loadDashboard = async () => {
     const { data, error } = await supabase.from('shifts').select('*');
-    if (data) setShifts(data);
+    if (data) {
+      // Φιλτράρουμε τις διαγραμμένες. Αν το is_deleted είναι null (παλιές εγγραφές) τις κρατάμε.
+      const activeShifts = data.filter(s => s.is_deleted !== true);
+      setShifts(activeShifts);
+    }
     if (error) console.error(error);
     setViewMode('dashboard');
   };
 
-  // Διαγραφή Βάρδιας
+  // Ασφαλής Διαγραφή Βάρδιας (Soft Delete)
   const handleDeleteShift = async (shiftId: string) => {
     const confirmDelete = window.confirm("Σίγουρα θέλεις να διαγράψεις αυτή τη βάρδια;");
     if (!confirmDelete) return;
 
-    const { error } = await supabase.from('shifts').delete().eq('id', shiftId);
+    // Αντί για .delete(), κάνουμε .update() και αλλάζουμε το is_deleted σε true
+    const { error } = await supabase.from('shifts').update({ is_deleted: true }).eq('id', shiftId);
     
     if (error) {
       console.error(error);
       alert('Υπήρξε σφάλμα κατά τη διαγραφή.');
     } else {
-      // Αφαιρούμε τη βάρδια από την οθόνη χωρίς να χρειαστεί reload
       setShifts(shifts.filter(s => s.id !== shiftId));
     }
   };
 
-  // Εξαγωγή σε CSV
+  // Εξαγωγή σε CSV (Διορθωμένο για το Excel)
   const handleExportCSV = (filteredShifts: any[]) => {
     if (filteredShifts.length === 0) {
       alert('Δεν υπάρχουν δεδομένα για εξαγωγή.');
       return;
     }
 
-    // Προσθέτουμε BOM (\uFEFF) για να διαβάζει σωστά τα Ελληνικά το Excel
-    let csvContent = "\uFEFFΥπάλληλος,Κατάστημα,Ημερομηνία,Ώρες\n";
+    // Χρησιμοποιούμε ελληνικό ερωτηματικό (;) για να χωρίζει το Excel τις στήλες
+    let csvContent = "\uFEFFΥπάλληλος;Κατάστημα;Ημερομηνία;Ώρες\n";
 
     filteredShifts.forEach(shift => {
       const emp = employees.find(e => e.id === shift.employee_id);
       const empName = emp ? emp.name : 'Άγνωστος';
-      csvContent += `${empName},${shift.store_location},${shift.shift_date},${shift.hours_worked}\n`;
+      csvContent += `${empName};${shift.store_location};${shift.shift_date};${shift.hours_worked}\n`;
     });
 
     const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
@@ -160,7 +164,6 @@ export default function App() {
       totals[empName] = (totals[empName] || 0) + shift.hours_worked;
     });
 
-    // Ταξινόμηση αναλυτικών βαρδιών από την πιο πρόσφατη στην παλαιότερη
     const sortedShifts = [...filteredShifts].sort((a, b) => 
       new Date(b.shift_date).getTime() - new Date(a.shift_date).getTime()
     );
@@ -226,7 +229,7 @@ export default function App() {
             )}
           </div>
 
-          {/* Λίστα Αναλυτικών Βαρδιών με κουμπί Διαγραφής */}
+          {/* Λίστα Αναλυτικών Βαρδιών */}
           <div className="bg-white border border-gray-200 rounded p-4 shadow-sm">
             <h3 className="text-gray-700 font-bold mb-3 border-b pb-2">Αναλυτικές Καταχωρήσεις</h3>
             {sortedShifts.length === 0 ? (
@@ -258,7 +261,7 @@ export default function App() {
                             <button 
                               onClick={() => handleDeleteShift(shift.id)}
                               className="text-red-500 hover:text-red-700 font-bold text-lg px-2"
-                              title="Διαγραφή βάρδιας"
+                              title="Ασφαλής Διαγραφή"
                             >
                               ✕
                             </button>
