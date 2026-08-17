@@ -19,6 +19,7 @@ export default function App() {
   const [viewMode, setViewMode] = useState<'form' | 'dashboard'>('form');
   const [shifts, setShifts] = useState<any[]>([]);
   const [dateFilter, setDateFilter] = useState<'week' | 'month' | 'year'>('month');
+  const [storeFilter, setStoreFilter] = useState<'All' | 'Hellas' | 'Nordic'>('All'); // Νέο state για το μαγαζί
 
   // Φόρτωση εργαζομένων κατά το άνοιγμα
   useEffect(() => {
@@ -75,7 +76,7 @@ export default function App() {
     setViewMode('dashboard');
   };
 
-  // Φιλτράρισμα και υπολογισμός ωρών ανάλογα με την επιλογή
+  // Φιλτράρισμα και υπολογισμός ωρών ανάλογα με την επιλογή χρόνου & μαγαζιού
   const getFilteredTotals = () => {
     const now = new Date();
     const currentYear = now.getFullYear();
@@ -83,18 +84,28 @@ export default function App() {
     
     const filtered = shifts.filter(shift => {
       const sDate = new Date(shift.shift_date);
+      
+      // 1. Έλεγχος Ημερομηνίας
+      let dateMatch = true;
       if (dateFilter === 'year') {
-        return sDate.getFullYear() === currentYear;
+        dateMatch = sDate.getFullYear() === currentYear;
       } else if (dateFilter === 'month') {
-        return sDate.getFullYear() === currentYear && sDate.getMonth() === currentMonth;
+        dateMatch = sDate.getFullYear() === currentYear && sDate.getMonth() === currentMonth;
       } else if (dateFilter === 'week') {
         const startOfWeek = new Date(now);
-        // Βρίσκουμε τη Δευτέρα αυτής της εβδομάδας
         startOfWeek.setDate(now.getDate() - now.getDay() + (now.getDay() === 0 ? -6 : 1));
         startOfWeek.setHours(0,0,0,0);
-        return sDate >= startOfWeek;
+        dateMatch = sDate >= startOfWeek;
       }
-      return true;
+
+      // 2. Έλεγχος Μαγαζιού
+      let storeMatch = true;
+      if (storeFilter !== 'All') {
+        storeMatch = shift.store_location === storeFilter;
+      }
+
+      // Επιστρέφει true μόνο αν ταιριάζουν ΚΑΙ τα δύο φίλτρα
+      return dateMatch && storeMatch;
     });
 
     // Ομαδοποίηση ωρών ανά υπάλληλο
@@ -132,15 +143,23 @@ export default function App() {
             </div>
           </div>
 
-          <div className="flex gap-2 mb-6">
+          {/* Φίλτρα Ημερομηνίας */}
+          <div className="flex gap-2 mb-3">
             <button onClick={() => setDateFilter('week')} className={`flex-1 py-2 rounded text-sm font-bold transition-colors ${dateFilter === 'week' ? 'bg-orange-500 text-white' : 'bg-gray-200 text-gray-700 hover:bg-gray-300'}`}>Εβδομάδα</button>
             <button onClick={() => setDateFilter('month')} className={`flex-1 py-2 rounded text-sm font-bold transition-colors ${dateFilter === 'month' ? 'bg-orange-500 text-white' : 'bg-gray-200 text-gray-700 hover:bg-gray-300'}`}>Μήνας</button>
             <button onClick={() => setDateFilter('year')} className={`flex-1 py-2 rounded text-sm font-bold transition-colors ${dateFilter === 'year' ? 'bg-orange-500 text-white' : 'bg-gray-200 text-gray-700 hover:bg-gray-300'}`}>Χρονιά</button>
           </div>
 
+          {/* Φίλτρα Μαγαζιού */}
+          <div className="flex gap-2 mb-6">
+            <button onClick={() => setStoreFilter('All')} className={`flex-1 py-2 rounded border-2 text-sm font-bold transition-colors ${storeFilter === 'All' ? 'border-[#8B5A2B] text-[#8B5A2B] bg-orange-50' : 'border-gray-200 text-gray-500 hover:border-gray-300'}`}>Όλα τα Μαγαζιά</button>
+            <button onClick={() => setStoreFilter('Hellas')} className={`flex-1 py-2 rounded border-2 text-sm font-bold transition-colors ${storeFilter === 'Hellas' ? 'border-[#8B5A2B] text-[#8B5A2B] bg-orange-50' : 'border-gray-200 text-gray-500 hover:border-gray-300'}`}>Hellas</button>
+            <button onClick={() => setStoreFilter('Nordic')} className={`flex-1 py-2 rounded border-2 text-sm font-bold transition-colors ${storeFilter === 'Nordic' ? 'border-[#8B5A2B] text-[#8B5A2B] bg-orange-50' : 'border-gray-200 text-gray-500 hover:border-gray-300'}`}>Nordic</button>
+          </div>
+
           <div className="bg-gray-50 border border-gray-200 rounded p-4">
             {Object.keys(totals).length === 0 ? (
-              <p className="text-center text-gray-500 py-4">Δεν βρέθηκαν βάρδιες για αυτό το διάστημα.</p>
+              <p className="text-center text-gray-500 py-4">Δεν βρέθηκαν βάρδιες για αυτόν τον συνδυασμό φίλτρων.</p>
             ) : (
               <table className="w-full text-left">
                 <thead>
