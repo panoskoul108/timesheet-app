@@ -13,14 +13,16 @@ export default function App() {
   const [hours, setHours] = useState('');
   const [submitMsg, setSubmitMsg] = useState('');
 
-  const [viewMode, setViewMode] = useState<'form' | 'dashboard'>('form');
+  // Νέα κατάσταση προβολής: my_hours
+  const [viewMode, setViewMode] = useState<'form' | 'dashboard' | 'my_hours'>('form');
   const [shifts, setShifts] = useState<any[]>([]);
   
-  // Προσθήκη επιλογής 'custom' στο φίλτρο
   const [dateFilter, setDateFilter] = useState<'week' | 'month' | 'year' | 'custom'>('month');
   const [storeFilter, setStoreFilter] = useState<'All' | 'Hellas' | 'Nordic'>('All');
   
-  // Νέα states για το εύρος ημερομηνιών
+  // Φίλτρο για τον Admin (όνομα υπαλλήλου)
+  const [employeeFilter, setEmployeeFilter] = useState<string>('All');
+  
   const [customStartDate, setCustomStartDate] = useState('');
   const [customEndDate, setCustomEndDate] = useState('');
 
@@ -78,6 +80,17 @@ export default function App() {
     }
     if (error) console.error(error);
     setViewMode('dashboard');
+  };
+
+  // Νέα λειτουργία: Φόρτωση μόνο των ωρών του συνδεδεμένου χρήστη
+  const handleLoadMyHours = async () => {
+    const { data, error } = await supabase.from('shifts').select('*').eq('employee_id', loggedInUser.id);
+    if (data) {
+      const activeShifts = data.filter(s => s.is_deleted !== true);
+      setShifts(activeShifts);
+    }
+    if (error) console.error(error);
+    setViewMode('my_hours');
   };
 
   const handleDeleteShift = async (shiftId: string) => {
@@ -160,19 +173,31 @@ export default function App() {
         storeMatch = shift.store_location === storeFilter;
       }
 
-      return dateMatch && storeMatch;
+      // Φίλτρο ονόματος: Εφαρμόζεται μόνο στο dashboard. (Στο my_hours έχει ήδη φιλτραριστεί από τη βάση)
+      let employeeMatch = true;
+      if (viewMode === 'dashboard' && employeeFilter !== 'All') {
+        employeeMatch = shift.employee_id === employeeFilter;
+      }
+
+      return dateMatch && storeMatch && employeeMatch;
     });
   };
 
-  // ---------------- Οθόνη 3: Dashboard Admin ----------------
-  if (loggedInUser && viewMode === 'dashboard') {
+  // ---------------- Οθόνη 3: Dashboard Admin & My Hours ----------------
+  if (loggedInUser && (viewMode === 'dashboard' || viewMode === 'my_hours')) {
     const filteredShifts = getFilteredShifts();
     
+    // Υπολογισμοί Συνόλων
     const totals: Record<string, number> = {};
+    let totalMyHours = 0;
+
     filteredShifts.forEach(shift => {
       const emp = employees.find(e => e.id === shift.employee_id);
       const empName = emp ? emp.name : 'Άγνωστος';
       totals[empName] = (totals[empName] || 0) + shift.hours_worked;
+      if (viewMode === 'my_hours') {
+        totalMyHours += shift.hours_worked;
+      }
     });
 
     const sortedShifts = [...filteredShifts].sort((a, b) => 
@@ -181,9 +206,11 @@ export default function App() {
 
     return (
       <div className="min-h-screen bg-gray-100 p-3 sm:p-4 flex justify-center items-start pt-6 sm:pt-10">
-        <div className="bg-white p-4 sm:p-8 rounded-lg shadow-md border-t-4 border-orange-500 max-w-2xl w-full">
+        <div className={`bg-white p-4 sm:p-8 rounded-lg shadow-md border-t-4 max-w-2xl w-full ${viewMode === 'dashboard' ? 'border-orange-500' : 'border-blue-500'}`}>
           <div className="flex justify-between items-center mb-6">
-            <h2 className="text-lg sm:text-xl font-bold text-gray-800">Στατιστικά</h2>
+            <h2 className="text-lg sm:text-xl font-bold text-gray-800">
+              {viewMode === 'dashboard' ? 'Στατιστικά (Admin)' : 'Οι Ώρες Μου'}
+            </h2>
             <div className="space-x-2 sm:space-x-3">
               <button 
                 onClick={() => setViewMode('form')}
@@ -200,23 +227,39 @@ export default function App() {
             </div>
           </div>
 
+          {/* Φίλτρο Υπαλλήλου (Μόνο για Admin) */}
+          {viewMode === 'dashboard' && (
+            <div className="mb-4 bg-orange-50 p-3 sm:p-4 rounded border border-orange-200">
+              <label className="block text-xs sm:text-sm font-bold text-gray-700 mb-2">Υπάλληλος:</label>
+              <select
+                value={employeeFilter}
+                onChange={(e) => setEmployeeFilter(e.target.value)}
+                className="w-full p-2 sm:p-3 border border-orange-300 rounded focus:outline-none focus:border-orange-500 text-sm sm:text-base bg-white"
+              >
+                <option value="All">-- Όλοι --</option>
+                {employees.map((emp) => (
+                  <option key={emp.id} value={emp.id}>{emp.name}</option>
+                ))}
+              </select>
+            </div>
+          )}
+
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-1 sm:gap-2 mb-3">
-            <button onClick={() => setDateFilter('week')} className={`py-3 sm:py-2 rounded text-xs sm:text-sm font-bold transition-colors ${dateFilter === 'week' ? 'bg-orange-500 text-white' : 'bg-gray-200 text-gray-700'}`}>Εβδομάδα</button>
-            <button onClick={() => setDateFilter('month')} className={`py-3 sm:py-2 rounded text-xs sm:text-sm font-bold transition-colors ${dateFilter === 'month' ? 'bg-orange-500 text-white' : 'bg-gray-200 text-gray-700'}`}>Μήνας</button>
-            <button onClick={() => setDateFilter('year')} className={`py-3 sm:py-2 rounded text-xs sm:text-sm font-bold transition-colors ${dateFilter === 'year' ? 'bg-orange-500 text-white' : 'bg-gray-200 text-gray-700'}`}>Χρονιά</button>
-            <button onClick={() => setDateFilter('custom')} className={`py-3 sm:py-2 rounded text-xs sm:text-sm font-bold transition-colors ${dateFilter === 'custom' ? 'bg-orange-500 text-white' : 'bg-gray-200 text-gray-700'}`}>Εύρος</button>
+            <button onClick={() => setDateFilter('week')} className={`py-3 sm:py-2 rounded text-xs sm:text-sm font-bold transition-colors ${dateFilter === 'week' ? (viewMode === 'dashboard' ? 'bg-orange-500 text-white' : 'bg-blue-500 text-white') : 'bg-gray-200 text-gray-700'}`}>Εβδομάδα</button>
+            <button onClick={() => setDateFilter('month')} className={`py-3 sm:py-2 rounded text-xs sm:text-sm font-bold transition-colors ${dateFilter === 'month' ? (viewMode === 'dashboard' ? 'bg-orange-500 text-white' : 'bg-blue-500 text-white') : 'bg-gray-200 text-gray-700'}`}>Μήνας</button>
+            <button onClick={() => setDateFilter('year')} className={`py-3 sm:py-2 rounded text-xs sm:text-sm font-bold transition-colors ${dateFilter === 'year' ? (viewMode === 'dashboard' ? 'bg-orange-500 text-white' : 'bg-blue-500 text-white') : 'bg-gray-200 text-gray-700'}`}>Χρονιά</button>
+            <button onClick={() => setDateFilter('custom')} className={`py-3 sm:py-2 rounded text-xs sm:text-sm font-bold transition-colors ${dateFilter === 'custom' ? (viewMode === 'dashboard' ? 'bg-orange-500 text-white' : 'bg-blue-500 text-white') : 'bg-gray-200 text-gray-700'}`}>Εύρος</button>
           </div>
 
-          {/* Νέο μενού για την επιλογή εύρους ημερομηνιών */}
           {dateFilter === 'custom' && (
-            <div className="flex flex-col sm:flex-row gap-3 mb-4 bg-orange-50 p-4 rounded border border-orange-200 shadow-sm">
+            <div className={`flex flex-col sm:flex-row gap-3 mb-4 p-4 rounded border shadow-sm ${viewMode === 'dashboard' ? 'bg-orange-50 border-orange-200' : 'bg-blue-50 border-blue-200'}`}>
               <div className="flex-1">
                 <label className="block text-xs font-bold text-gray-700 mb-1">Από:</label>
                 <input 
                   type="date" 
                   value={customStartDate} 
                   onChange={(e) => setCustomStartDate(e.target.value)} 
-                  className="w-full p-2 border border-orange-300 rounded focus:outline-none focus:border-orange-500 text-sm"
+                  className={`w-full p-2 border rounded focus:outline-none text-sm ${viewMode === 'dashboard' ? 'border-orange-300 focus:border-orange-500' : 'border-blue-300 focus:border-blue-500'}`}
                 />
               </div>
               <div className="flex-1">
@@ -225,16 +268,16 @@ export default function App() {
                   type="date" 
                   value={customEndDate} 
                   onChange={(e) => setCustomEndDate(e.target.value)} 
-                  className="w-full p-2 border border-orange-300 rounded focus:outline-none focus:border-orange-500 text-sm"
+                  className={`w-full p-2 border rounded focus:outline-none text-sm ${viewMode === 'dashboard' ? 'border-orange-300 focus:border-orange-500' : 'border-blue-300 focus:border-blue-500'}`}
                 />
               </div>
             </div>
           )}
 
           <div className="flex gap-1 sm:gap-2 mb-6 mt-2">
-            <button onClick={() => setStoreFilter('All')} className={`flex-1 py-3 sm:py-2 rounded border-2 text-xs sm:text-sm font-bold transition-colors ${storeFilter === 'All' ? 'border-[#8B5A2B] text-[#8B5A2B] bg-orange-50' : 'border-gray-200 text-gray-500'}`}>Όλα</button>
-            <button onClick={() => setStoreFilter('Hellas')} className={`flex-1 py-3 sm:py-2 rounded border-2 text-xs sm:text-sm font-bold transition-colors ${storeFilter === 'Hellas' ? 'border-[#8B5A2B] text-[#8B5A2B] bg-orange-50' : 'border-gray-200 text-gray-500'}`}>Hellas</button>
-            <button onClick={() => setStoreFilter('Nordic')} className={`flex-1 py-3 sm:py-2 rounded border-2 text-xs sm:text-sm font-bold transition-colors ${storeFilter === 'Nordic' ? 'border-[#8B5A2B] text-[#8B5A2B] bg-orange-50' : 'border-gray-200 text-gray-500'}`}>Nordic</button>
+            <button onClick={() => setStoreFilter('All')} className={`flex-1 py-3 sm:py-2 rounded border-2 text-xs sm:text-sm font-bold transition-colors ${storeFilter === 'All' ? (viewMode === 'dashboard' ? 'border-orange-500 text-orange-600 bg-orange-50' : 'border-blue-500 text-blue-600 bg-blue-50') : 'border-gray-200 text-gray-500'}`}>Όλα</button>
+            <button onClick={() => setStoreFilter('Hellas')} className={`flex-1 py-3 sm:py-2 rounded border-2 text-xs sm:text-sm font-bold transition-colors ${storeFilter === 'Hellas' ? (viewMode === 'dashboard' ? 'border-orange-500 text-orange-600 bg-orange-50' : 'border-blue-500 text-blue-600 bg-blue-50') : 'border-gray-200 text-gray-500'}`}>Hellas</button>
+            <button onClick={() => setStoreFilter('Nordic')} className={`flex-1 py-3 sm:py-2 rounded border-2 text-xs sm:text-sm font-bold transition-colors ${storeFilter === 'Nordic' ? (viewMode === 'dashboard' ? 'border-orange-500 text-orange-600 bg-orange-50' : 'border-blue-500 text-blue-600 bg-blue-50') : 'border-gray-200 text-gray-500'}`}>Nordic</button>
           </div>
 
           <div className="flex justify-end mb-4">
@@ -251,16 +294,23 @@ export default function App() {
             {Object.keys(totals).length === 0 ? (
               <p className="text-center text-gray-500 py-2 text-sm">Δεν βρέθηκαν βάρδιες.</p>
             ) : (
-              <table className="w-full text-left text-sm sm:text-base">
-                <tbody>
-                  {Object.entries(totals).map(([name, totalHours]) => (
-                    <tr key={name} className="border-b border-gray-200 last:border-0">
-                      <td className="py-2 text-gray-800 font-medium">{name}</td>
-                      <td className="py-2 text-right font-bold text-orange-600">{totalHours} ώρες</td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
+              viewMode === 'dashboard' ? (
+                <table className="w-full text-left text-sm sm:text-base">
+                  <tbody>
+                    {Object.entries(totals).map(([name, totalHours]) => (
+                      <tr key={name} className="border-b border-gray-200 last:border-0">
+                        <td className="py-2 text-gray-800 font-medium">{name}</td>
+                        <td className="py-2 text-right font-bold text-orange-600">{totalHours} ώρες</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              ) : (
+                <div className="py-3 text-center">
+                  <span className="text-gray-600 font-medium text-lg">Συνολικές Ώρες: </span>
+                  <span className="text-blue-600 font-bold text-2xl ml-2">{totalMyHours}</span>
+                </div>
+              )
             )}
           </div>
 
@@ -274,7 +324,7 @@ export default function App() {
                   <thead>
                     <tr className="text-gray-500 border-b">
                       <th className="pb-2">Ημ/νία</th>
-                      <th className="pb-2">Υπάλληλος</th>
+                      {viewMode === 'dashboard' && <th className="pb-2">Υπάλληλος</th>}
                       <th className="pb-2">Μαγαζί</th>
                       <th className="pb-2 text-center">Ώρες</th>
                       <th className="pb-2 text-center"></th>
@@ -288,7 +338,9 @@ export default function App() {
                       return (
                         <tr key={shift.id} className="border-b last:border-0 hover:bg-gray-50">
                           <td className="py-3">{new Date(shift.shift_date).toLocaleDateString('el-GR').slice(0, 5)}</td>
-                          <td className="py-3 font-medium truncate max-w-[80px] sm:max-w-none">{empName}</td>
+                          {viewMode === 'dashboard' && (
+                            <td className="py-3 font-medium truncate max-w-[80px] sm:max-w-none">{empName}</td>
+                          )}
                           <td className="py-3">{shift.store_location}</td>
                           <td className="py-3 text-center font-semibold">{shift.hours_worked}</td>
                           <td className="py-3 text-center">
@@ -377,77 +429,7 @@ export default function App() {
               </p>
             )}
 
-            {loggedInUser.role?.toLowerCase() === 'admin' && (
-              <button 
-                onClick={loadDashboard}
-                className="w-full bg-gray-100 hover:bg-gray-200 text-gray-800 font-bold py-4 rounded transition-colors mt-6 border-2 border-gray-300 shadow-sm"
-              >
-                📊 Πίνακας Ωρών (Admin)
-              </button>
-            )}
-          </div>
-        </div>
-      </div>
-    );
-  }
-
-  // ---------------- Οθόνη 1: Επιλογή Υπαλλήλου / PIN (Αρχική) ----------------
-  return (
-    <div className="min-h-screen bg-gray-100 flex flex-col items-center justify-center p-4">
-      <div className="bg-white p-6 sm:p-8 rounded-lg shadow-lg border-b-4 border-[#8B5A2B] max-w-md w-full">
-        <h1 className="text-2xl sm:text-3xl font-bold text-gray-800 text-center mb-6 sm:mb-8">
-          Servato
-        </h1>
-
-        {!selectedUser ? (
-          <div className="grid grid-cols-1 min-[400px]:grid-cols-2 gap-3 sm:gap-4">
-            {employees.length === 0 ? (
-              <p className="col-span-1 min-[400px]:col-span-2 text-center text-gray-500 text-sm">Φόρτωση υπαλλήλων...</p>
-            ) : (
-              employees.map((emp) => (
-                <button
-                  key={emp.id}
-                  onClick={() => setSelectedUser(emp)}
-                  className="bg-gray-50 hover:bg-orange-100 text-gray-800 font-semibold py-5 rounded-lg border-2 border-gray-200 hover:border-orange-500 transition-colors text-lg active:bg-orange-200"
-                >
-                  {emp.name}
-                </button>
-              ))
-            )}
-          </div>
-        ) : (
-          <div className="flex flex-col items-center">
-            <h2 className="text-xl text-gray-700 mb-6">
-              Γεια σου, <span className="font-bold text-orange-600">{selectedUser.name}</span>
-            </h2>
-            <input
-              type="password"
-              maxLength={4}
-              value={pin}
-              onChange={(e) => setPin(e.target.value)}
-              placeholder="****"
-              className="w-40 text-center text-4xl tracking-[0.5em] p-4 border-2 border-gray-300 rounded-lg mb-6 focus:outline-none focus:border-orange-500 bg-gray-50"
-              autoFocus
-            />
-            {error && <p className="text-red-500 text-sm mb-4 font-medium">{error}</p>}
-            
-            <div className="flex w-full gap-3 sm:gap-4">
-              <button
-                onClick={() => { setSelectedUser(null); setPin(''); setError(''); }}
-                className="flex-1 bg-gray-200 hover:bg-gray-300 text-gray-800 font-bold py-4 rounded-lg transition-colors text-lg"
-              >
-                Πίσω
-              </button>
-              <button
-                onClick={handleLogin}
-                className="flex-1 bg-orange-500 hover:bg-orange-600 text-white font-bold py-4 rounded-lg transition-colors text-lg shadow-sm"
-              >
-                Είσοδος
-              </button>
-            </div>
-          </div>
-        )}
-      </div>
-    </div>
-  );
-}
+            {/* Κουμπί για να δει ο καθένας τις δικές του ώρες */}
+            <button 
+              onClick={handleLoadMyHours}
+              className="w-
