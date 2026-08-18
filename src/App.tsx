@@ -15,8 +15,14 @@ export default function App() {
 
   const [viewMode, setViewMode] = useState<'form' | 'dashboard'>('form');
   const [shifts, setShifts] = useState<any[]>([]);
-  const [dateFilter, setDateFilter] = useState<'week' | 'month' | 'year'>('month');
+  
+  // Προσθήκη επιλογής 'custom' στο φίλτρο
+  const [dateFilter, setDateFilter] = useState<'week' | 'month' | 'year' | 'custom'>('month');
   const [storeFilter, setStoreFilter] = useState<'All' | 'Hellas' | 'Nordic'>('All');
+  
+  // Νέα states για το εύρος ημερομηνιών
+  const [customStartDate, setCustomStartDate] = useState('');
+  const [customEndDate, setCustomEndDate] = useState('');
 
   useEffect(() => {
     const fetchEmployees = async () => {
@@ -101,7 +107,6 @@ export default function App() {
       const empName = emp ? emp.name : 'Άγνωστος';
       
       const [year, month, day] = shift.shift_date.split('-');
-      // Το "κόλπο" για το Excel: Βάζουμε την ημερομηνία μέσα σε ="..." 
       const formattedDate = `="${day}/${month}/${year}"`;
       
       csvContent += `${empName};${shift.store_location};${formattedDate};${shift.hours_worked}\n`;
@@ -111,7 +116,7 @@ export default function App() {
     const url = URL.createObjectURL(blob);
     const link = document.createElement("a");
     link.href = url;
-    link.setAttribute("download", `ShiftSheets_export_${dateFilter}_${storeFilter}.csv`);
+    link.setAttribute("download", `servato_export_${dateFilter}_${storeFilter}.csv`);
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
@@ -124,6 +129,7 @@ export default function App() {
     
     return shifts.filter(shift => {
       const sDate = new Date(shift.shift_date);
+      sDate.setHours(0,0,0,0);
       
       let dateMatch = true;
       if (dateFilter === 'year') {
@@ -135,6 +141,18 @@ export default function App() {
         startOfWeek.setDate(now.getDate() - now.getDay() + (now.getDay() === 0 ? -6 : 1));
         startOfWeek.setHours(0,0,0,0);
         dateMatch = sDate >= startOfWeek;
+      } else if (dateFilter === 'custom') {
+        if (customStartDate && customEndDate) {
+          const start = new Date(customStartDate); start.setHours(0,0,0,0);
+          const end = new Date(customEndDate); end.setHours(23,59,59,999);
+          dateMatch = sDate >= start && sDate <= end;
+        } else if (customStartDate) {
+          const start = new Date(customStartDate); start.setHours(0,0,0,0);
+          dateMatch = sDate >= start;
+        } else if (customEndDate) {
+          const end = new Date(customEndDate); end.setHours(23,59,59,999);
+          dateMatch = sDate <= end;
+        }
       }
 
       let storeMatch = true;
@@ -182,13 +200,38 @@ export default function App() {
             </div>
           </div>
 
-          <div className="flex gap-1 sm:gap-2 mb-3">
-            <button onClick={() => setDateFilter('week')} className={`flex-1 py-3 sm:py-2 rounded text-xs sm:text-sm font-bold transition-colors ${dateFilter === 'week' ? 'bg-orange-500 text-white' : 'bg-gray-200 text-gray-700'}`}>Εβδομάδα</button>
-            <button onClick={() => setDateFilter('month')} className={`flex-1 py-3 sm:py-2 rounded text-xs sm:text-sm font-bold transition-colors ${dateFilter === 'month' ? 'bg-orange-500 text-white' : 'bg-gray-200 text-gray-700'}`}>Μήνας</button>
-            <button onClick={() => setDateFilter('year')} className={`flex-1 py-3 sm:py-2 rounded text-xs sm:text-sm font-bold transition-colors ${dateFilter === 'year' ? 'bg-orange-500 text-white' : 'bg-gray-200 text-gray-700'}`}>Χρονιά</button>
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-1 sm:gap-2 mb-3">
+            <button onClick={() => setDateFilter('week')} className={`py-3 sm:py-2 rounded text-xs sm:text-sm font-bold transition-colors ${dateFilter === 'week' ? 'bg-orange-500 text-white' : 'bg-gray-200 text-gray-700'}`}>Εβδομάδα</button>
+            <button onClick={() => setDateFilter('month')} className={`py-3 sm:py-2 rounded text-xs sm:text-sm font-bold transition-colors ${dateFilter === 'month' ? 'bg-orange-500 text-white' : 'bg-gray-200 text-gray-700'}`}>Μήνας</button>
+            <button onClick={() => setDateFilter('year')} className={`py-3 sm:py-2 rounded text-xs sm:text-sm font-bold transition-colors ${dateFilter === 'year' ? 'bg-orange-500 text-white' : 'bg-gray-200 text-gray-700'}`}>Χρονιά</button>
+            <button onClick={() => setDateFilter('custom')} className={`py-3 sm:py-2 rounded text-xs sm:text-sm font-bold transition-colors ${dateFilter === 'custom' ? 'bg-orange-500 text-white' : 'bg-gray-200 text-gray-700'}`}>Εύρος</button>
           </div>
 
-          <div className="flex gap-1 sm:gap-2 mb-6">
+          {/* Νέο μενού για την επιλογή εύρους ημερομηνιών */}
+          {dateFilter === 'custom' && (
+            <div className="flex flex-col sm:flex-row gap-3 mb-4 bg-orange-50 p-4 rounded border border-orange-200 shadow-sm">
+              <div className="flex-1">
+                <label className="block text-xs font-bold text-gray-700 mb-1">Από:</label>
+                <input 
+                  type="date" 
+                  value={customStartDate} 
+                  onChange={(e) => setCustomStartDate(e.target.value)} 
+                  className="w-full p-2 border border-orange-300 rounded focus:outline-none focus:border-orange-500 text-sm"
+                />
+              </div>
+              <div className="flex-1">
+                <label className="block text-xs font-bold text-gray-700 mb-1">Έως:</label>
+                <input 
+                  type="date" 
+                  value={customEndDate} 
+                  onChange={(e) => setCustomEndDate(e.target.value)} 
+                  className="w-full p-2 border border-orange-300 rounded focus:outline-none focus:border-orange-500 text-sm"
+                />
+              </div>
+            </div>
+          )}
+
+          <div className="flex gap-1 sm:gap-2 mb-6 mt-2">
             <button onClick={() => setStoreFilter('All')} className={`flex-1 py-3 sm:py-2 rounded border-2 text-xs sm:text-sm font-bold transition-colors ${storeFilter === 'All' ? 'border-[#8B5A2B] text-[#8B5A2B] bg-orange-50' : 'border-gray-200 text-gray-500'}`}>Όλα</button>
             <button onClick={() => setStoreFilter('Hellas')} className={`flex-1 py-3 sm:py-2 rounded border-2 text-xs sm:text-sm font-bold transition-colors ${storeFilter === 'Hellas' ? 'border-[#8B5A2B] text-[#8B5A2B] bg-orange-50' : 'border-gray-200 text-gray-500'}`}>Hellas</button>
             <button onClick={() => setStoreFilter('Nordic')} className={`flex-1 py-3 sm:py-2 rounded border-2 text-xs sm:text-sm font-bold transition-colors ${storeFilter === 'Nordic' ? 'border-[#8B5A2B] text-[#8B5A2B] bg-orange-50' : 'border-gray-200 text-gray-500'}`}>Nordic</button>
@@ -353,7 +396,7 @@ export default function App() {
     <div className="min-h-screen bg-gray-100 flex flex-col items-center justify-center p-4">
       <div className="bg-white p-6 sm:p-8 rounded-lg shadow-lg border-b-4 border-[#8B5A2B] max-w-md w-full">
         <h1 className="text-2xl sm:text-3xl font-bold text-gray-800 text-center mb-6 sm:mb-8">
-          ShiftSheets
+          Servato
         </h1>
 
         {!selectedUser ? (
