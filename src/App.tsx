@@ -18,7 +18,6 @@ export default function App() {
   
   const [dateFilter, setDateFilter] = useState<'week' | 'month' | 'year' | 'custom'>('month');
   const [storeFilter, setStoreFilter] = useState<'All' | 'Hellas' | 'Nordic'>('All');
-  
   const [employeeFilter, setEmployeeFilter] = useState<string>('All');
   
   const [customStartDate, setCustomStartDate] = useState('');
@@ -26,9 +25,9 @@ export default function App() {
 
   useEffect(() => {
     const fetchEmployees = async () => {
-      const { data, error } = await supabase.from('employees').select('*');
+      const { data, err } = await supabase.from('employees').select('*');
       if (data) setEmployees(data);
-      if (error) console.error('Σφάλμα:', error);
+      if (err) console.error('Σφάλμα:', err);
     };
     fetchEmployees();
   }, []);
@@ -51,7 +50,7 @@ export default function App() {
       return;
     }
 
-    const { error } = await supabase.from('shifts').insert([
+    const { error: insertErr } = await supabase.from('shifts').insert([
       {
         employee_id: loggedInUser.id,
         store_location: storeLocation,
@@ -60,9 +59,9 @@ export default function App() {
       }
     ]);
 
-    if (error) {
+    if (insertErr) {
       setSubmitMsg('Υπήρξε σφάλμα κατά την αποθήκευση.');
-      console.error(error);
+      console.error(insertErr);
     } else {
       setSubmitMsg('Οι ώρες αποθηκεύτηκαν επιτυχώς!');
       setHours('');
@@ -71,22 +70,20 @@ export default function App() {
   };
 
   const loadDashboard = async () => {
-    const { data, error } = await supabase.from('shifts').select('*');
+    const { data, err } = await supabase.from('shifts').select('*');
     if (data) {
-      const activeShifts = data.filter(s => s.is_deleted !== true);
-      setShifts(activeShifts);
+      setShifts(data.filter(s => s.is_deleted !== true));
     }
-    if (error) console.error(error);
+    if (err) console.error(err);
     setViewMode('dashboard');
   };
 
   const handleLoadMyHours = async () => {
-    const { data, error } = await supabase.from('shifts').select('*').eq('employee_id', loggedInUser.id);
+    const { data, err } = await supabase.from('shifts').select('*').eq('employee_id', loggedInUser.id);
     if (data) {
-      const activeShifts = data.filter(s => s.is_deleted !== true);
-      setShifts(activeShifts);
+      setShifts(data.filter(s => s.is_deleted !== true));
     }
-    if (error) console.error(error);
+    if (err) console.error(err);
     setViewMode('my_hours');
   };
 
@@ -94,10 +91,10 @@ export default function App() {
     const confirmDelete = window.confirm("Σίγουρα θέλεις να διαγράψεις αυτή τη βάρδια;");
     if (!confirmDelete) return;
 
-    const { error } = await supabase.from('shifts').update({ is_deleted: true }).eq('id', shiftId);
+    const { error: updateErr } = await supabase.from('shifts').update({ is_deleted: true }).eq('id', shiftId);
     
-    if (error) {
-      console.error(error);
+    if (updateErr) {
+      console.error(updateErr);
       alert('Υπήρξε σφάλμα κατά τη διαγραφή.');
     } else {
       setShifts(shifts.filter(s => s.id !== shiftId));
@@ -115,10 +112,8 @@ export default function App() {
     filteredShifts.forEach(shift => {
       const emp = employees.find(e => e.id === shift.employee_id);
       const empName = emp ? emp.name : 'Άγνωστος';
-      
       const [year, month, day] = shift.shift_date.split('-');
       const formattedDate = `="${day}/${month}/${year}"`;
-      
       csvContent += `${empName};${shift.store_location};${formattedDate};${shift.hours_worked}\n`;
     });
 
@@ -179,10 +174,9 @@ export default function App() {
     });
   };
 
-  // ---------------- Οθόνη 3: Dashboard Admin & My Hours ----------------
+  // ---------------- Οθόνη 3: Dashboard & My Hours (Καθαρή Σύνταξη) ----------------
   if (loggedInUser && (viewMode === 'dashboard' || viewMode === 'my_hours')) {
     const filteredShifts = getFilteredShifts();
-    
     const totals: Record<string, number> = {};
     let totalMyHours = 0;
 
@@ -201,12 +195,12 @@ export default function App() {
 
     const isDash = viewMode === 'dashboard';
     
-    // Απλοποιημένες κλάσεις CSS
-    const activeBtnClass = isDash ? 'bg-orange-500 text-white' : 'bg-blue-500 text-white';
-    const inactiveBtnClass = 'bg-gray-200 text-gray-700 hover:bg-gray-300';
+    // Απλές CSS μεταβλητές
+    const activeColor = isDash ? 'bg-orange-500 text-white' : 'bg-blue-500 text-white';
+    const inactiveColor = 'bg-gray-200 text-gray-700 hover:bg-gray-300';
     
-    const activeStoreClass = isDash ? 'border-orange-500 text-orange-600 bg-orange-50' : 'border-blue-500 text-blue-600 bg-blue-50';
-    const inactiveStoreClass = 'border-gray-200 text-gray-500 hover:border-gray-300 bg-white';
+    const storeActiveColor = isDash ? 'border-orange-500 text-orange-600 bg-orange-50' : 'border-blue-500 text-blue-600 bg-blue-50';
+    const storeInactiveColor = 'border-gray-200 text-gray-500 hover:border-gray-300 bg-white';
     
     const customBoxClass = isDash ? 'bg-orange-50 border-orange-200' : 'bg-blue-50 border-blue-200';
     const customInputClass = isDash ? 'border-orange-300 focus:border-orange-500' : 'border-blue-300 focus:border-blue-500';
@@ -251,10 +245,10 @@ export default function App() {
           )}
 
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-1 sm:gap-2 mb-3">
-            <button onClick={() => setDateFilter('week')} className={`py-3 sm:py-2 rounded text-xs sm:text-sm font-bold transition-colors ${dateFilter === 'week' ? activeBtnClass : inactiveBtnClass}`}>Εβδομάδα</button>
-            <button onClick={() => setDateFilter('month')} className={`py-3 sm:py-2 rounded text-xs sm:text-sm font-bold transition-colors ${dateFilter === 'month' ? activeBtnClass : inactiveBtnClass}`}>Μήνας</button>
-            <button onClick={() => setDateFilter('year')} className={`py-3 sm:py-2 rounded text-xs sm:text-sm font-bold transition-colors ${dateFilter === 'year' ? activeBtnClass : inactiveBtnClass}`}>Χρονιά</button>
-            <button onClick={() => setDateFilter('custom')} className={`py-3 sm:py-2 rounded text-xs sm:text-sm font-bold transition-colors ${dateFilter === 'custom' ? activeBtnClass : inactiveBtnClass}`}>Εύρος</button>
+            <button onClick={() => setDateFilter('week')} className={`py-3 sm:py-2 rounded text-xs sm:text-sm font-bold transition-colors ${dateFilter === 'week' ? activeColor : inactiveColor}`}>Εβδομάδα</button>
+            <button onClick={() => setDateFilter('month')} className={`py-3 sm:py-2 rounded text-xs sm:text-sm font-bold transition-colors ${dateFilter === 'month' ? activeColor : inactiveColor}`}>Μήνας</button>
+            <button onClick={() => setDateFilter('year')} className={`py-3 sm:py-2 rounded text-xs sm:text-sm font-bold transition-colors ${dateFilter === 'year' ? activeColor : inactiveColor}`}>Χρονιά</button>
+            <button onClick={() => setDateFilter('custom')} className={`py-3 sm:py-2 rounded text-xs sm:text-sm font-bold transition-colors ${dateFilter === 'custom' ? activeColor : inactiveColor}`}>Εύρος</button>
           </div>
 
           {dateFilter === 'custom' && (
@@ -281,9 +275,9 @@ export default function App() {
           )}
 
           <div className="flex gap-1 sm:gap-2 mb-6 mt-2">
-            <button onClick={() => setStoreFilter('All')} className={`flex-1 py-3 sm:py-2 rounded border-2 text-xs sm:text-sm font-bold transition-colors ${storeFilter === 'All' ? activeStoreClass : inactiveStoreClass}`}>Όλα</button>
-            <button onClick={() => setStoreFilter('Hellas')} className={`flex-1 py-3 sm:py-2 rounded border-2 text-xs sm:text-sm font-bold transition-colors ${storeFilter === 'Hellas' ? activeStoreClass : inactiveStoreClass}`}>Hellas</button>
-            <button onClick={() => setStoreFilter('Nordic')} className={`flex-1 py-3 sm:py-2 rounded border-2 text-xs sm:text-sm font-bold transition-colors ${storeFilter === 'Nordic' ? activeStoreClass : inactiveStoreClass}`}>Nordic</button>
+            <button onClick={() => setStoreFilter('All')} className={`flex-1 py-3 sm:py-2 rounded border-2 text-xs sm:text-sm font-bold transition-colors ${storeFilter === 'All' ? storeActiveColor : storeInactiveColor}`}>Όλα</button>
+            <button onClick={() => setStoreFilter('Hellas')} className={`flex-1 py-3 sm:py-2 rounded border-2 text-xs sm:text-sm font-bold transition-colors ${storeFilter === 'Hellas' ? storeActiveColor : storeInactiveColor}`}>Hellas</button>
+            <button onClick={() => setStoreFilter('Nordic')} className={`flex-1 py-3 sm:py-2 rounded border-2 text-xs sm:text-sm font-bold transition-colors ${storeFilter === 'Nordic' ? storeActiveColor : storeInactiveColor}`}>Nordic</button>
           </div>
 
           <div className="flex justify-end mb-4">
@@ -297,9 +291,11 @@ export default function App() {
 
           <div className="bg-gray-50 border border-gray-200 rounded p-3 sm:p-4 mb-6">
             <h3 className="text-gray-700 font-bold mb-3 border-b pb-2 text-sm sm:text-base">Σύνολα</h3>
-            {Object.keys(totals).length === 0 ? (
+            {Object.keys(totals).length === 0 && (
               <p className="text-center text-gray-500 py-2 text-sm">Δεν βρέθηκαν βάρδιες.</p>
-            ) : isDash ? (
+            )}
+            
+            {Object.keys(totals).length > 0 && isDash && (
               <table className="w-full text-left text-sm sm:text-base">
                 <tbody>
                   {Object.entries(totals).map(([name, totalHours]) => (
@@ -310,7 +306,9 @@ export default function App() {
                   ))}
                 </tbody>
               </table>
-            ) : (
+            )}
+
+            {Object.keys(totals).length > 0 && !isDash && (
               <div className="py-3 text-center">
                 <span className="text-gray-600 font-medium text-lg">Συνολικές Ώρες: </span>
                 <span className="text-blue-600 font-bold text-2xl ml-2">{totalMyHours}</span>
@@ -320,9 +318,12 @@ export default function App() {
 
           <div className="bg-white border border-gray-200 rounded p-3 sm:p-4 shadow-sm">
             <h3 className="text-gray-700 font-bold mb-3 border-b pb-2 text-sm sm:text-base">Αναλυτικά</h3>
-            {sortedShifts.length === 0 ? (
+            
+            {sortedShifts.length === 0 && (
               <p className="text-center text-gray-500 py-2 text-sm">Δεν υπάρχουν καταχωρήσεις.</p>
-            ) : (
+            )}
+
+            {sortedShifts.length > 0 && (
               <div className="overflow-x-auto -mx-3 sm:mx-0 px-3 sm:px-0">
                 <table className="w-full text-left text-xs sm:text-sm min-w-[350px]">
                   <thead>
@@ -454,4 +455,65 @@ export default function App() {
     );
   }
 
-  // ---------------- Οθόνη 1: Επιλογή Υπαλλήλου / PIN (Αρχική) --------
+  // ---------------- Οθόνη 1: Επιλογή Υπαλλήλου / PIN (Αρχική) ----------------
+  return (
+    <div className="min-h-screen bg-gray-100 flex flex-col items-center justify-center p-4">
+      <div className="bg-white p-6 sm:p-8 rounded-lg shadow-lg border-b-4 border-[#8B5A2B] max-w-md w-full">
+        <h1 className="text-2xl sm:text-3xl font-bold text-gray-800 text-center mb-6 sm:mb-8">
+          Servato
+        </h1>
+
+        {!selectedUser && (
+          <div className="grid grid-cols-1 min-[400px]:grid-cols-2 gap-3 sm:gap-4">
+            {employees.length === 0 && (
+              <p className="col-span-1 min-[400px]:col-span-2 text-center text-gray-500 text-sm">Φόρτωση υπαλλήλων...</p>
+            )}
+            
+            {employees.length > 0 && employees.map((emp) => (
+              <button
+                key={emp.id}
+                onClick={() => setSelectedUser(emp)}
+                className="bg-gray-50 hover:bg-orange-100 text-gray-800 font-semibold py-5 rounded-lg border-2 border-gray-200 hover:border-orange-500 transition-colors text-lg active:bg-orange-200"
+              >
+                {emp.name}
+              </button>
+            ))}
+          </div>
+        )}
+        
+        {selectedUser && (
+          <div className="flex flex-col items-center">
+            <h2 className="text-xl text-gray-700 mb-6">
+              Γεια σου, <span className="font-bold text-orange-600">{selectedUser.name}</span>
+            </h2>
+            <input
+              type="password"
+              maxLength={4}
+              value={pin}
+              onChange={(e) => setPin(e.target.value)}
+              placeholder="****"
+              className="w-40 text-center text-4xl tracking-[0.5em] p-4 border-2 border-gray-300 rounded-lg mb-6 focus:outline-none focus:border-orange-500 bg-gray-50"
+              autoFocus
+            />
+            {error && <p className="text-red-500 text-sm mb-4 font-medium">{error}</p>}
+            
+            <div className="flex w-full gap-3 sm:gap-4">
+              <button
+                onClick={() => { setSelectedUser(null); setPin(''); setError(''); }}
+                className="flex-1 bg-gray-200 hover:bg-gray-300 text-gray-800 font-bold py-4 rounded-lg transition-colors text-lg"
+              >
+                Πίσω
+              </button>
+              <button
+                onClick={handleLogin}
+                className="flex-1 bg-orange-500 hover:bg-orange-600 text-white font-bold py-4 rounded-lg transition-colors text-lg shadow-sm"
+              >
+                Είσοδος
+              </button>
+            </div>
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}
