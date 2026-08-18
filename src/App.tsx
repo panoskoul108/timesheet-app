@@ -25,9 +25,10 @@ export default function App() {
 
   useEffect(() => {
     const fetchEmployees = async () => {
-      const { data, err } = await supabase.from('employees').select('*');
+      // Διορθωμένο: Τραβάμε το 'error' και το μετονομάζουμε σε 'fetchError'
+      const { data, error: fetchError } = await supabase.from('employees').select('*');
       if (data) setEmployees(data);
-      if (err) console.error('Σφάλμα:', err);
+      if (fetchError) console.error('Σφάλμα:', fetchError);
     };
     fetchEmployees();
   }, []);
@@ -70,20 +71,22 @@ export default function App() {
   };
 
   const loadDashboard = async () => {
-    const { data, err } = await supabase.from('shifts').select('*');
+    // Διορθωμένο: Τραβάμε το 'error' και το μετονομάζουμε σε 'fetchError'
+    const { data, error: fetchError } = await supabase.from('shifts').select('*');
     if (data) {
       setShifts(data.filter(s => s.is_deleted !== true));
     }
-    if (err) console.error(err);
+    if (fetchError) console.error(fetchError);
     setViewMode('dashboard');
   };
 
   const handleLoadMyHours = async () => {
-    const { data, err } = await supabase.from('shifts').select('*').eq('employee_id', loggedInUser.id);
+    // Διορθωμένο: Τραβάμε το 'error' και το μετονομάζουμε σε 'fetchError'
+    const { data, error: fetchError } = await supabase.from('shifts').select('*').eq('employee_id', loggedInUser.id);
     if (data) {
       setShifts(data.filter(s => s.is_deleted !== true));
     }
-    if (err) console.error(err);
+    if (fetchError) console.error(fetchError);
     setViewMode('my_hours');
   };
 
@@ -173,8 +176,7 @@ export default function App() {
       return dateMatch && storeMatch && employeeMatch;
     });
   };
-
-  // ---------------- Οθόνη 3: Dashboard & My Hours (Καθαρή Σύνταξη) ----------------
+  // ---------------- Οθόνη 3: Dashboard & My Hours ----------------
   if (loggedInUser && (viewMode === 'dashboard' || viewMode === 'my_hours')) {
     const filteredShifts = getFilteredShifts();
     const totals: Record<string, number> = {};
@@ -195,7 +197,6 @@ export default function App() {
 
     const isDash = viewMode === 'dashboard';
     
-    // Απλές CSS μεταβλητές
     const activeColor = isDash ? 'bg-orange-500 text-white' : 'bg-blue-500 text-white';
     const inactiveColor = 'bg-gray-200 text-gray-700 hover:bg-gray-300';
     
@@ -368,8 +369,7 @@ export default function App() {
       </div>
     );
   }
-
-  // ---------------- Οθόνη 2: Φόρμα Καταγραφής Ωρών ----------------
+// ---------------- Οθόνη 2: Φόρμα Καταγραφής Ωρών ----------------
   if (loggedInUser) {
     return (
       <div className="min-h-screen bg-gray-100 flex items-center justify-center p-4">
@@ -517,3 +517,4 @@ export default function App() {
     </div>
   );
 }
+
