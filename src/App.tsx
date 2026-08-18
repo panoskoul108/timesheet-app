@@ -199,8 +199,9 @@ export default function App() {
       new Date(b.shift_date).getTime() - new Date(a.shift_date).getTime()
     );
 
-    // Προετοιμασία μεταβλητών για ασφαλή TSX μεταγλώττιση
     const isDash = viewMode === 'dashboard';
+    
+    // Απλοποιημένες κλάσεις CSS
     const activeBtnClass = isDash ? 'bg-orange-500 text-white' : 'bg-blue-500 text-white';
     const inactiveBtnClass = 'bg-gray-200 text-gray-700 hover:bg-gray-300';
     
@@ -298,24 +299,22 @@ export default function App() {
             <h3 className="text-gray-700 font-bold mb-3 border-b pb-2 text-sm sm:text-base">Σύνολα</h3>
             {Object.keys(totals).length === 0 ? (
               <p className="text-center text-gray-500 py-2 text-sm">Δεν βρέθηκαν βάρδιες.</p>
+            ) : isDash ? (
+              <table className="w-full text-left text-sm sm:text-base">
+                <tbody>
+                  {Object.entries(totals).map(([name, totalHours]) => (
+                    <tr key={name} className="border-b border-gray-200 last:border-0">
+                      <td className="py-2 text-gray-800 font-medium">{name}</td>
+                      <td className="py-2 text-right font-bold text-orange-600">{totalHours} ώρες</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
             ) : (
-              isDash ? (
-                <table className="w-full text-left text-sm sm:text-base">
-                  <tbody>
-                    {Object.entries(totals).map(([name, totalHours]) => (
-                      <tr key={name} className="border-b border-gray-200 last:border-0">
-                        <td className="py-2 text-gray-800 font-medium">{name}</td>
-                        <td className="py-2 text-right font-bold text-orange-600">{totalHours} ώρες</td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              ) : (
-                <div className="py-3 text-center">
-                  <span className="text-gray-600 font-medium text-lg">Συνολικές Ώρες: </span>
-                  <span className="text-blue-600 font-bold text-2xl ml-2">{totalMyHours}</span>
-                </div>
-              )
+              <div className="py-3 text-center">
+                <span className="text-gray-600 font-medium text-lg">Συνολικές Ώρες: </span>
+                <span className="text-blue-600 font-bold text-2xl ml-2">{totalMyHours}</span>
+              </div>
             )}
           </div>
 
@@ -452,4 +451,7 @@ export default function App() {
           </div>
         </div>
       </div>
- 
+    );
+  }
+
+  // ---------------- Οθόνη 1: Επιλογή Υπαλλήλου / PIN (Αρχική) --------
