@@ -224,7 +224,8 @@ export default function App() {
       <button onClick={() => setLang('uk')} className={`px-3 py-1 text-sm font-bold rounded-lg border-2 transition-colors ${lang === 'uk' ? 'bg-[#8B5A2B] text-white border-[#8B5A2B]' : 'bg-white text-gray-600 border-gray-200'}`}>🇺🇦 UK</button>
     </div>
   );
-// ---------------- UI: SCHEDULE GRID ----------------
+
+  // ---------------- UI: SCHEDULE GRID ----------------
   if (loggedInUser && (viewMode === 'schedule_admin' || viewMode === 'schedule_staff')) {
     const isSchedAdmin = viewMode === 'schedule_admin';
     const daysOfWeek = Array.from({ length: 7 }).map((_, i) => {
@@ -321,7 +322,9 @@ export default function App() {
         </div>
       </div>
     );
- // ---------------- UI: DASHBOARD & MY HOURS ----------------
+  }
+
+  // ---------------- UI: DASHBOARD & MY HOURS ----------------
   if (loggedInUser && (viewMode === 'dashboard' || viewMode === 'my_hours')) {
     const isDash = viewMode === 'dashboard';
     const filteredShifts = getFilteredShifts();
@@ -446,7 +449,8 @@ export default function App() {
       </div>
     );
   }
- // ---------------- UI: LOGIN ----------------
+
+  // ---------------- UI: LOGIN ----------------
   return (
     <div className="min-h-screen bg-gray-100 flex flex-col items-center justify-center p-4">
       <div className="max-w-md w-full">{renderLangButtons()}</div>
