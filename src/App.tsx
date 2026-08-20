@@ -1,16 +1,15 @@
 import { useState, useEffect } from 'react';
 import { supabase } from './supabase';
 
-// Συμπιεσμένο λεξικό για εξοικονόμηση χώρου
 const dict = {
   el: {
-    loading: 'Φόρτωση...', hello: 'Γεια σου', wrongPin: 'Λάθος PIN.', back: 'Πίσω', login: 'Είσοδος', logout: 'Έξοδος', store: 'Κατάστημα', date: 'Ημερομηνία', hoursWorked: 'Ώρες που δούλεψες', hoursCol: 'Ώρες', egHours: 'π.χ. 6 ή 6.5', save: 'Καταχώρηση Ωρών', myHoursBtn: '⏱️ Οι Ώρες Μου', adminBtn: '📊 Στατιστικά (Admin)', statsTitle: 'Στατιστικά Πληρωμών', myHoursTitle: 'Οι Ώρες Μου', employee: 'Υπάλληλος', all: '-- Όλοι --', week: 'Εβδομάδα', month: 'Μήνας', year: 'Χρονιά', range: 'Εύρος', from: 'Από:', to: 'Έως:', allStores: 'Όλα', export: '📥 Εξαγωγή', totals: 'Σύνολα', noShifts: 'Δεν βρέθηκαν βάρδιες.', hoursText: 'ώρες', totalMyHours: 'Συνολικές Ώρες:', details: 'Αναλυτικά', noRecords: 'Δεν υπάρχουν καταχωρήσεις.', shortDate: 'Ημ/νία', shortStore: 'Μαγαζί', unknown: 'Άγνωστος', errInvalidHours: 'Παρακαλώ βάλε σωστό αριθμό.', errSave: 'Σφάλμα.', successSave: 'Επιτυχής αποθήκευση!', promptPin: 'Εισάγετε Admin PIN για διαγραφή:', errPin: 'Λάθος PIN.', errDel: 'Σφάλμα διαγραφής.', successDel: 'Διαγράφηκε.', noDataExp: 'Δεν υπάρχουν δεδομένα.', scheduleAdminBtn: '📅 Πρόγραμμα (Admin)', scheduleStaffBtn: '📅 Πρόγραμμα Εβδομάδας', scheduleAdminTitle: 'ΠΡΟΓΡΑΜΜΑ ΒΑΡΔΙΑΣ', scheduleStaffTitle: 'ΠΡΟΓΡΑΜΜΑ ΒΑΡΔΙΑΣ', startTime: 'Από (π.χ. 17:00)', endTime: 'Έως (π.χ. 02:00)', saveSchedule: 'Προσθήκη', copyPrevWeek: '📋 Αντιγραφή προηγ. εβδομάδας', confirmCopy: 'Αντιγραφή προγράμματος προηγούμενης εβδομάδας;', copySuccess: 'Αντιγράφηκε!', copyEmpty: 'Δεν βρέθηκε πρόγραμμα.', dayCol: 'ΗΜΕΡΑ', repoCol: 'ΡΕΠΟ', addBtn: '+ Προσθήκη'
+    loading: 'Φόρτωση...', hello: 'Γεια σου', wrongPin: 'Λάθος PIN.', back: 'Πίσω', login: 'Είσοδος', logout: 'Έξοδος', store: 'Κατάστημα', date: 'Ημερομηνία', hoursWorked: 'Ώρες', hoursCol: 'Ώρες', egHours: 'π.χ. 6 ή 6.5', save: 'Αποθήκευση', myHoursBtn: '⏱️ Οι Ώρες Μου', adminBtn: '📊 Στατιστικά (Admin)', statsTitle: 'Στατιστικά Πληρωμών', myHoursTitle: 'Οι Ώρες Μου', employee: 'Υπάλληλος', all: '-- Όλοι --', week: 'Εβδομάδα', month: 'Μήνας', year: 'Χρονιά', range: 'Εύρος', from: 'Από:', to: 'Έως:', allStores: 'Όλα', export: '📥 Εξαγωγή', totals: 'Σύνολα', noShifts: 'Δεν βρέθηκαν βάρδιες.', hoursText: 'ώρες', totalMyHours: 'Συνολικές Ώρες:', details: 'Αναλυτικά', noRecords: 'Δεν υπάρχουν καταχωρήσεις.', shortDate: 'Ημ/νία', shortStore: 'Μαγαζί', unknown: 'Άγνωστος', errInvalidHours: 'Παρακαλώ βάλε σωστό αριθμό.', errSave: 'Σφάλμα.', successSave: 'Επιτυχής αποθήκευση!', promptPin: 'Εισάγετε Admin PIN για διαγραφή:', errPin: 'Λάθος PIN.', errDel: 'Σφάλμα διαγραφής.', successDel: 'Διαγράφηκε.', noDataExp: 'Δεν υπάρχουν δεδομένα.', scheduleAdminBtn: '📅 Πρόγραμμα (Admin)', scheduleStaffBtn: '📅 Πρόγραμμα Εβδομάδας', scheduleAdminTitle: 'ΠΡΟΓΡΑΜΜΑ ΒΑΡΔΙΑΣ', scheduleStaffTitle: 'ΠΡΟΓΡΑΜΜΑ ΒΑΡΔΙΑΣ', startTime: 'Έναρξη (π.χ. 18:00)', endTime: 'Λήξη (π.χ. 02:00)', saveSchedule: 'Προσθήκη Βάρδιας', copyPrevWeek: '📋 Αντιγραφή προηγ. εβδομάδας', confirmCopy: 'Αντιγραφή προγράμματος προηγούμενης εβδομάδας;', copySuccess: 'Αντιγράφηκε!', copyEmpty: 'Δεν βρέθηκε πρόγραμμα.', dayCol: 'ΗΜΕΡΑ', repoCol: 'ΡΕΠΟ', addBtn: '+ Προσθήκη', cancel: 'Ακύρωση'
   },
   da: {
-    loading: 'Indlæser...', hello: 'Hej', wrongPin: 'Forkert PIN.', back: 'Tilbage', login: 'Log ind', logout: 'Log ud', store: 'Butik', date: 'Dato', hoursWorked: 'Arbejdstimer', hoursCol: 'Timer', egHours: 'f.eks. 6', save: 'Gem Timer', myHoursBtn: '⏱️ Mine Timer', adminBtn: '📊 Statistik (Admin)', statsTitle: 'Statistik', myHoursTitle: 'Mine Timer', employee: 'Medarbejder', all: '-- Alle --', week: 'Uge', month: 'Måned', year: 'År', range: 'Periode', from: 'Fra:', to: 'Til:', allStores: 'Alle', export: '📥 Eksporter', totals: 'Totaler', noShifts: 'Ingen vagter.', hoursText: 'timer', totalMyHours: 'Totale timer:', details: 'Detaljer', noRecords: 'Ingen registreringer.', shortDate: 'Dato', shortStore: 'Butik', unknown: 'Ukendt', errInvalidHours: 'Ugyldigt antal.', errSave: 'Fejl.', successSave: 'Gemt!', promptPin: 'Admin PIN for at slette:', errPin: 'Forkert PIN.', errDel: 'Fejl under sletning.', successDel: 'Slettet.', noDataExp: 'Ingen data.', scheduleAdminBtn: '📅 Skema (Admin)', scheduleStaffBtn: '📅 Ugeskema', scheduleAdminTitle: 'VAGTSKEMA', scheduleStaffTitle: 'VAGTSKEMA', startTime: 'Fra (f.eks. 17:00)', endTime: 'Til (f.eks. 02:00)', saveSchedule: 'Tilføj', copyPrevWeek: '📋 Kopier forrige uge', confirmCopy: 'Kopier forrige uge?', copySuccess: 'Kopieret!', copyEmpty: 'Ingen vagter fundet.', dayCol: 'DAG', repoCol: 'FRI', addBtn: '+ Tilføj'
+    loading: 'Indlæser...', hello: 'Hej', wrongPin: 'Forkert PIN.', back: 'Tilbage', login: 'Log ind', logout: 'Log ud', store: 'Butik', date: 'Dato', hoursWorked: 'Timer', hoursCol: 'Timer', egHours: 'f.eks. 6', save: 'Gem', myHoursBtn: '⏱️ Mine Timer', adminBtn: '📊 Statistik (Admin)', statsTitle: 'Statistik', myHoursTitle: 'Mine Timer', employee: 'Medarbejder', all: '-- Alle --', week: 'Uge', month: 'Måned', year: 'År', range: 'Periode', from: 'Fra:', to: 'Til:', allStores: 'Alle', export: '📥 Eksporter', totals: 'Totaler', noShifts: 'Ingen vagter.', hoursText: 'timer', totalMyHours: 'Totale timer:', details: 'Detaljer', noRecords: 'Ingen registreringer.', shortDate: 'Dato', shortStore: 'Butik', unknown: 'Ukendt', errInvalidHours: 'Ugyldigt antal.', errSave: 'Fejl.', successSave: 'Gemt!', promptPin: 'Admin PIN for at slette:', errPin: 'Forkert PIN.', errDel: 'Fejl sletning.', successDel: 'Slettet.', noDataExp: 'Ingen data.', scheduleAdminBtn: '📅 Skema (Admin)', scheduleStaffBtn: '📅 Ugeskema', scheduleAdminTitle: 'VAGTSKEMA', scheduleStaffTitle: 'VAGTSKEMA', startTime: 'Start (18:00)', endTime: 'Slut (02:00)', saveSchedule: 'Tilføj Vagt', copyPrevWeek: '📋 Kopier forrige uge', confirmCopy: 'Kopier forrige uge?', copySuccess: 'Kopieret!', copyEmpty: 'Ingen vagter fundet.', dayCol: 'DAG', repoCol: 'FRI', addBtn: '+ Tilføj', cancel: 'Annuller'
   },
   uk: {
-    loading: 'Завантаження...', hello: 'Привіт', wrongPin: 'Невірний PIN.', back: 'Назад', login: 'Увійти', logout: 'Вийти', store: 'Магазин', date: 'Дата', hoursWorked: 'Години', hoursCol: 'Год', egHours: 'напр. 6', save: 'Зберегти', myHoursBtn: '⏱️ Мої години', adminBtn: '📊 Статистика (Admin)', statsTitle: 'Статистика', myHoursTitle: 'Мої години', employee: 'Співробітник', all: '-- Всі --', week: 'Тиждень', month: 'Місяць', year: 'Рік', range: 'Період', from: 'Від:', to: 'До:', allStores: 'Всі', export: '📥 Експорт', totals: 'Всього', noShifts: 'Зміни не знайдені.', hoursText: 'год', totalMyHours: 'Всього годин:', details: 'Детально', noRecords: 'Немає записів.', shortDate: 'Дата', shortStore: 'Магазин', unknown: 'Невідомий', errInvalidHours: 'Недійсна кількість.', errSave: 'Помилка.', successSave: 'Збережено!', promptPin: 'Admin PIN для видалення:', errPin: 'Невірний PIN.', errDel: 'Помилка видалення.', successDel: 'Видалено.', noDataExp: 'Немає даних.', scheduleAdminBtn: '📅 Розклад (Admin)', scheduleStaffBtn: '📅 Розклад на тиждень', scheduleAdminTitle: 'РОЗКЛАД ЗМІН', scheduleStaffTitle: 'РОЗКЛАД ЗМІН', startTime: 'З (напр. 17:00)', endTime: 'До (напр. 02:00)', saveSchedule: 'Додати', copyPrevWeek: '📋 Копіювати мин. тиждень', confirmCopy: 'Копіювати минулий тиждень?', copySuccess: 'Скопійовано!', copyEmpty: 'Порожньо.', dayCol: 'ДЕНЬ', repoCol: 'ВИХІДНИЙ', addBtn: '+ Додати'
+    loading: 'Завантаження...', hello: 'Привіт', wrongPin: 'Невірний PIN.', back: 'Назад', login: 'Увійти', logout: 'Вийти', store: 'Магазин', date: 'Дата', hoursWorked: 'Години', hoursCol: 'Год', egHours: 'напр. 6', save: 'Зберегти', myHoursBtn: '⏱️ Мої години', adminBtn: '📊 Статистика (Admin)', statsTitle: 'Статистика', myHoursTitle: 'Мої години', employee: 'Співробітник', all: '-- Всі --', week: 'Тиждень', month: 'Місяць', year: 'Рік', range: 'Період', from: 'Від:', to: 'До:', allStores: 'Всі', export: '📥 Експорт', totals: 'Всього', noShifts: 'Зміни не знайдені.', hoursText: 'год', totalMyHours: 'Всього годин:', details: 'Детально', noRecords: 'Немає записів.', shortDate: 'Дата', shortStore: 'Магазин', unknown: 'Невідомий', errInvalidHours: 'Недійсна кількість.', errSave: 'Помилка.', successSave: 'Збережено!', promptPin: 'Admin PIN для видалення:', errPin: 'Невірний PIN.', errDel: 'Помилка видалення.', successDel: 'Видалено.', noDataExp: 'Немає даних.', scheduleAdminBtn: '📅 Розклад (Admin)', scheduleStaffBtn: '📅 Розклад на тиждень', scheduleAdminTitle: 'РОЗКЛАД ЗМІН', scheduleStaffTitle: 'РОЗКЛАД ЗМІН', startTime: 'З (18:00)', endTime: 'До (02:00)', saveSchedule: 'Додати зміну', copyPrevWeek: '📋 Копіювати мин. тиж.', confirmCopy: 'Копіювати минулий тиждень?', copySuccess: 'Скопійовано!', copyEmpty: 'Порожньо.', dayCol: 'ДЕНЬ', repoCol: 'ВИХІДНИЙ', addBtn: '+ Додати', cancel: 'Скасувати'
   }
 };
 
@@ -50,6 +49,9 @@ export default function App() {
   // Schedule States
   const [schedules, setSchedules] = useState<any[]>([]);
   const [scheduleWeekStart, setScheduleWeekStart] = useState(getMonday(new Date()).toISOString().split('T')[0]);
+  
+  // Modal (Popup) States για το Κινητό
+  const [isScheduleModalOpen, setIsScheduleModalOpen] = useState(false);
   const [schedEmpId, setSchedEmpId] = useState('');
   const [schedStore, setSchedStore] = useState('Hellas');
   const [schedDate, setSchedDate] = useState(new Date().toISOString().split('T')[0]);
@@ -63,7 +65,7 @@ export default function App() {
     }
     const fetchEmployees = async () => {
       const { data, error: fetchError } = await supabase.from('employees').select('*');
-      if (data) { setEmployees(data); if (data.length > 0) setSchedEmpId(data[0].id); }
+      if (data) setEmployees(data);
       if (fetchError) console.error(fetchError);
     };
     fetchEmployees();
@@ -167,27 +169,36 @@ export default function App() {
     if (data) setSchedules(data);
   };
 
-  const openAdminSchedule = () => {
-    loadSchedules(scheduleWeekStart);
-    setViewMode('schedule_admin');
-  };
-
-  const openStaffSchedule = () => {
-    loadSchedules(scheduleWeekStart);
-    setViewMode('schedule_staff');
-  };
+  const openAdminSchedule = () => { loadSchedules(scheduleWeekStart); setViewMode('schedule_admin'); };
+  const openStaffSchedule = () => { loadSchedules(scheduleWeekStart); setViewMode('schedule_staff'); };
 
   useEffect(() => {
     if (viewMode === 'schedule_admin' || viewMode === 'schedule_staff') loadSchedules(scheduleWeekStart);
   }, [scheduleWeekStart, viewMode]);
 
+  // ΤΟ ΝΕΟ ΑΣΦΑΛΕΣ SAVE ΓΙΑ ΤΟ MODAL
   const saveScheduleEntry = async () => {
-    if (!schedEmpId) return alert("Επίλεξε υπάλληλο.");
-    await supabase.from('schedules').insert([{
-      employee_id: schedEmpId, store_location: schedStore, schedule_date: schedDate, start_time: schedStart || '', end_time: schedEnd || ''
-    }]);
-    setSchedStart(''); setSchedEnd('');
-    loadSchedules(scheduleWeekStart);
+    if (!schedEmpId) return alert("Παρακαλώ επίλεξε υπάλληλο!");
+    if (!schedStart || !schedEnd) return alert("Παρακαλώ συμπλήρωσε Έναρξη και Λήξη!");
+
+    const payload = {
+      employee_id: schedEmpId, 
+      store_location: schedStore, 
+      schedule_date: schedDate, 
+      start_time: schedStart, 
+      end_time: schedEnd
+    };
+
+    const { error: insertErr } = await supabase.from('schedules').insert([payload]);
+    
+    if (insertErr) {
+      console.error("Σφάλμα Βάσης:", insertErr);
+      alert("Αποτυχία αποθήκευσης! Μήνυμα Βάσης: " + insertErr.message);
+    } else {
+      setIsScheduleModalOpen(false);
+      setSchedStart(''); setSchedEnd(''); setSchedEmpId('');
+      loadSchedules(scheduleWeekStart);
+    }
   };
 
   const deleteSchedule = async (id: string) => {
@@ -225,7 +236,7 @@ export default function App() {
     </div>
   );
 
-  // ---------------- UI: SCHEDULE GRID ----------------
+  // ---------------- UI: SCHEDULE GRID ΜΕ MODAL ----------------
   if (loggedInUser && (viewMode === 'schedule_admin' || viewMode === 'schedule_staff')) {
     const isSchedAdmin = viewMode === 'schedule_admin';
     const daysOfWeek = Array.from({ length: 7 }).map((_, i) => {
@@ -235,47 +246,60 @@ export default function App() {
     const formatDateObj = (d: Date) => d.toLocaleDateString('el-GR', { day: 'numeric', month: 'numeric' });
 
     return (
-      <div className="min-h-screen bg-gray-100 p-2 sm:p-4 flex flex-col items-center pt-6">
+      <div className="min-h-screen bg-gray-100 p-2 sm:p-4 flex flex-col items-center pt-6 relative">
         <div className="max-w-5xl w-full">{renderLangButtons()}</div>
-        <div className="bg-white p-3 sm:p-6 rounded-lg shadow-xl border-t-4 border-blue-600 max-w-5xl w-full">
-          <div className="flex flex-col sm:flex-row justify-between items-center mb-6 border-b-2 pb-4">
-            <h2 className="text-2xl font-black text-[#1a365d] text-center sm:text-left">{isSchedAdmin ? t.scheduleAdminTitle : t.scheduleStaffTitle}</h2>
-            <div className="mt-4 sm:mt-0 flex flex-wrap justify-center gap-3">
-              <input type="date" value={scheduleWeekStart} onChange={(e) => setScheduleWeekStart(getMonday(new Date(e.target.value)).toISOString().split('T')[0])} className="p-2 border-2 rounded font-bold text-gray-700 bg-gray-50" />
-              {isSchedAdmin && <button onClick={copyPreviousWeek} className="bg-[#1a365d] text-white px-4 py-2 rounded text-sm font-bold">{t.copyPrevWeek}</button>}
-              <button onClick={() => setViewMode('form')} className="bg-gray-200 text-gray-800 px-4 py-2 rounded text-sm font-bold">{t.back}</button>
+        
+        {/* ΤΟ ΑΝΑΔΥΟΜΕΝΟ ΠΑΡΑΘΥΡΟ (POPUP / MODAL) ΕΙΔΙΚΑ ΓΙΑ ΚΙΝΗΤΑ */}
+        {isScheduleModalOpen && (
+          <div className="fixed inset-0 bg-black bg-opacity-60 flex items-center justify-center p-4 z-50">
+            <div className="bg-white rounded-2xl p-6 w-full max-w-sm shadow-2xl transform transition-all">
+              <h3 className="text-xl font-black mb-4 text-[#1a365d] border-b pb-2">
+                {schedStore} - {new Date(schedDate).toLocaleDateString('el-GR', { weekday: 'short', day: 'numeric', month: 'numeric' })}
+              </h3>
+              
+              <label className="block text-sm font-bold text-gray-700 mb-1">{t.employee}</label>
+              <select value={schedEmpId} onChange={e => setSchedEmpId(e.target.value)} className="w-full p-3 border-2 border-gray-300 rounded-lg mb-4 text-base font-bold bg-gray-50">
+                <option value="" disabled>-- Επίλεξε --</option>
+                {employees.map(emp => <option key={emp.id} value={emp.id}>{emp.name}</option>)}
+              </select>
+
+              <div className="flex gap-3 mb-6">
+                <div className="flex-1">
+                  <label className="block text-sm font-bold text-gray-700 mb-1">{t.startTime}</label>
+                  <input type="time" value={schedStart} onChange={e => setSchedStart(e.target.value)} className="w-full p-3 border-2 border-gray-300 rounded-lg text-base font-bold bg-gray-50" />
+                </div>
+                <div className="flex-1">
+                  <label className="block text-sm font-bold text-gray-700 mb-1">{t.endTime}</label>
+                  <input type="time" value={schedEnd} onChange={e => setSchedEnd(e.target.value)} className="w-full p-3 border-2 border-gray-300 rounded-lg text-base font-bold bg-gray-50" />
+                </div>
+              </div>
+
+              <div className="flex gap-3 mt-2">
+                <button onClick={() => setIsScheduleModalOpen(false)} className="flex-1 bg-gray-200 hover:bg-gray-300 text-gray-800 font-bold py-3 rounded-lg text-sm">{t.cancel}</button>
+                <button onClick={saveScheduleEntry} className="flex-1 bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 rounded-lg text-sm shadow-md">{t.saveSchedule}</button>
+              </div>
             </div>
           </div>
+        )}
 
-          {isSchedAdmin && (
-            <div className="mb-6 bg-blue-50 border-2 border-blue-200 p-4 rounded-lg">
-              <h3 className="font-bold text-blue-800 mb-3">✏️ {t.saveSchedule}</h3>
-              <div className="grid grid-cols-2 sm:grid-cols-5 gap-3">
-                <select value={schedDate} onChange={e => setSchedDate(e.target.value)} className="col-span-2 sm:col-span-1 p-2 border rounded">
-                  {daysOfWeek.map(d => <option key={d.toISOString()} value={d.toISOString().split('T')[0]}>{formatDayName(d)} {formatDateObj(d)}</option>)}
-                </select>
-                <select value={schedStore} onChange={e => setSchedStore(e.target.value)} className="p-2 border rounded">
-                  <option value="Hellas">Hellas</option><option value="Nordic">Nordic</option>
-                </select>
-                <select value={schedEmpId} onChange={e => setSchedEmpId(e.target.value)} className="p-2 border rounded">
-                  <option value="" disabled>-- {t.employee} --</option>
-                  {employees.map(emp => <option key={emp.id} value={emp.id}>{emp.name}</option>)}
-                </select>
-                <input type="text" placeholder={t.startTime} value={schedStart} onChange={e => setSchedStart(e.target.value)} className="p-2 border rounded" />
-                <input type="text" placeholder={t.endTime} value={schedEnd} onChange={e => setSchedEnd(e.target.value)} className="p-2 border rounded" />
-              </div>
-              <div className="mt-3 flex justify-end"><button onClick={saveScheduleEntry} className="bg-blue-600 text-white font-bold py-2 px-6 rounded">{t.addBtn}</button></div>
+        <div className="bg-white p-3 sm:p-6 rounded-lg shadow-xl border-t-4 border-blue-600 max-w-5xl w-full">
+          <div className="flex flex-col sm:flex-row justify-between items-center mb-6 border-b-2 pb-4 border-gray-200">
+            <h2 className="text-xl sm:text-2xl font-black text-[#1a365d] text-center sm:text-left">{isSchedAdmin ? t.scheduleAdminTitle : t.scheduleStaffTitle}</h2>
+            <div className="mt-4 sm:mt-0 flex flex-wrap justify-center gap-2">
+              <input type="date" value={scheduleWeekStart} onChange={(e) => setScheduleWeekStart(getMonday(new Date(e.target.value)).toISOString().split('T')[0])} className="p-2 border-2 rounded font-bold text-gray-700 bg-gray-50" />
+              {isSchedAdmin && <button onClick={copyPreviousWeek} className="bg-[#1a365d] text-white px-3 py-2 rounded text-sm font-bold shadow-sm">{t.copyPrevWeek}</button>}
+              <button onClick={() => setViewMode('form')} className="bg-gray-200 text-gray-800 px-4 py-2 rounded text-sm font-bold shadow-sm">{t.back}</button>
             </div>
-          )}
+          </div>
 
           <div className="overflow-x-auto border-2 border-gray-300 rounded-lg">
             <table className="w-full min-w-[700px] border-collapse bg-white">
               <thead>
                 <tr>
-                  <th className="bg-[#1a365d] text-white p-3 border-r w-[18%] font-black">{t.dayCol}</th>
-                  <th className="bg-[#2b6cb0] text-white p-3 border-r w-[27%] font-black">HELLAS</th>
-                  <th className="bg-[#319795] text-white p-3 border-r w-[27%] font-black">NORDIC MYTHOS</th>
-                  <th className="bg-[#a0aec0] text-gray-800 p-3 w-[28%] font-black">{t.repoCol}</th>
+                  <th className="bg-[#1a365d] text-white p-3 border-r w-[18%] font-black shadow-inner">{t.dayCol}</th>
+                  <th className="bg-[#2b6cb0] text-white p-3 border-r w-[27%] font-black shadow-inner">HELLAS</th>
+                  <th className="bg-[#319795] text-white p-3 border-r w-[27%] font-black shadow-inner">NORDIC MYTHOS</th>
+                  <th className="bg-[#a0aec0] text-gray-800 p-3 w-[28%] font-black shadow-inner">{t.repoCol}</th>
                 </tr>
               </thead>
               <tbody>
@@ -287,32 +311,32 @@ export default function App() {
                   const repoEmployees = employees.filter(e => !workingIds.includes(e.id)).map(e => e.name).join(', ');
 
                   return (
-                    <tr key={dateStr} className={`border-t transition-colors ${index % 2 === 0 ? 'bg-gray-50' : 'bg-white'}`}>
-                      <td className="p-3 border-r">
+                    <tr key={dateStr} className={`border-t border-gray-300 transition-colors ${index % 2 === 0 ? 'bg-gray-50' : 'bg-white'}`}>
+                      <td className="p-3 border-r align-middle">
                         <div className="flex flex-col text-[#1a365d]">
-                          <span className="font-black text-lg">📅 {formatDayName(d)}</span>
+                          <span className="font-black text-[15px] sm:text-lg flex items-center gap-1"><span className="text-xl">📅</span> {formatDayName(d)}</span>
                           <span className="font-bold text-gray-500 pl-7">{formatDateObj(d)}</span>
                         </div>
                       </td>
-                      <td className="p-2 sm:p-3 border-r align-middle relative group">
+                      <td className="p-2 sm:p-3 border-r align-top relative">
                         {hellasShifts.map(s => (
-                          <div key={s.id} className="flex justify-between items-center py-1 border-b last:border-0">
+                          <div key={s.id} className="flex justify-between items-center py-1.5 border-b border-gray-100 last:border-0">
                             <div className="text-gray-800 font-semibold">{s.start_time && <span className="text-gray-500 font-mono text-sm mr-2">🕒 {s.start_time}</span>}{employees.find(e => e.id === s.employee_id)?.name || t.unknown}</div>
-                            {isSchedAdmin && <button onClick={() => deleteSchedule(s.id)} className="text-red-500 font-black px-2">✕</button>}
+                            {isSchedAdmin && <button onClick={() => deleteSchedule(s.id)} className="text-red-500 hover:text-red-700 font-black px-2 py-1 bg-red-50 rounded">✕</button>}
                           </div>
                         ))}
-                        {isSchedAdmin && <button onClick={() => { setSchedDate(dateStr); setSchedStore('Hellas'); window.scrollTo({ top: 0, behavior: 'smooth' }); }} className="mt-2 w-full text-xs font-bold text-[#2b6cb0] bg-blue-50 py-1 rounded border border-blue-200">{t.addBtn}</button>}
+                        {isSchedAdmin && <button onClick={() => { setSchedDate(dateStr); setSchedStore('Hellas'); setSchedStart(''); setSchedEnd(''); setSchedEmpId(''); setIsScheduleModalOpen(true); }} className="mt-3 w-full text-xs font-bold text-[#2b6cb0] bg-blue-50 py-2 rounded-lg border border-blue-200 shadow-sm uppercase tracking-wider">{t.addBtn}</button>}
                       </td>
-                      <td className="p-2 sm:p-3 border-r align-middle relative group">
+                      <td className="p-2 sm:p-3 border-r align-top relative">
                         {nordicShifts.map(s => (
-                          <div key={s.id} className="flex justify-between items-center py-1 border-b last:border-0">
+                          <div key={s.id} className="flex justify-between items-center py-1.5 border-b border-gray-100 last:border-0">
                             <div className="text-gray-800 font-semibold">{s.start_time && <span className="text-gray-500 font-mono text-sm mr-2">🕒 {s.start_time}</span>}{employees.find(e => e.id === s.employee_id)?.name || t.unknown}</div>
-                            {isSchedAdmin && <button onClick={() => deleteSchedule(s.id)} className="text-red-500 font-black px-2">✕</button>}
+                            {isSchedAdmin && <button onClick={() => deleteSchedule(s.id)} className="text-red-500 hover:text-red-700 font-black px-2 py-1 bg-red-50 rounded">✕</button>}
                           </div>
                         ))}
-                        {isSchedAdmin && <button onClick={() => { setSchedDate(dateStr); setSchedStore('Nordic'); window.scrollTo({ top: 0, behavior: 'smooth' }); }} className="mt-2 w-full text-xs font-bold text-[#319795] bg-teal-50 py-1 rounded border border-teal-200">{t.addBtn}</button>}
+                        {isSchedAdmin && <button onClick={() => { setSchedDate(dateStr); setSchedStore('Nordic'); setSchedStart(''); setSchedEnd(''); setSchedEmpId(''); setIsScheduleModalOpen(true); }} className="mt-3 w-full text-xs font-bold text-[#319795] bg-teal-50 py-2 rounded-lg border border-teal-200 shadow-sm uppercase tracking-wider">{t.addBtn}</button>}
                       </td>
-                      <td className="p-3 align-middle text-gray-600 font-medium">{repoEmployees || '-'}</td>
+                      <td className="p-3 align-middle text-gray-600 font-medium leading-relaxed">{repoEmployees || '-'}</td>
                     </tr>
                   );
                 })}
@@ -368,7 +392,6 @@ export default function App() {
             <button onClick={() => setDateFilter('custom')} className={`py-2 rounded text-sm font-bold ${dateFilter === 'custom' ? 'bg-blue-500 text-white' : 'bg-gray-200'}`}>{t.range}</button>
           </div>
 
-          {/* ΕΔΩ ΠΡΟΣΤΕΘΗΚΑΝ ΞΑΝΑ ΤΑ ΚΟΥΤΑΚΙΑ ΤΩΝ ΗΜΕΡΟΜΗΝΙΩΝ ΠΟΥ ΕΛΕΙΠΑΝ */}
           {dateFilter === 'custom' && (
             <div className="flex gap-3 mb-4 p-4 rounded border shadow-sm bg-gray-50">
               <div className="flex-1">
@@ -439,8 +462,8 @@ export default function App() {
           </div>
           <div className="space-y-4">
             <div className="grid grid-cols-2 gap-2 mb-2">
-               <button onClick={openStaffSchedule} className="bg-[#1a365d] text-white font-bold py-3 rounded text-sm shadow-sm">{t.scheduleStaffBtn}</button>
-               <button onClick={handleLoadMyHours} className="bg-blue-50 text-blue-700 font-bold py-3 rounded border border-blue-200 text-sm shadow-sm">{t.myHoursBtn}</button>
+               <button onClick={openStaffSchedule} className="bg-[#1a365d] text-white font-bold py-3 rounded text-sm shadow-sm hover:bg-[#12284c]">{t.scheduleStaffBtn}</button>
+               <button onClick={handleLoadMyHours} className="bg-blue-50 text-blue-700 font-bold py-3 rounded border border-blue-200 text-sm shadow-sm hover:bg-blue-100">{t.myHoursBtn}</button>
             </div>
             <div className="border-t pt-4 mt-2">
               <label className="block text-sm font-bold text-gray-700 mb-1">{t.store}</label>
@@ -449,13 +472,13 @@ export default function App() {
               <input type="date" value={shiftDate} onChange={(e) => setShiftDate(e.target.value)} className="w-full p-3 border rounded mb-3" />
               <label className="block text-sm font-bold text-gray-700 mb-1">{t.hoursWorked}</label>
               <input type="number" step="0.5" placeholder={t.egHours} value={hours} onChange={(e) => setHours(e.target.value)} className="w-full p-3 border rounded mb-3" />
-              <button onClick={handleSaveShift} className="w-full bg-orange-500 text-white font-bold py-4 rounded shadow-sm text-lg">{t.save}</button>
+              <button onClick={handleSaveShift} className="w-full bg-orange-500 text-white font-bold py-4 rounded shadow-sm text-lg hover:bg-orange-600">{t.save}</button>
             </div>
             {submitMsg && <p className="text-center text-sm font-medium mt-2 text-green-600">{submitMsg}</p>}
             {loggedInUser.role?.toLowerCase() === 'admin' && (
               <div className="border-t pt-4 mt-4 grid grid-cols-1 gap-2">
-                <button onClick={openAdminSchedule} className="w-full bg-blue-100 text-blue-800 font-bold py-3 rounded border border-blue-300 shadow-sm">{t.scheduleAdminBtn}</button>
-                <button onClick={loadDashboard} className="w-full bg-gray-100 text-gray-800 font-bold py-3 rounded border border-gray-300 shadow-sm">{t.adminBtn}</button>
+                <button onClick={openAdminSchedule} className="w-full bg-blue-100 text-blue-800 font-bold py-3 rounded border border-blue-300 shadow-sm hover:bg-blue-200">{t.scheduleAdminBtn}</button>
+                <button onClick={loadDashboard} className="w-full bg-gray-100 text-gray-800 font-bold py-3 rounded border border-gray-300 shadow-sm hover:bg-gray-200">{t.adminBtn}</button>
               </div>
             )}
           </div>
@@ -464,7 +487,7 @@ export default function App() {
     );
   }
 
-  // ---------------- UI: LOGIN ----------------
+   // ---------------- UI: LOGIN ----------------
   return (
     <div className="min-h-screen bg-gray-100 flex flex-col items-center justify-center p-4">
       <div className="max-w-md w-full">{renderLangButtons()}</div>
@@ -483,8 +506,8 @@ export default function App() {
             <input type="password" maxLength={4} value={pin} onChange={(e) => setPin(e.target.value)} placeholder="****" className="w-40 text-center text-4xl tracking-[0.5em] p-4 border-2 rounded-lg mb-6 bg-gray-50" autoFocus />
             {error && <p className="text-red-500 text-sm mb-4 font-medium">{error}</p>}
             <div className="flex w-full gap-3">
-              <button onClick={() => { setSelectedUser(null); setPin(''); setError(''); }} className="flex-1 bg-gray-200 text-gray-800 font-bold py-4 rounded-lg text-lg">{t.back}</button>
-              <button onClick={handleLogin} className="flex-1 bg-orange-500 text-white font-bold py-4 rounded-lg text-lg shadow-sm">{t.login}</button>
+              <button onClick={() => { setSelectedUser(null); setPin(''); setError(''); }} className="flex-1 bg-gray-200 text-gray-800 font-bold py-4 rounded-lg text-lg hover:bg-gray-300">{t.back}</button>
+              <button onClick={handleLogin} className="flex-1 bg-orange-500 text-white font-bold py-4 rounded-lg text-lg shadow-sm hover:bg-orange-600">{t.login}</button>
             </div>
           </div>
         )}
