@@ -353,8 +353,7 @@ export default function App() {
           dateMatch = sDate <= end;
         }
       }
-
-      let storeMatch = true;
+let storeMatch = true;
       if (storeFilter !== 'All') {
         storeMatch = shift.store_location === storeFilter;
       }
@@ -462,6 +461,7 @@ export default function App() {
       <button onClick={() => setLang('uk')} className={`px-3 py-1 text-sm font-bold rounded-lg border-2 shadow-sm transition-colors ${lang === 'uk' ? 'bg-[#8B5A2B] text-white border-[#8B5A2B]' : 'bg-white text-gray-600 border-gray-200'}`}>🇺🇦 UK</button>
     </div>
   );
+
   // ---------------- ΟΘΟΝΗ: ΠΡΟΓΡΑΜΜΑ (ADMIN & STAFF) ----------------
   if (loggedInUser && (viewMode === 'schedule_admin' || viewMode === 'schedule_staff')) {
     const isSchedAdmin = viewMode === 'schedule_admin';
@@ -577,7 +577,6 @@ export default function App() {
       </div>
     );
   }
-
   // --- ΟΘΟΝΗ: ΣΤΑΤΙΣΤΙΚΑ ΩΡΩΝ (ADMIN & MY HOURS) ---
   if (loggedInUser && (viewMode === 'dashboard' || viewMode === 'my_hours')) {
     const filteredShifts = getFilteredShifts();
@@ -753,4 +752,42 @@ export default function App() {
 
             {loggedInUser.role?.toLowerCase() === 'admin' && (
               <div className="border-t pt-4 mt-4 grid grid-cols-1 gap-2">
-                <button onClick={openAdminSchedule} className="w
+                <button onClick={openAdminSchedule} className="w-full bg-purple-100 hover:bg-purple-200 text-purple-800 font-bold py-3 rounded border border-purple-300 shadow-sm text-base">{t.scheduleAdminBtn}</button>
+                <button onClick={loadDashboard} className="w-full bg-gray-100 hover:bg-gray-200 text-gray-800 font-bold py-3 rounded border border-gray-300 shadow-sm text-base">{t.adminBtn}</button>
+              </div>
+            )}
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  // ---------------- ΟΘΟΝΗ: LOGIN ----------------
+  return (
+    <div className="min-h-screen bg-gray-100 flex flex-col items-center justify-center p-4">
+      <div className="max-w-md w-full">{renderLangButtons()}</div>
+      <div className="bg-white p-6 sm:p-8 rounded-lg shadow-lg border-b-4 border-[#8B5A2B] max-w-md w-full">
+        <h1 className="text-2xl sm:text-3xl font-bold text-gray-800 text-center mb-6 sm:mb-8">ShiftSheets</h1>
+        
+        {!selectedUser ? (
+          <div className="grid grid-cols-1 min-[400px]:grid-cols-2 gap-3 sm:gap-4">
+            {employees.length === 0 && <p className="col-span-1 min-[400px]:col-span-2 text-center text-gray-500 text-sm">{t.loading}</p>}
+            {employees.map((emp) => (
+              <button key={emp.id} onClick={() => setSelectedUser(emp)} className="bg-gray-50 hover:bg-orange-100 text-gray-800 font-semibold py-5 rounded-lg border-2 border-gray-200 hover:border-orange-500 transition-colors text-lg active:bg-orange-200">{emp.name}</button>
+            ))}
+          </div>
+        ) : (
+          <div className="flex flex-col items-center">
+            <h2 className="text-xl text-gray-700 mb-6">{t.hello}, <span className="font-bold text-orange-600">{selectedUser.name}</span></h2>
+            <input type="password" maxLength={4} value={pin} onChange={(e) => setPin(e.target.value)} placeholder="****" className="w-40 text-center text-4xl tracking-[0.5em] p-4 border-2 border-gray-300 rounded-lg mb-6 focus:outline-none focus:border-orange-500 bg-gray-50" autoFocus />
+            {error && <p className="text-red-500 text-sm mb-4 font-medium">{error}</p>}
+            <div className="flex w-full gap-3 sm:gap-4">
+              <button onClick={() => { setSelectedUser(null); setPin(''); setError(''); }} className="flex-1 bg-gray-200 hover:bg-gray-300 text-gray-800 font-bold py-4 rounded-lg transition-colors text-lg">{t.back}</button>
+              <button onClick={handleLogin} className="flex-1 bg-orange-500 hover:bg-orange-600 text-white font-bold py-4 rounded-lg transition-colors text-lg shadow-sm">{t.login}</button>
+            </div>
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}
