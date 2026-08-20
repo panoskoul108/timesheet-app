@@ -187,7 +187,6 @@ const dict = {
     addBtn: '+ Додати'
   }
 };
-
 const getMonday = (d: Date) => {
   const date = new Date(d);
   const day = date.getDay();
@@ -214,7 +213,8 @@ export default function App() {
   // States για Προβολές
   const [viewMode, setViewMode] = useState<'form' | 'dashboard' | 'my_hours' | 'schedule_admin' | 'schedule_staff'>('form');
   const [shifts, setShifts] = useState<any[]>([]);
-    // Φίλτρα Στατιστικών
+  
+  // Φίλτρα Στατιστικών
   const [dateFilter, setDateFilter] = useState<'week' | 'month' | 'year' | 'custom'>('month');
   const [storeFilter, setStoreFilter] = useState<'All' | 'Hellas' | 'Nordic'>('All');
   const [employeeFilter, setEmployeeFilter] = useState<string>('All');
@@ -347,8 +347,7 @@ export default function App() {
     await supabase.from('schedules').delete().eq('id', id);
     loadSchedules(scheduleWeekStart);
   };
-
-  const copyPreviousWeek = async () => {
+const copyPreviousWeek = async () => {
     if (!window.confirm(t.confirmCopy)) return;
     const currStart = new Date(scheduleWeekStart);
     const prevStart = new Date(currStart); prevStart.setDate(prevStart.getDate() - 7);
@@ -372,7 +371,8 @@ export default function App() {
     loadSchedules(scheduleWeekStart);
     alert(t.copySuccess);
   };
-const renderLangButtons = () => (
+
+  const renderLangButtons = () => (
     <div className="w-full flex justify-end gap-2 mb-3">
       <button onClick={() => setLang('el')} className={`px-3 py-1 text-sm font-bold rounded-lg border-2 shadow-sm transition-colors ${lang === 'el' ? 'bg-[#8B5A2B] text-white border-[#8B5A2B]' : 'bg-white text-gray-600 border-gray-200'}`}>🇬🇷 ΕΛ</button>
       <button onClick={() => setLang('da')} className={`px-3 py-1 text-sm font-bold rounded-lg border-2 shadow-sm transition-colors ${lang === 'da' ? 'bg-[#8B5A2B] text-white border-[#8B5A2B]' : 'bg-white text-gray-600 border-gray-200'}`}>🇩🇰 DA</button>
@@ -525,15 +525,14 @@ const renderLangButtons = () => (
       </div>
     );
   }
-
-  // --- ΟΘΟΝΗ: ΣΤΑΤΙΣΤΙΚΑ ΩΡΩΝ (ADMIN & MY HOURS) ---
+// --- ΟΘΟΝΗ: ΣΤΑΤΙΣΤΙΚΑ ΩΡΩΝ (ADMIN & MY HOURS) ---
   if (loggedInUser && (viewMode === 'dashboard' || viewMode === 'my_hours')) {
     const isDash = viewMode === 'dashboard';
     const now = new Date();
     const currentYear = now.getFullYear();
     const currentMonth = now.getMonth();
     
-const filteredShifts = shifts.filter(shift => {
+    const filteredShifts = shifts.filter(shift => {
       const sDate = new Date(shift.shift_date); sDate.setHours(0,0,0,0);
       let dateMatch = true;
       if (dateFilter === 'year') dateMatch = sDate.getFullYear() === currentYear;
@@ -705,8 +704,7 @@ const filteredShifts = shifts.filter(shift => {
       </div>
     );
   }
-
-  // ---------------- ΟΘΟΝΗ: LOGIN ----------------
+// ---------------- ΟΘΟΝΗ: LOGIN ----------------
   return (
     <div className="min-h-screen bg-gray-100 flex flex-col items-center justify-center p-4">
       <div className="max-w-md w-full">{renderLangButtons()}</div>
