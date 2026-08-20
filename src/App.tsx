@@ -368,6 +368,20 @@ export default function App() {
             <button onClick={() => setDateFilter('custom')} className={`py-2 rounded text-sm font-bold ${dateFilter === 'custom' ? 'bg-blue-500 text-white' : 'bg-gray-200'}`}>{t.range}</button>
           </div>
 
+          {/* ΕΔΩ ΠΡΟΣΤΕΘΗΚΑΝ ΞΑΝΑ ΤΑ ΚΟΥΤΑΚΙΑ ΤΩΝ ΗΜΕΡΟΜΗΝΙΩΝ ΠΟΥ ΕΛΕΙΠΑΝ */}
+          {dateFilter === 'custom' && (
+            <div className="flex gap-3 mb-4 p-4 rounded border shadow-sm bg-gray-50">
+              <div className="flex-1">
+                <label className="block text-xs font-bold mb-1">{t.from}</label>
+                <input type="date" value={customStartDate} onChange={(e) => setCustomStartDate(e.target.value)} className="w-full p-2 border rounded" />
+              </div>
+              <div className="flex-1">
+                <label className="block text-xs font-bold mb-1">{t.to}</label>
+                <input type="date" value={customEndDate} onChange={(e) => setCustomEndDate(e.target.value)} className="w-full p-2 border rounded" />
+              </div>
+            </div>
+          )}
+
           <div className="flex gap-2 mb-6 mt-2">
             <button onClick={() => setStoreFilter('All')} className={`flex-1 py-2 rounded border-2 text-sm font-bold ${storeFilter === 'All' ? 'border-blue-500 text-blue-600 bg-blue-50' : 'border-gray-200'}`}>{t.allStores}</button>
             <button onClick={() => setStoreFilter('Hellas')} className={`flex-1 py-2 rounded border-2 text-sm font-bold ${storeFilter === 'Hellas' ? 'border-blue-500 text-blue-600 bg-blue-50' : 'border-gray-200'}`}>Hellas</button>
