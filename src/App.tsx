@@ -85,7 +85,6 @@ export default function App() {
     setViewMode('form'); setSubmitMsg(''); setHours('');
   };
 
-  // --- Functions for Shifts ---
   const handleSaveShift = async () => {
     if (!hours || isNaN(Number(hours))) return setSubmitMsg(t.errInvalidHours);
     const { error: insertErr } = await supabase.from('shifts').insert([{
@@ -159,7 +158,6 @@ export default function App() {
     });
   };
 
-  // --- Functions for Schedules ---
   const loadSchedules = async (startDate: string) => {
     const start = new Date(startDate);
     const end = new Date(start); end.setDate(end.getDate() + 6);
@@ -176,7 +174,6 @@ export default function App() {
     if (viewMode === 'schedule_admin' || viewMode === 'schedule_staff') loadSchedules(scheduleWeekStart);
   }, [scheduleWeekStart, viewMode]);
 
-  // ΤΟ ΝΕΟ ΑΣΦΑΛΕΣ SAVE ΓΙΑ ΤΟ MODAL
   const saveScheduleEntry = async () => {
     if (!schedEmpId) return alert("Παρακαλώ επίλεξε υπάλληλο!");
     if (!schedStart || !schedEnd) return alert("Παρακαλώ συμπλήρωσε Έναρξη και Λήξη!");
@@ -190,13 +187,10 @@ export default function App() {
     };
 
     const { error: insertErr } = await supabase.from('schedules').insert([payload]);
-    
     if (insertErr) {
-      console.error("Σφάλμα Βάσης:", insertErr);
-      alert("Αποτυχία αποθήκευσης! Μήνυμα Βάσης: " + insertErr.message);
+      console.error(insertErr); alert("Αποτυχία: " + insertErr.message);
     } else {
-      setIsScheduleModalOpen(false);
-      setSchedStart(''); setSchedEnd(''); setSchedEmpId('');
+      setIsScheduleModalOpen(false); setSchedStart(''); setSchedEnd(''); setSchedEmpId('');
       loadSchedules(scheduleWeekStart);
     }
   };
@@ -236,7 +230,7 @@ export default function App() {
     </div>
   );
 
-  // ---------------- UI: SCHEDULE GRID ΜΕ MODAL ----------------
+  // ---------------- UI: SCHEDULE (RESPONSIVE GRID / CARDS) ----------------
   if (loggedInUser && (viewMode === 'schedule_admin' || viewMode === 'schedule_staff')) {
     const isSchedAdmin = viewMode === 'schedule_admin';
     const daysOfWeek = Array.from({ length: 7 }).map((_, i) => {
@@ -249,57 +243,111 @@ export default function App() {
       <div className="min-h-screen bg-gray-100 p-2 sm:p-4 flex flex-col items-center pt-6 relative">
         <div className="max-w-5xl w-full">{renderLangButtons()}</div>
         
-        {/* ΤΟ ΑΝΑΔΥΟΜΕΝΟ ΠΑΡΑΘΥΡΟ (POPUP / MODAL) ΕΙΔΙΚΑ ΓΙΑ ΚΙΝΗΤΑ */}
+        {/* ΑΝΑΔΥΟΜΕΝΟ ΠΑΡΑΘΥΡΟ (MODAL) ΠΡΟΣΘΗΚΗΣ */}
         {isScheduleModalOpen && (
           <div className="fixed inset-0 bg-black bg-opacity-60 flex items-center justify-center p-4 z-50">
-            <div className="bg-white rounded-2xl p-6 w-full max-w-sm shadow-2xl transform transition-all">
+            <div className="bg-white rounded-2xl p-6 w-full max-w-sm shadow-2xl">
               <h3 className="text-xl font-black mb-4 text-[#1a365d] border-b pb-2">
                 {schedStore} - {new Date(schedDate).toLocaleDateString('el-GR', { weekday: 'short', day: 'numeric', month: 'numeric' })}
               </h3>
-              
               <label className="block text-sm font-bold text-gray-700 mb-1">{t.employee}</label>
               <select value={schedEmpId} onChange={e => setSchedEmpId(e.target.value)} className="w-full p-3 border-2 border-gray-300 rounded-lg mb-4 text-base font-bold bg-gray-50">
                 <option value="" disabled>-- Επίλεξε --</option>
                 {employees.map(emp => <option key={emp.id} value={emp.id}>{emp.name}</option>)}
               </select>
-
               <div className="flex gap-3 mb-6">
                 <div className="flex-1">
                   <label className="block text-sm font-bold text-gray-700 mb-1">{t.startTime}</label>
-                  <input type="time" value={schedStart} onChange={e => setSchedStart(e.target.value)} className="w-full p-3 border-2 border-gray-300 rounded-lg text-base font-bold bg-gray-50" />
+                  <input type="time" value={schedStart} onChange={e => setSchedStart(e.target.value)} className="w-full p-3 border-2 border-gray-300 rounded-lg font-bold bg-gray-50" />
                 </div>
                 <div className="flex-1">
                   <label className="block text-sm font-bold text-gray-700 mb-1">{t.endTime}</label>
-                  <input type="time" value={schedEnd} onChange={e => setSchedEnd(e.target.value)} className="w-full p-3 border-2 border-gray-300 rounded-lg text-base font-bold bg-gray-50" />
+                  <input type="time" value={schedEnd} onChange={e => setSchedEnd(e.target.value)} className="w-full p-3 border-2 border-gray-300 rounded-lg font-bold bg-gray-50" />
                 </div>
               </div>
-
-              <div className="flex gap-3 mt-2">
-                <button onClick={() => setIsScheduleModalOpen(false)} className="flex-1 bg-gray-200 hover:bg-gray-300 text-gray-800 font-bold py-3 rounded-lg text-sm">{t.cancel}</button>
-                <button onClick={saveScheduleEntry} className="flex-1 bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 rounded-lg text-sm shadow-md">{t.saveSchedule}</button>
+              <div className="flex gap-3">
+                <button onClick={() => setIsScheduleModalOpen(false)} className="flex-1 bg-gray-200 text-gray-800 font-bold py-3 rounded-lg">{t.cancel}</button>
+                <button onClick={saveScheduleEntry} className="flex-1 bg-blue-600 text-white font-bold py-3 rounded-lg shadow-md">{t.saveSchedule}</button>
               </div>
             </div>
           </div>
         )}
 
         <div className="bg-white p-3 sm:p-6 rounded-lg shadow-xl border-t-4 border-blue-600 max-w-5xl w-full">
-          <div className="flex flex-col sm:flex-row justify-between items-center mb-6 border-b-2 pb-4 border-gray-200">
+          <div className="flex flex-col sm:flex-row justify-between items-center mb-6 border-b-2 pb-4">
             <h2 className="text-xl sm:text-2xl font-black text-[#1a365d] text-center sm:text-left">{isSchedAdmin ? t.scheduleAdminTitle : t.scheduleStaffTitle}</h2>
             <div className="mt-4 sm:mt-0 flex flex-wrap justify-center gap-2">
               <input type="date" value={scheduleWeekStart} onChange={(e) => setScheduleWeekStart(getMonday(new Date(e.target.value)).toISOString().split('T')[0])} className="p-2 border-2 rounded font-bold text-gray-700 bg-gray-50" />
-              {isSchedAdmin && <button onClick={copyPreviousWeek} className="bg-[#1a365d] text-white px-3 py-2 rounded text-sm font-bold shadow-sm">{t.copyPrevWeek}</button>}
-              <button onClick={() => setViewMode('form')} className="bg-gray-200 text-gray-800 px-4 py-2 rounded text-sm font-bold shadow-sm">{t.back}</button>
+              {isSchedAdmin && <button onClick={copyPreviousWeek} className="bg-[#1a365d] text-white px-3 py-2 rounded text-sm font-bold">{t.copyPrevWeek}</button>}
+              <button onClick={() => setViewMode('form')} className="bg-gray-200 text-gray-800 px-4 py-2 rounded text-sm font-bold">{t.back}</button>
             </div>
           </div>
 
-          <div className="overflow-x-auto border-2 border-gray-300 rounded-lg">
+          {/* ----- ΠΡΟΒΟΛΗ ΚΙΝΗΤΟΥ (ΚΑΡΤΕΛΕΣ) ----- */}
+          <div className="flex flex-col gap-5 md:hidden">
+            {daysOfWeek.map((d) => {
+              const dateStr = d.toISOString().split('T')[0];
+              const hellasShifts = schedules.filter(s => s.schedule_date === dateStr && s.store_location === 'Hellas');
+              const nordicShifts = schedules.filter(s => s.schedule_date === dateStr && s.store_location === 'Nordic');
+              const workingIds = [...hellasShifts, ...nordicShifts].map(s => s.employee_id);
+              const repoEmployees = employees.filter(e => !workingIds.includes(e.id)).map(e => e.name).join(', ');
+
+              return (
+                <div key={dateStr} className="border-2 border-gray-200 rounded-xl overflow-hidden shadow-sm bg-white">
+                  <div className="bg-[#1a365d] text-white p-3 flex justify-between items-center">
+                    <span className="font-black text-lg">📅 {formatDayName(d)}</span>
+                    <span className="font-bold text-blue-200">{formatDateObj(d)}</span>
+                  </div>
+                  
+                  {/* Καρτέλα Hellas */}
+                  <div className="p-3 border-b border-gray-100">
+                    <h4 className="font-black text-[#2b6cb0] mb-2 flex items-center gap-2"><span className="w-2 h-2 rounded-full bg-[#2b6cb0]"></span> HELLAS</h4>
+                    {hellasShifts.map(s => (
+                      <div key={s.id} className="flex justify-between items-center py-2 border-b border-gray-50 last:border-0">
+                        <div className="text-gray-800 font-bold text-sm">
+                          {s.start_time && <span className="text-gray-500 font-mono mr-2 bg-gray-100 px-1 rounded">{s.start_time} - {s.end_time}</span>}
+                          {employees.find(e => e.id === s.employee_id)?.name || t.unknown}
+                        </div>
+                        {isSchedAdmin && <button onClick={() => deleteSchedule(s.id)} className="text-red-500 font-black px-3 py-1 bg-red-50 rounded">✕</button>}
+                      </div>
+                    ))}
+                    {isSchedAdmin && <button onClick={() => { setSchedDate(dateStr); setSchedStore('Hellas'); setSchedStart(''); setSchedEnd(''); setSchedEmpId(''); setIsScheduleModalOpen(true); }} className="mt-2 w-full text-sm font-bold text-[#2b6cb0] bg-blue-50 py-3 rounded-lg border border-blue-200 uppercase">{t.addBtn}</button>}
+                  </div>
+
+                  {/* Καρτέλα Nordic */}
+                  <div className="p-3 border-b border-gray-100">
+                    <h4 className="font-black text-[#319795] mb-2 flex items-center gap-2"><span className="w-2 h-2 rounded-full bg-[#319795]"></span> NORDIC MYTHOS</h4>
+                    {nordicShifts.map(s => (
+                      <div key={s.id} className="flex justify-between items-center py-2 border-b border-gray-50 last:border-0">
+                        <div className="text-gray-800 font-bold text-sm">
+                          {s.start_time && <span className="text-gray-500 font-mono mr-2 bg-gray-100 px-1 rounded">{s.start_time} - {s.end_time}</span>}
+                          {employees.find(e => e.id === s.employee_id)?.name || t.unknown}
+                        </div>
+                        {isSchedAdmin && <button onClick={() => deleteSchedule(s.id)} className="text-red-500 font-black px-3 py-1 bg-red-50 rounded">✕</button>}
+                      </div>
+                    ))}
+                    {isSchedAdmin && <button onClick={() => { setSchedDate(dateStr); setSchedStore('Nordic'); setSchedStart(''); setSchedEnd(''); setSchedEmpId(''); setIsScheduleModalOpen(true); }} className="mt-2 w-full text-sm font-bold text-[#319795] bg-teal-50 py-3 rounded-lg border border-teal-200 uppercase">{t.addBtn}</button>}
+                  </div>
+
+                  {/* Καρτέλα Ρεπό */}
+                  <div className="p-3 bg-gray-50">
+                    <h4 className="font-black text-gray-500 mb-1 text-sm">{t.repoCol}</h4>
+                    <p className="text-sm text-gray-600 font-medium leading-relaxed">{repoEmployees || '-'}</p>
+                  </div>
+                </div>
+              )
+            })}
+          </div>
+
+          {/* ----- ΠΡΟΒΟΛΗ ΥΠΟΛΟΓΙΣΤΗ / TABLET (GRID) ----- */}
+          <div className="hidden md:block overflow-x-auto border-2 border-gray-300 rounded-lg">
             <table className="w-full min-w-[700px] border-collapse bg-white">
               <thead>
                 <tr>
-                  <th className="bg-[#1a365d] text-white p-3 border-r w-[18%] font-black shadow-inner">{t.dayCol}</th>
-                  <th className="bg-[#2b6cb0] text-white p-3 border-r w-[27%] font-black shadow-inner">HELLAS</th>
-                  <th className="bg-[#319795] text-white p-3 border-r w-[27%] font-black shadow-inner">NORDIC MYTHOS</th>
-                  <th className="bg-[#a0aec0] text-gray-800 p-3 w-[28%] font-black shadow-inner">{t.repoCol}</th>
+                  <th className="bg-[#1a365d] text-white p-3 border-r w-[18%] font-black">{t.dayCol}</th>
+                  <th className="bg-[#2b6cb0] text-white p-3 border-r w-[27%] font-black">HELLAS</th>
+                  <th className="bg-[#319795] text-white p-3 border-r w-[27%] font-black">NORDIC MYTHOS</th>
+                  <th className="bg-[#a0aec0] text-gray-800 p-3 w-[28%] font-black">{t.repoCol}</th>
                 </tr>
               </thead>
               <tbody>
@@ -314,27 +362,27 @@ export default function App() {
                     <tr key={dateStr} className={`border-t border-gray-300 transition-colors ${index % 2 === 0 ? 'bg-gray-50' : 'bg-white'}`}>
                       <td className="p-3 border-r align-middle">
                         <div className="flex flex-col text-[#1a365d]">
-                          <span className="font-black text-[15px] sm:text-lg flex items-center gap-1"><span className="text-xl">📅</span> {formatDayName(d)}</span>
+                          <span className="font-black text-lg flex items-center gap-1"><span className="text-xl">📅</span> {formatDayName(d)}</span>
                           <span className="font-bold text-gray-500 pl-7">{formatDateObj(d)}</span>
                         </div>
                       </td>
                       <td className="p-2 sm:p-3 border-r align-top relative">
                         {hellasShifts.map(s => (
-                          <div key={s.id} className="flex justify-between items-center py-1.5 border-b border-gray-100 last:border-0">
+                          <div key={s.id} className="flex justify-between items-center py-1 border-b border-gray-100 last:border-0">
                             <div className="text-gray-800 font-semibold">{s.start_time && <span className="text-gray-500 font-mono text-sm mr-2">🕒 {s.start_time}</span>}{employees.find(e => e.id === s.employee_id)?.name || t.unknown}</div>
                             {isSchedAdmin && <button onClick={() => deleteSchedule(s.id)} className="text-red-500 hover:text-red-700 font-black px-2 py-1 bg-red-50 rounded">✕</button>}
                           </div>
                         ))}
-                        {isSchedAdmin && <button onClick={() => { setSchedDate(dateStr); setSchedStore('Hellas'); setSchedStart(''); setSchedEnd(''); setSchedEmpId(''); setIsScheduleModalOpen(true); }} className="mt-3 w-full text-xs font-bold text-[#2b6cb0] bg-blue-50 py-2 rounded-lg border border-blue-200 shadow-sm uppercase tracking-wider">{t.addBtn}</button>}
+                        {isSchedAdmin && <button onClick={() => { setSchedDate(dateStr); setSchedStore('Hellas'); setSchedStart(''); setSchedEnd(''); setSchedEmpId(''); setIsScheduleModalOpen(true); }} className="mt-3 w-full text-xs font-bold text-[#2b6cb0] bg-blue-50 py-2 rounded-lg border border-blue-200 uppercase tracking-wider">{t.addBtn}</button>}
                       </td>
                       <td className="p-2 sm:p-3 border-r align-top relative">
                         {nordicShifts.map(s => (
-                          <div key={s.id} className="flex justify-between items-center py-1.5 border-b border-gray-100 last:border-0">
+                          <div key={s.id} className="flex justify-between items-center py-1 border-b border-gray-100 last:border-0">
                             <div className="text-gray-800 font-semibold">{s.start_time && <span className="text-gray-500 font-mono text-sm mr-2">🕒 {s.start_time}</span>}{employees.find(e => e.id === s.employee_id)?.name || t.unknown}</div>
                             {isSchedAdmin && <button onClick={() => deleteSchedule(s.id)} className="text-red-500 hover:text-red-700 font-black px-2 py-1 bg-red-50 rounded">✕</button>}
                           </div>
                         ))}
-                        {isSchedAdmin && <button onClick={() => { setSchedDate(dateStr); setSchedStore('Nordic'); setSchedStart(''); setSchedEnd(''); setSchedEmpId(''); setIsScheduleModalOpen(true); }} className="mt-3 w-full text-xs font-bold text-[#319795] bg-teal-50 py-2 rounded-lg border border-teal-200 shadow-sm uppercase tracking-wider">{t.addBtn}</button>}
+                        {isSchedAdmin && <button onClick={() => { setSchedDate(dateStr); setSchedStore('Nordic'); setSchedStart(''); setSchedEnd(''); setSchedEmpId(''); setIsScheduleModalOpen(true); }} className="mt-3 w-full text-xs font-bold text-[#319795] bg-teal-50 py-2 rounded-lg border border-teal-200 uppercase tracking-wider">{t.addBtn}</button>}
                       </td>
                       <td className="p-3 align-middle text-gray-600 font-medium leading-relaxed">{repoEmployees || '-'}</td>
                     </tr>
@@ -487,7 +535,7 @@ export default function App() {
     );
   }
 
-   // ---------------- UI: LOGIN ----------------
+  // ---------------- UI: LOGIN ----------------
   return (
     <div className="min-h-screen bg-gray-100 flex flex-col items-center justify-center p-4">
       <div className="max-w-md w-full">{renderLangButtons()}</div>
