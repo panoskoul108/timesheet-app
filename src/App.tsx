@@ -1,7 +1,6 @@
 import { useState, useEffect } from 'react';
 import { supabase } from './supabase';
 
-// Λεξικό Μεταφράσεων
 const dict = {
   el: {
     loading: 'Φόρτωση υπαλλήλων...',
@@ -47,7 +46,6 @@ const dict = {
     errDel: 'Σφάλμα κατά τη διαγραφή.',
     successDel: 'Διαγράφηκε επιτυχώς.',
     noDataExp: 'Δεν υπάρχουν δεδομένα.',
-    // --- ΝΕΑ για το Πρόγραμμα ---
     scheduleAdminBtn: '📅 Διαχείριση Προγράμματος',
     scheduleStaffBtn: '📅 Το Πρόγραμμά Μου',
     scheduleAdminTitle: 'Πρόγραμμα Εβδομάδας (Admin)',
@@ -183,7 +181,6 @@ const dict = {
   }
 };
 
-// Βοηθητική συνάρτηση: Βρίσκει τη Δευτέρα της εβδομάδας για μια συγκεκριμένη ημερομηνία
 const getMonday = (d: Date) => {
   const date = new Date(d);
   const day = date.getDay();
@@ -201,28 +198,24 @@ export default function App() {
   const [error, setError] = useState('');
   const [loggedInUser, setLoggedInUser] = useState<any>(null);
 
-  // States για την Καταγραφή Ωρών
   const [storeLocation, setStoreLocation] = useState('Hellas');
   const [shiftDate, setShiftDate] = useState(new Date().toISOString().split('T')[0]);
   const [hours, setHours] = useState('');
   const [submitMsg, setSubmitMsg] = useState('');
 
-  // Γενικά States
   const [viewMode, setViewMode] = useState<'form' | 'dashboard' | 'my_hours' | 'schedule_admin' | 'schedule_staff'>('form');
   const [shifts, setShifts] = useState<any[]>([]);
   
-  // Φίλτρα Στατιστικών
   const [dateFilter, setDateFilter] = useState<'week' | 'month' | 'year' | 'custom'>('month');
   const [storeFilter, setStoreFilter] = useState<'All' | 'Hellas' | 'Nordic'>('All');
   const [employeeFilter, setEmployeeFilter] = useState<string>('All');
+  
   const [customStartDate, setCustomStartDate] = useState('');
   const [customEndDate, setCustomEndDate] = useState('');
 
-  // --- STATES ΓΙΑ ΤΟ ΠΡΟΓΡΑΜΜΑ (SCHEDULE) ---
   const [schedules, setSchedules] = useState<any[]>([]);
   const [scheduleWeekStart, setScheduleWeekStart] = useState(getMonday(new Date()).toISOString().split('T')[0]);
   
-  // Φόρμα Προσθήκης/Επεξεργασίας Προγράμματος
   const [editSchedId, setEditSchedId] = useState<string | null>(null);
   const [schedEmpId, setSchedEmpId] = useState('');
   const [schedStore, setSchedStore] = useState('Hellas');
@@ -264,7 +257,8 @@ export default function App() {
       setPin('');
     }
   };
-const handleLogout = () => {
+
+  const handleLogout = () => {
     setLoggedInUser(null);
     setSelectedUser(null);
     localStorage.removeItem('shiftSheetsUser');
@@ -273,7 +267,6 @@ const handleLogout = () => {
     setHours('');
   };
 
-  // ---------------- ΛΕΙΤΟΥΡΓΙΕΣ ΚΑΤΑΓΡΑΦΗΣ ΩΡΩΝ ----------------
   const handleSaveShift = async () => {
     if (!hours || isNaN(Number(hours))) {
       setSubmitMsg(t.errInvalidHours);
@@ -328,7 +321,53 @@ const handleLogout = () => {
     document.body.appendChild(link); link.click(); document.body.removeChild(link);
   };
 
-  // ---------------- ΛΕΙΤΟΥΡΓΙΕΣ ΠΡΟΓΡΑΜΜΑΤΟΣ (SCHEDULES) ----------------
+  const getFilteredShifts = () => {
+    const now = new Date();
+    const currentYear = now.getFullYear();
+    const currentMonth = now.getMonth();
+    
+    return shifts.filter(shift => {
+      const sDate = new Date(shift.shift_date);
+      sDate.setHours(0,0,0,0);
+      
+      let dateMatch = true;
+      if (dateFilter === 'year') {
+        dateMatch = sDate.getFullYear() === currentYear;
+      } else if (dateFilter === 'month') {
+        dateMatch = sDate.getFullYear() === currentYear && sDate.getMonth() === currentMonth;
+      } else if (dateFilter === 'week') {
+        const startOfWeek = new Date(now);
+        startOfWeek.setDate(now.getDate() - now.getDay() + (now.getDay() === 0 ? -6 : 1));
+        startOfWeek.setHours(0,0,0,0);
+        dateMatch = sDate >= startOfWeek;
+      } else if (dateFilter === 'custom') {
+        if (customStartDate && customEndDate) {
+          const start = new Date(customStartDate); start.setHours(0,0,0,0);
+          const end = new Date(customEndDate); end.setHours(23,59,59,999);
+          dateMatch = sDate >= start && sDate <= end;
+        } else if (customStartDate) {
+          const start = new Date(customStartDate); start.setHours(0,0,0,0);
+          dateMatch = sDate >= start;
+        } else if (customEndDate) {
+          const end = new Date(customEndDate); end.setHours(23,59,59,999);
+          dateMatch = sDate <= end;
+        }
+      }
+
+      let storeMatch = true;
+      if (storeFilter !== 'All') {
+        storeMatch = shift.store_location === storeFilter;
+      }
+
+      let employeeMatch = true;
+      if (viewMode === 'dashboard' && employeeFilter !== 'All') {
+        employeeMatch = shift.employee_id === employeeFilter;
+      }
+
+      return dateMatch && storeMatch && employeeMatch;
+    });
+  };
+
   const loadSchedules = async (startDate: string) => {
     const start = new Date(startDate);
     const end = new Date(start);
@@ -350,14 +389,12 @@ const handleLogout = () => {
     setViewMode('schedule_staff');
   };
 
-  // Αλλαγή Εβδομάδας
   useEffect(() => {
     if (viewMode === 'schedule_admin' || viewMode === 'schedule_staff') {
       loadSchedules(scheduleWeekStart);
     }
   }, [scheduleWeekStart, viewMode]);
 
-  // Αποθήκευση/Ενημέρωση Βάρδιας Προγράμματος
   const saveScheduleEntry = async () => {
     if (!schedStart || !schedEnd) return alert("Συμπλήρωσε ώρες.");
     
@@ -391,7 +428,6 @@ const handleLogout = () => {
     loadSchedules(scheduleWeekStart);
   };
 
-  // SOS: Αντιγραφή Προηγούμενης Εβδομάδας
   const copyPreviousWeek = async () => {
     if (!window.confirm(t.confirmCopy)) return;
     
@@ -407,7 +443,7 @@ const handleLogout = () => {
 
     const newEntries = data.map(s => {
       const oldDate = new Date(s.schedule_date);
-      oldDate.setDate(oldDate.getDate() + 7); // Προσθέτει 7 μέρες
+      oldDate.setDate(oldDate.getDate() + 7);
       return {
         employee_id: s.employee_id, store_location: s.store_location, 
         schedule_date: oldDate.toISOString().split('T')[0], start_time: s.start_time, end_time: s.end_time
@@ -419,7 +455,6 @@ const handleLogout = () => {
     alert(t.copySuccess);
   };
 
-  // ---------------- UI ΒΟΗΘΗΤΙΚΑ ----------------
   const renderLangButtons = () => (
     <div className="w-full flex justify-end gap-2 mb-3">
       <button onClick={() => setLang('el')} className={`px-3 py-1 text-sm font-bold rounded-lg border-2 shadow-sm transition-colors ${lang === 'el' ? 'bg-[#8B5A2B] text-white border-[#8B5A2B]' : 'bg-white text-gray-600 border-gray-200'}`}>🇬🇷 ΕΛ</button>
@@ -427,15 +462,10 @@ const handleLogout = () => {
       <button onClick={() => setLang('uk')} className={`px-3 py-1 text-sm font-bold rounded-lg border-2 shadow-sm transition-colors ${lang === 'uk' ? 'bg-[#8B5A2B] text-white border-[#8B5A2B]' : 'bg-white text-gray-600 border-gray-200'}`}>🇺🇦 UK</button>
     </div>
   );
-
-  // ---------------- ΟΘΟΝΕΣ ----------------
-
-  // --- ΟΘΟΝΗ: ΠΡΟΓΡΑΜΜΑ (ADMIN & STAFF) ---
+  // ---------------- ΟΘΟΝΗ: ΠΡΟΓΡΑΜΜΑ (ADMIN & STAFF) ----------------
   if (loggedInUser && (viewMode === 'schedule_admin' || viewMode === 'schedule_staff')) {
     const isSchedAdmin = viewMode === 'schedule_admin';
     const sortedSchedules = [...schedules].sort((a, b) => new Date(a.schedule_date).getTime() - new Date(b.schedule_date).getTime());
-    
-    // Για το Staff: Φιλτράρισμα μόνο για τις βάρδιές του
     const displaySchedules = isSchedAdmin ? sortedSchedules : sortedSchedules.filter(s => s.employee_id === loggedInUser.id);
 
     return (
@@ -457,7 +487,6 @@ const handleLogout = () => {
             )}
           </div>
 
-          {/* Φόρμα Δημιουργίας (Μόνο Admin) */}
           {isSchedAdmin && (
             <div className={`mb-8 p-4 rounded-lg border shadow-sm ${editSchedId ? 'bg-yellow-50 border-yellow-300' : 'bg-purple-50 border-purple-200'}`}>
               <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 mb-3">
@@ -502,7 +531,6 @@ const handleLogout = () => {
             </div>
           )}
 
-          {/* Λίστα Προγράμματος */}
           <div className="bg-white border rounded shadow-sm overflow-hidden">
             {displaySchedules.length === 0 ? (
               <p className="text-center text-gray-500 py-6">{t.noRecords}</p>
@@ -512,7 +540,6 @@ const handleLogout = () => {
                   const empName = employees.find(e => e.id === s.employee_id)?.name || t.unknown;
                   const formattedDate = new Date(s.schedule_date).toLocaleDateString(lang === 'el' ? 'el-GR' : lang === 'da' ? 'da-DK' : 'uk-UA', { weekday: 'short', day: 'numeric', month: 'short' });
                   
-                  // Για το Staff: Βρίσκουμε συνάδελφους
                   let colleagues = '';
                   if (!isSchedAdmin) {
                     const others = schedules.filter(other => other.schedule_date === s.schedule_date && other.store_location === s.store_location && other.employee_id !== s.employee_id);
@@ -552,20 +579,144 @@ const handleLogout = () => {
   }
 
   // --- ΟΘΟΝΗ: ΣΤΑΤΙΣΤΙΚΑ ΩΡΩΝ (ADMIN & MY HOURS) ---
-  // (Ο κώδικας για την προβολή στατιστικών παραμένει ακριβώς ο ίδιος, αν τον χρειαστείς, τον άφησα άθικτο για εξοικονόμηση χώρου. Ενσωματώνεται κανονικά παρακάτω)
   if (loggedInUser && (viewMode === 'dashboard' || viewMode === 'my_hours')) {
-    // ...ίδια λογική με πριν... (Απλά επιστρέφουμε στο μενού form)
+    const filteredShifts = getFilteredShifts();
+    const totals: Record<string, number> = {};
+    let totalMyHours = 0;
+
+    filteredShifts.forEach(shift => {
+      const emp = employees.find(e => e.id === shift.employee_id);
+      const empName = emp ? emp.name : t.unknown;
+      totals[empName] = (totals[empName] || 0) + shift.hours_worked;
+      if (viewMode === 'my_hours') totalMyHours += shift.hours_worked;
+    });
+
+    const sortedShifts = [...filteredShifts].sort((a, b) => new Date(b.shift_date).getTime() - new Date(a.shift_date).getTime());
+    const isDash = viewMode === 'dashboard';
+    
+    const activeColor = isDash ? 'bg-orange-500 text-white' : 'bg-blue-500 text-white';
+    const inactiveColor = 'bg-gray-200 text-gray-700 hover:bg-gray-300';
+    const storeActiveColor = isDash ? 'border-orange-500 text-orange-600 bg-orange-50' : 'border-blue-500 text-blue-600 bg-blue-50';
+    const storeInactiveColor = 'border-gray-200 text-gray-500 hover:border-gray-300 bg-white';
+    const customBoxClass = isDash ? 'bg-orange-50 border-orange-200' : 'bg-blue-50 border-blue-200';
+    const customInputClass = isDash ? 'border-orange-300 focus:border-orange-500' : 'border-blue-300 focus:border-blue-500';
+
     return (
-       <div className="min-h-screen bg-gray-100 p-3 flex flex-col items-center justify-start pt-6">
-         <div className="max-w-2xl w-full">{renderLangButtons()}</div>
-         <div className="bg-white p-6 rounded-lg shadow-md border-t-4 border-orange-500 max-w-2xl w-full text-center">
-            <h2 className="text-xl font-bold mb-4">Επιστροφή στη φόρμα για να δεις τις Ώρες...</h2>
-            <button onClick={() => setViewMode('form')} className="bg-orange-500 text-white font-bold py-2 px-6 rounded">Επιστροφή</button>
-         </div>
-       </div>
+      <div className="min-h-screen bg-gray-100 p-3 sm:p-4 flex flex-col items-center justify-start pt-6 sm:pt-10">
+        <div className="max-w-2xl w-full">{renderLangButtons()}</div>
+        <div className={`bg-white p-4 sm:p-8 rounded-lg shadow-md border-t-4 max-w-2xl w-full ${isDash ? 'border-orange-500' : 'border-blue-500'}`}>
+          <div className="flex justify-between items-center mb-6">
+            <h2 className="text-lg sm:text-xl font-bold text-gray-800">{isDash ? t.statsTitle : t.myHoursTitle}</h2>
+            <div className="space-x-2 sm:space-x-3">
+              <button onClick={() => setViewMode('form')} className="text-xs sm:text-sm text-gray-600 hover:text-gray-800 font-semibold p-2">{t.back}</button>
+              <button onClick={handleLogout} className={`text-xs sm:text-sm font-semibold p-2 ${isDash ? 'text-[#8B5A2B] hover:text-orange-600' : 'text-blue-600 hover:text-blue-800'}`}>{t.logout}</button>
+            </div>
+          </div>
+
+          {isDash && (
+            <div className="mb-4 bg-orange-50 p-3 sm:p-4 rounded border border-orange-200">
+              <label className="block text-xs sm:text-sm font-bold text-gray-700 mb-2">{t.employee}:</label>
+              <select value={employeeFilter} onChange={(e) => setEmployeeFilter(e.target.value)} className="w-full p-2 sm:p-3 border border-orange-300 rounded focus:outline-none focus:border-orange-500 text-sm sm:text-base bg-white">
+                <option value="All">{t.all}</option>
+                {employees.map((emp) => <option key={emp.id} value={emp.id}>{emp.name}</option>)}
+              </select>
+            </div>
+          )}
+
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-1 sm:gap-2 mb-3">
+            <button onClick={() => setDateFilter('week')} className={`py-3 sm:py-2 rounded text-xs sm:text-sm font-bold transition-colors ${dateFilter === 'week' ? activeColor : inactiveColor}`}>{t.week}</button>
+            <button onClick={() => setDateFilter('month')} className={`py-3 sm:py-2 rounded text-xs sm:text-sm font-bold transition-colors ${dateFilter === 'month' ? activeColor : inactiveColor}`}>{t.month}</button>
+            <button onClick={() => setDateFilter('year')} className={`py-3 sm:py-2 rounded text-xs sm:text-sm font-bold transition-colors ${dateFilter === 'year' ? activeColor : inactiveColor}`}>{t.year}</button>
+            <button onClick={() => setDateFilter('custom')} className={`py-3 sm:py-2 rounded text-xs sm:text-sm font-bold transition-colors ${dateFilter === 'custom' ? activeColor : inactiveColor}`}>{t.range}</button>
+          </div>
+
+          {dateFilter === 'custom' && (
+            <div className={`flex flex-col sm:flex-row gap-3 mb-4 p-4 rounded border shadow-sm ${customBoxClass}`}>
+              <div className="flex-1">
+                <label className="block text-xs font-bold text-gray-700 mb-1">{t.from}</label>
+                <input type="date" value={customStartDate} onChange={(e) => setCustomStartDate(e.target.value)} className={`w-full p-2 border rounded focus:outline-none text-sm bg-white ${customInputClass}`} />
+              </div>
+              <div className="flex-1">
+                <label className="block text-xs font-bold text-gray-700 mb-1">{t.to}</label>
+                <input type="date" value={customEndDate} onChange={(e) => setCustomEndDate(e.target.value)} className={`w-full p-2 border rounded focus:outline-none text-sm bg-white ${customInputClass}`} />
+              </div>
+            </div>
+          )}
+
+          <div className="flex gap-1 sm:gap-2 mb-6 mt-2">
+            <button onClick={() => setStoreFilter('All')} className={`flex-1 py-3 sm:py-2 rounded border-2 text-xs sm:text-sm font-bold transition-colors ${storeFilter === 'All' ? storeActiveColor : storeInactiveColor}`}>{t.allStores}</button>
+            <button onClick={() => setStoreFilter('Hellas')} className={`flex-1 py-3 sm:py-2 rounded border-2 text-xs sm:text-sm font-bold transition-colors ${storeFilter === 'Hellas' ? storeActiveColor : storeInactiveColor}`}>Hellas</button>
+            <button onClick={() => setStoreFilter('Nordic')} className={`flex-1 py-3 sm:py-2 rounded border-2 text-xs sm:text-sm font-bold transition-colors ${storeFilter === 'Nordic' ? storeActiveColor : storeInactiveColor}`}>Nordic</button>
+          </div>
+
+          <div className="flex justify-end mb-4">
+            <button onClick={() => handleExportCSV(filteredShifts)} className="bg-green-600 hover:bg-green-700 text-white font-semibold py-3 px-4 rounded text-sm w-full sm:w-auto shadow-sm">{t.export}</button>
+          </div>
+
+          <div className="bg-gray-50 border border-gray-200 rounded p-3 sm:p-4 mb-6">
+            <h3 className="text-gray-700 font-bold mb-3 border-b pb-2 text-sm sm:text-base">{t.totals}</h3>
+            {Object.keys(totals).length === 0 && <p className="text-center text-gray-500 py-2 text-sm">{t.noShifts}</p>}
+            {Object.keys(totals).length > 0 && isDash && (
+              <table className="w-full text-left text-sm sm:text-base">
+                <tbody>
+                  {Object.entries(totals).map(([name, totalHours]) => (
+                    <tr key={name} className="border-b border-gray-200 last:border-0">
+                      <td className="py-2 text-gray-800 font-medium">{name}</td>
+                      <td className="py-2 text-right font-bold text-orange-600">{totalHours} {t.hoursText}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            )}
+            {Object.keys(totals).length > 0 && !isDash && (
+              <div className="py-3 text-center">
+                <span className="text-gray-600 font-medium text-lg">{t.totalMyHours} </span>
+                <span className="text-blue-600 font-bold text-2xl ml-2">{totalMyHours}</span>
+              </div>
+            )}
+          </div>
+
+          <div className="bg-white border border-gray-200 rounded p-3 sm:p-4 shadow-sm">
+            <h3 className="text-gray-700 font-bold mb-3 border-b pb-2 text-sm sm:text-base">{t.details}</h3>
+            {sortedShifts.length === 0 && <p className="text-center text-gray-500 py-2 text-sm">{t.noRecords}</p>}
+            {sortedShifts.length > 0 && (
+              <div className="overflow-x-auto -mx-3 sm:mx-0 px-3 sm:px-0">
+                <table className="w-full text-left text-xs sm:text-sm min-w-[350px]">
+                  <thead>
+                    <tr className="text-gray-500 border-b">
+                      <th className="pb-2">{t.shortDate}</th>
+                      {isDash && <th className="pb-2">{t.employee}</th>}
+                      <th className="pb-2">{t.shortStore}</th>
+                      <th className="pb-2 text-center">{t.hoursCol}</th>
+                      <th className="pb-2 text-center"></th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {sortedShifts.map((shift) => {
+                      const empName = employees.find(e => e.id === shift.employee_id)?.name || t.unknown;
+                      return (
+                        <tr key={shift.id} className="border-b last:border-0 hover:bg-gray-50">
+                          <td className="py-3">{new Date(shift.shift_date).toLocaleDateString('el-GR').slice(0, 5)}</td>
+                          {isDash && <td className="py-3 font-medium truncate max-w-[80px] sm:max-w-none">{empName}</td>}
+                          <td className="py-3">{shift.store_location}</td>
+                          <td className="py-3 text-center font-semibold">{shift.hours_worked}</td>
+                          <td className="py-3 text-center">
+                            <button onClick={() => handleDeleteShift(shift.id)} className="text-red-500 hover:text-red-700 font-bold text-lg px-2 p-1">✕</button>
+                          </td>
+                        </tr>
+                      );
+                    })}
+                  </tbody>
+                </table>
+              </div>
+            )}
+          </div>
+        </div>
+      </div>
     );
   }
-// ---------------- ΟΘΟΝΗ: ΑΡΧΙΚΗ ΜΕΤΑ ΤΟ LOGIN (ΚΕΝΤΡΙΚΟ ΜΕΝΟΥ) ----------------
+
+  // ---------------- ΟΘΟΝΗ: ΚΕΝΤΡΙΚΟ ΜΕΝΟΥ (ΜΕΤΑ ΤΟ LOGIN) ----------------
   if (loggedInUser && viewMode === 'form') {
     return (
       <div className="min-h-screen bg-gray-100 flex flex-col items-center justify-center p-4">
@@ -573,7 +724,7 @@ const handleLogout = () => {
         <div className="bg-white p-6 sm:p-8 rounded-lg shadow-md border-t-4 border-orange-500 max-w-md w-full">
           <div className="flex justify-between items-center mb-6">
             <h2 className="text-xl font-bold text-gray-800">{t.hello}, {loggedInUser.name}!</h2>
-            <button onClick={handleLogout} className="text-sm text-[#8B5A2B] font-semibold">{t.logout}</button>
+            <button onClick={handleLogout} className="text-sm text-[#8B5A2B] hover:text-orange-600 font-semibold p-2">{t.logout}</button>
           </div>
 
           <div className="space-y-4">
@@ -583,57 +734,23 @@ const handleLogout = () => {
             </div>
 
             <div className="border-t pt-4 mt-2">
-              <label className="block text-sm font-bold text-gray-700 mb-1">{t.store}</label>
-              <select value={storeLocation} onChange={(e) => setStoreLocation(e.target.value)} className="w-full p-3 border rounded bg-white mb-3">
+              <label className="block text-sm font-medium text-gray-700 mb-1">{t.store}</label>
+              <select value={storeLocation} onChange={(e) => setStoreLocation(e.target.value)} className="w-full p-3 border border-gray-300 rounded focus:outline-none focus:border-orange-500 text-base bg-white mb-3">
                 <option value="Hellas">Hellas</option>
                 <option value="Nordic">Nordic</option>
               </select>
-              <label className="block text-sm font-bold text-gray-700 mb-1">{t.date}</label>
-              <input type="date" value={shiftDate} onChange={(e) => setShiftDate(e.target.value)} className="w-full p-3 border rounded mb-3" />
-              <label className="block text-sm font-bold text-gray-700 mb-1">{t.hoursWorked}</label>
-              <input type="number" step="0.5" placeholder={t.egHours} value={hours} onChange={(e) => setHours(e.target.value)} className="w-full p-3 border rounded mb-3" />
-              <button onClick={handleSaveShift} className="w-full bg-orange-500 text-white font-bold py-4 rounded shadow-sm text-lg">{t.save}</button>
+
+              <label className="block text-sm font-medium text-gray-700 mb-1">{t.date}</label>
+              <input type="date" value={shiftDate} onChange={(e) => setShiftDate(e.target.value)} className="w-full p-3 border border-gray-300 rounded focus:outline-none focus:border-orange-500 text-base mb-3" />
+
+              <label className="block text-sm font-medium text-gray-700 mb-1">{t.hoursWorked}</label>
+              <input type="number" step="0.5" placeholder={t.egHours} value={hours} onChange={(e) => setHours(e.target.value)} className="w-full p-3 border border-gray-300 rounded focus:outline-none focus:border-orange-500 text-base mb-3" />
+
+              <button onClick={handleSaveShift} className="w-full bg-orange-500 hover:bg-orange-600 text-white font-bold py-4 rounded transition-colors shadow-sm text-lg">{t.save}</button>
             </div>
 
-            {submitMsg && <p className="text-center text-sm font-medium mt-2 text-green-600">{submitMsg}</p>}
+            {submitMsg && <p className={`text-center text-sm font-medium mt-2 ${submitMsg.includes('επιτυχώς') || submitMsg.includes('succes') || submitMsg.includes('успішно') ? 'text-green-600' : 'text-red-600'}`}>{submitMsg}</p>}
 
             {loggedInUser.role?.toLowerCase() === 'admin' && (
               <div className="border-t pt-4 mt-4 grid grid-cols-1 gap-2">
-                <button onClick={openAdminSchedule} className="w-full bg-purple-100 text-purple-800 font-bold py-3 rounded border border-purple-300 shadow-sm">{t.scheduleAdminBtn}</button>
-                <button onClick={loadDashboard} className="w-full bg-gray-100 text-gray-800 font-bold py-3 rounded border border-gray-300 shadow-sm">{t.adminBtn}</button>
-              </div>
-            )}
-          </div>
-        </div>
-      </div>
-    );
-  }
-
-  // ---------------- ΟΘΟΝΗ: LOGIN ----------------
-  return (
-    <div className="min-h-screen bg-gray-100 flex flex-col items-center justify-center p-4">
-      <div className="max-w-md w-full">{renderLangButtons()}</div>
-      <div className="bg-white p-6 sm:p-8 rounded-lg shadow-lg border-b-4 border-[#8B5A2B] max-w-md w-full">
-        <h1 className="text-2xl sm:text-3xl font-bold text-gray-800 text-center mb-6 sm:mb-8">ShiftSheets</h1>
-        {!selectedUser ? (
-          <div className="grid grid-cols-1 min-[400px]:grid-cols-2 gap-3 sm:gap-4">
-            {employees.length === 0 && <p className="col-span-2 text-center text-gray-500 text-sm">{t.loading}</p>}
-            {employees.map((emp) => (
-              <button key={emp.id} onClick={() => setSelectedUser(emp)} className="bg-gray-50 text-gray-800 font-semibold py-5 rounded-lg border-2 border-gray-200 hover:border-orange-500 text-lg">{emp.name}</button>
-            ))}
-          </div>
-        ) : (
-          <div className="flex flex-col items-center">
-            <h2 className="text-xl text-gray-700 mb-6">{t.hello}, <span className="font-bold text-orange-600">{selectedUser.name}</span></h2>
-            <input type="password" maxLength={4} value={pin} onChange={(e) => setPin(e.target.value)} placeholder="****" className="w-40 text-center text-4xl tracking-[0.5em] p-4 border-2 rounded-lg mb-6 bg-gray-50" autoFocus />
-            {error && <p className="text-red-500 text-sm mb-4 font-medium">{error}</p>}
-            <div className="flex w-full gap-3 sm:gap-4">
-              <button onClick={() => { setSelectedUser(null); setPin(''); setError(''); }} className="flex-1 bg-gray-200 text-gray-800 font-bold py-4 rounded-lg text-lg">{t.back}</button>
-              <button onClick={handleLogin} className="flex-1 bg-orange-500 text-white font-bold py-4 rounded-lg text-lg shadow-sm">{t.login}</button>
-            </div>
-          </div>
-        )}
-      </div>
-    </div>
-  );
-}
+                <button onClick={openAdminSchedule} className="w
