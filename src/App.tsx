@@ -168,7 +168,18 @@ export default function App() {
   const [customStartDate, setCustomStartDate] = useState('');
   const [customEndDate, setCustomEndDate] = useState('');
 
+  // Φορτώνει τυχόν αποθηκευμένο χρήστη και τους υπαλλήλους με το που ανοίγει η σελίδα
   useEffect(() => {
+    const savedUser = localStorage.getItem('shiftSheetsUser');
+    if (savedUser) {
+      try {
+        setLoggedInUser(JSON.parse(savedUser));
+        setViewMode('form');
+      } catch (e) {
+        console.error("Σφάλμα ανάγνωσης αποθηκευμένου χρήστη.");
+      }
+    }
+
     const fetchEmployees = async () => {
       const { data, error: fetchError } = await supabase.from('employees').select('*');
       if (data) setEmployees(data);
@@ -180,6 +191,8 @@ export default function App() {
   const handleLogin = () => {
     if (selectedUser.pin === pin) {
       setLoggedInUser(selectedUser);
+      // Αποθήκευση στο κινητό/browser του χρήστη
+      localStorage.setItem('shiftSheetsUser', JSON.stringify(selectedUser));
       setError('');
       setPin('');
       setViewMode('form');
@@ -187,6 +200,15 @@ export default function App() {
       setError(t.wrongPin);
       setPin('');
     }
+  };
+const handleLogout = () => {
+    setLoggedInUser(null);
+    setSelectedUser(null);
+    // Διαγραφή του χρήστη από τη μνήμη
+    localStorage.removeItem('shiftSheetsUser');
+    setViewMode('form');
+    setSubmitMsg('');
+    setHours('');
   };
 
   const handleSaveShift = async () => {
@@ -274,7 +296,8 @@ export default function App() {
     const url = URL.createObjectURL(blob);
     const link = document.createElement("a");
     link.href = url;
-    link.setAttribute("download", `ShiftSheets_export_${dateFilter}_${storeFilter}.csv`);
+    // Ενημέρωση και εδώ στο όνομα του αρχείου
+    link.setAttribute("download", `shiftsheets_export_${dateFilter}_${storeFilter}.csv`);
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
@@ -383,7 +406,7 @@ export default function App() {
                 {t.back}
               </button>
               <button 
-                onClick={() => { setLoggedInUser(null); setViewMode('form'); }}
+                onClick={handleLogout}
                 className={`text-xs sm:text-sm font-semibold p-2 ${isDash ? 'text-[#8B5A2B] hover:text-orange-600' : 'text-blue-600 hover:text-blue-800'}`}
               >
                 {t.logout}
@@ -436,8 +459,7 @@ export default function App() {
               </div>
             </div>
           )}
-
-          <div className="flex gap-1 sm:gap-2 mb-6 mt-2">
+         <div className="flex gap-1 sm:gap-2 mb-6 mt-2">
             <button onClick={() => setStoreFilter('All')} className={`flex-1 py-3 sm:py-2 rounded border-2 text-xs sm:text-sm font-bold transition-colors ${storeFilter === 'All' ? storeActiveColor : storeInactiveColor}`}>{t.allStores}</button>
             <button onClick={() => setStoreFilter('Hellas')} className={`flex-1 py-3 sm:py-2 rounded border-2 text-xs sm:text-sm font-bold transition-colors ${storeFilter === 'Hellas' ? storeActiveColor : storeInactiveColor}`}>Hellas</button>
             <button onClick={() => setStoreFilter('Nordic')} className={`flex-1 py-3 sm:py-2 rounded border-2 text-xs sm:text-sm font-bold transition-colors ${storeFilter === 'Nordic' ? storeActiveColor : storeInactiveColor}`}>Nordic</button>
@@ -546,7 +568,7 @@ export default function App() {
               {t.hello}, {loggedInUser.name}!
             </h2>
             <button 
-              onClick={() => { setLoggedInUser(null); setSubmitMsg(''); setHours(''); }}
+              onClick={handleLogout}
               className="text-sm text-[#8B5A2B] hover:text-orange-600 font-semibold p-2"
             >
               {t.logout}
