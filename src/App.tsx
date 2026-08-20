@@ -274,7 +274,7 @@ export default function App() {
     const url = URL.createObjectURL(blob);
     const link = document.createElement("a");
     link.href = url;
-    link.setAttribute("download", `servato_export_${dateFilter}_${storeFilter}.csv`);
+    link.setAttribute("download", `ShiftSheets_export_${dateFilter}_${storeFilter}.csv`);
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
@@ -630,7 +630,7 @@ export default function App() {
       </div>
       <div className="bg-white p-6 sm:p-8 rounded-lg shadow-lg border-b-4 border-[#8B5A2B] max-w-md w-full">
         <h1 className="text-2xl sm:text-3xl font-bold text-gray-800 text-center mb-6 sm:mb-8">
-          Servato
+          ShiftSheets
         </h1>
 
         {!selectedUser && (
