@@ -25,7 +25,6 @@ export default function App() {
 
   useEffect(() => {
     const fetchEmployees = async () => {
-      // Διορθωμένο: Τραβάμε το 'error' και το μετονομάζουμε σε 'fetchError'
       const { data, error: fetchError } = await supabase.from('employees').select('*');
       if (data) setEmployees(data);
       if (fetchError) console.error('Σφάλμα:', fetchError);
@@ -71,7 +70,6 @@ export default function App() {
   };
 
   const loadDashboard = async () => {
-    // Διορθωμένο: Τραβάμε το 'error' και το μετονομάζουμε σε 'fetchError'
     const { data, error: fetchError } = await supabase.from('shifts').select('*');
     if (data) {
       setShifts(data.filter(s => s.is_deleted !== true));
@@ -81,7 +79,6 @@ export default function App() {
   };
 
   const handleLoadMyHours = async () => {
-    // Διορθωμένο: Τραβάμε το 'error' και το μετονομάζουμε σε 'fetchError'
     const { data, error: fetchError } = await supabase.from('shifts').select('*').eq('employee_id', loggedInUser.id);
     if (data) {
       setShifts(data.filter(s => s.is_deleted !== true));
@@ -91,9 +88,21 @@ export default function App() {
   };
 
   const handleDeleteShift = async (shiftId: string) => {
-    const confirmDelete = window.confirm("Σίγουρα θέλεις να διαγράψεις αυτή τη βάρδια;");
-    if (!confirmDelete) return;
+    // 1. Ζητάμε το PIN από τον χρήστη
+    const enteredPin = window.prompt("Απαιτείται έγκριση Διαχειριστή.\nΠαρακαλώ εισάγετε ένα Admin PIN για να γίνει η διαγραφή:");
+    
+    // 2. Αν πατήσει "Ακύρωση" ή το αφήσει κενό, σταματάμε
+    if (enteredPin === null || enteredPin.trim() === '') return;
 
+    // 3. Ελέγχουμε αν υπάρχει υπάλληλος με αυτό το PIN ΚΑΙ αν έχει ρόλο Admin
+    const isAdmin = employees.some(emp => emp.pin === enteredPin && emp.role?.toLowerCase() === 'admin');
+
+    if (!isAdmin) {
+      alert("Αποτυχία: Το PIN είναι λάθος ή δεν ανήκει σε Διαχειριστή (Admin). Η διαγραφή ακυρώθηκε.");
+      return;
+    }
+
+    // 4. Αν όλα είναι σωστά, προχωράμε σε Soft Delete
     const { error: updateErr } = await supabase.from('shifts').update({ is_deleted: true }).eq('id', shiftId);
     
     if (updateErr) {
@@ -101,6 +110,7 @@ export default function App() {
       alert('Υπήρξε σφάλμα κατά τη διαγραφή.');
     } else {
       setShifts(shifts.filter(s => s.id !== shiftId));
+      alert('Η βάρδια διαγράφηκε επιτυχώς.');
     }
   };
 
@@ -176,6 +186,7 @@ export default function App() {
       return dateMatch && storeMatch && employeeMatch;
     });
   };
+
   // ---------------- Οθόνη 3: Dashboard & My Hours ----------------
   if (loggedInUser && (viewMode === 'dashboard' || viewMode === 'my_hours')) {
     const filteredShifts = getFilteredShifts();
@@ -353,6 +364,7 @@ export default function App() {
                             <button 
                               onClick={() => handleDeleteShift(shift.id)}
                               className="text-red-500 hover:text-red-700 font-bold text-lg px-2 p-1"
+                              title="Διαγραφή (Απαιτεί Admin PIN)"
                             >
                               ✕
                             </button>
@@ -369,7 +381,8 @@ export default function App() {
       </div>
     );
   }
-// ---------------- Οθόνη 2: Φόρμα Καταγραφής Ωρών ----------------
+
+  // ---------------- Οθόνη 2: Φόρμα Καταγραφής Ωρών ----------------
   if (loggedInUser) {
     return (
       <div className="min-h-screen bg-gray-100 flex items-center justify-center p-4">
@@ -517,4 +530,3 @@ export default function App() {
     </div>
   );
 }
-
