@@ -3,13 +3,16 @@ import { supabase } from './supabase';
 
 const dict = {
   el: {
-    loading: 'Φόρτωση...', hello: 'Γεια σου', wrongPin: 'Λάθος PIN.', back: 'Πίσω', login: 'Είσοδος', logout: 'Έξοδος', store: 'Κατάστημα', date: 'Ημερομηνία', hoursWorked: 'Ώρες', hoursCol: 'Ώρες', egHours: 'π.χ. 6 ή 6.5', save: 'Αποθήκευση', myHoursBtn: '⏱️ Οι Ώρες Μου', adminBtn: '📊 Στατιστικά (Admin)', statsTitle: 'Στατιστικά Πληρωμών', myHoursTitle: 'Οι Ώρες Μου', employee: 'Υπάλληλος', all: '-- Όλοι --', week: 'Εβδομάδα', month: 'Μήνας', year: 'Χρονιά', range: 'Εύρος', from: 'Από:', to: 'Έως:', allStores: 'Όλα', export: '📥 Εξαγωγή', totals: 'Σύνολα', noShifts: 'Δεν βρέθηκαν βάρδιες.', hoursText: 'ώρες', totalMyHours: 'Συνολικές Ώρες:', details: 'Αναλυτικά', noRecords: 'Δεν υπάρχουν καταχωρήσεις.', shortDate: 'Ημ/νία', shortStore: 'Μαγαζί', unknown: 'Άγνωστος', errInvalidHours: 'Παρακαλώ βάλε σωστό αριθμό.', errSave: 'Σφάλμα.', successSave: 'Επιτυχής αποθήκευση!', promptPin: 'Εισάγετε Admin PIN για διαγραφή:', errPin: 'Λάθος PIN.', errDel: 'Σφάλμα διαγραφής.', successDel: 'Διαγράφηκε.', noDataExp: 'Δεν υπάρχουν δεδομένα.', scheduleAdminBtn: '📅 Πρόγραμμα (Admin)', scheduleStaffBtn: '📅 Πρόγραμμα Εβδομάδας', scheduleAdminTitle: 'ΠΡΟΓΡΑΜΜΑ ΒΑΡΔΙΑΣ', scheduleStaffTitle: 'ΠΡΟΓΡΑΜΜΑ ΒΑΡΔΙΑΣ', startTime: 'Έναρξη (π.χ. 18:00)', endTime: 'Λήξη (π.χ. 02:00)', saveSchedule: 'Προσθήκη Βάρδιας', copyPrevWeek: '📋 Αντιγραφή προηγ. εβδομάδας', confirmCopy: 'Αντιγραφή προγράμματος προηγούμενης εβδομάδας;', copySuccess: 'Αντιγράφηκε!', copyEmpty: 'Δεν βρέθηκε πρόγραμμα.', dayCol: 'ΗΜΕΡΑ', repoCol: 'ΡΕΠΟ', addBtn: '+ Προσθήκη', cancel: 'Ακύρωση'
+    loading: 'Φόρτωση...', hello: 'Γεια σου', wrongPin: 'Λάθος PIN.', back: 'Πίσω', login: 'Είσοδος', logout: 'Έξοδος', store: 'Κατάστημα', date: 'Ημερομηνία', hoursWorked: 'Ώρες', hoursCol: 'Ώρες', egHours: 'π.χ. 6 ή 6.5', save: 'Αποθήκευση', myHoursBtn: '⏱️ Οι Ώρες Μου', adminBtn: '📊 Στατιστικά (Admin)', statsTitle: 'Στατιστικά Πληρωμών', myHoursTitle: 'Οι Ώρες Μου', employee: 'Υπάλληλος', all: '-- Όλοι --', week: 'Εβδομάδα', month: 'Μήνας', year: 'Χρονιά', range: 'Εύρος', from: 'Από:', to: 'Έως:', allStores: 'Όλα', export: '📥 Εξαγωγή', totals: 'Σύνολα', noShifts: 'Δεν βρέθηκαν βάρδιες.', hoursText: 'ώρες', totalMyHours: 'Συνολικές Ώρες:', details: 'Αναλυτικά', noRecords: 'Δεν υπάρχουν καταχωρήσεις.', shortDate: 'Ημ/νία', shortStore: 'Μαγαζί', unknown: 'Άγνωστος', errInvalidHours: 'Παρακαλώ βάλε σωστό αριθμό.', errSave: 'Σφάλμα.', successSave: 'Επιτυχής αποθήκευση!', promptPin: 'Εισάγετε Admin PIN για διαγραφή:', errPin: 'Λάθος PIN.', errDel: 'Σφάλμα διαγραφής.', successDel: 'Διαγράφηκε.', noDataExp: 'Δεν υπάρχουν δεδομένα.', scheduleAdminBtn: '📅 Πρόγραμμα (Admin)', scheduleStaffBtn: '📅 Πρόγραμμα Εβδομάδας', scheduleAdminTitle: 'ΠΡΟΓΡΑΜΜΑ ΒΑΡΔΙΑΣ', scheduleStaffTitle: 'ΠΡΟΓΡΑΜΜΑ ΒΑΡΔΙΑΣ', startTime: 'Έναρξη (π.χ. 18:00)', endTime: 'Λήξη (π.χ. 02:00)', saveSchedule: 'Προσθήκη Βάρδιας', copyPrevWeek: '📋 Αντιγραφή προηγ. εβδομάδας', confirmCopy: 'Αντιγραφή προγράμματος προηγούμενης εβδομάδας;', copySuccess: 'Αντιγράφηκε!', copyEmpty: 'Δεν βρέθηκε πρόγραμμα.', dayCol: 'ΗΜΕΡΑ', repoCol: 'ΡΕΠΟ', addBtn: '+ Προσθήκη', cancel: 'Ακύρωση', clearWeek: '🗑️ Καθαρισμός Εβδομάδας', confirmClearWeek: 'Σίγουρα θέλετε να διαγράψετε ΟΛΟ το πρόγραμμα αυτής της εβδομάδας;',
+    bulkDelete: '🗑️ Επιλογή για Διαγραφή', deleteSelected: 'Διαγραφή Επιλεγμένων', confirmDeleteSelected: 'Σίγουρα θέλετε να διαγράψετε τις επιλεγμένες βάρδιες;'
   },
   da: {
-    loading: 'Indlæser...', hello: 'Hej', wrongPin: 'Forkert PIN.', back: 'Tilbage', login: 'Log ind', logout: 'Log ud', store: 'Butik', date: 'Dato', hoursWorked: 'Timer', hoursCol: 'Timer', egHours: 'f.eks. 6', save: 'Gem', myHoursBtn: '⏱️ Mine Timer', adminBtn: '📊 Statistik (Admin)', statsTitle: 'Statistik', myHoursTitle: 'Mine Timer', employee: 'Medarbejder', all: '-- Alle --', week: 'Uge', month: 'Måned', year: 'År', range: 'Periode', from: 'Fra:', to: 'Til:', allStores: 'Alle', export: '📥 Eksporter', totals: 'Totaler', noShifts: 'Ingen vagter.', hoursText: 'timer', totalMyHours: 'Totale timer:', details: 'Detaljer', noRecords: 'Ingen registreringer.', shortDate: 'Dato', shortStore: 'Butik', unknown: 'Ukendt', errInvalidHours: 'Ugyldigt antal.', errSave: 'Fejl.', successSave: 'Gemt!', promptPin: 'Admin PIN for at slette:', errPin: 'Forkert PIN.', errDel: 'Fejl sletning.', successDel: 'Slettet.', noDataExp: 'Ingen data.', scheduleAdminBtn: '📅 Skema (Admin)', scheduleStaffBtn: '📅 Ugeskema', scheduleAdminTitle: 'VAGTSKEMA', scheduleStaffTitle: 'VAGTSKEMA', startTime: 'Start (18:00)', endTime: 'Slut (02:00)', saveSchedule: 'Tilføj Vagt', copyPrevWeek: '📋 Kopier forrige uge', confirmCopy: 'Kopier forrige uge?', copySuccess: 'Kopieret!', copyEmpty: 'Ingen vagter fundet.', dayCol: 'DAG', repoCol: 'FRI', addBtn: '+ Tilføj', cancel: 'Annuller'
+    loading: 'Indlæser...', hello: 'Hej', wrongPin: 'Forkert PIN.', back: 'Tilbage', login: 'Log ind', logout: 'Log ud', store: 'Butik', date: 'Dato', hoursWorked: 'Timer', hoursCol: 'Timer', egHours: 'f.eks. 6', save: 'Gem', myHoursBtn: '⏱️ Mine Timer', adminBtn: '📊 Statistik (Admin)', statsTitle: 'Statistik', myHoursTitle: 'Mine Timer', employee: 'Medarbejder', all: '-- Alle --', week: 'Uge', month: 'Måned', year: 'År', range: 'Periode', from: 'Fra:', to: 'Til:', allStores: 'Alle', export: '📥 Eksporter', totals: 'Totaler', noShifts: 'Ingen vagter.', hoursText: 'timer', totalMyHours: 'Totale timer:', details: 'Detaljer', noRecords: 'Ingen registreringer.', shortDate: 'Dato', shortStore: 'Butik', unknown: 'Ukendt', errInvalidHours: 'Ugyldigt antal.', errSave: 'Fejl.', successSave: 'Gemt!', promptPin: 'Admin PIN for at slette:', errPin: 'Forkert PIN.', errDel: 'Fejl sletning.', successDel: 'Slettet.', noDataExp: 'Ingen data.', scheduleAdminBtn: '📅 Skema (Admin)', scheduleStaffBtn: '📅 Ugeskema', scheduleAdminTitle: 'VAGTSKEMA', scheduleStaffTitle: 'VAGTSKEMA', startTime: 'Start (18:00)', endTime: 'Slut (02:00)', saveSchedule: 'Tilføj Vagt', copyPrevWeek: '📋 Kopier forrige uge', confirmCopy: 'Kopier forrige uge?', copySuccess: 'Kopieret!', copyEmpty: 'Ingen vagter fundet.', dayCol: 'DAG', repoCol: 'FRI', addBtn: '+ Tilføj', cancel: 'Annuller', clearWeek: '🗑️ Ryd Ugen', confirmClearWeek: 'Slet HELE skemaet for denne uge?',
+    bulkDelete: '🗑️ Vælg til Sletning', deleteSelected: 'Slet Valgte', confirmDeleteSelected: 'Slet valgte vagter?'
   },
   uk: {
-    loading: 'Завантаження...', hello: 'Привіт', wrongPin: 'Невірний PIN.', back: 'Назад', login: 'Увійти', logout: 'Вийти', store: 'Магазин', date: 'Дата', hoursWorked: 'Години', hoursCol: 'Год', egHours: 'напр. 6', save: 'Зберегти', myHoursBtn: '⏱️ Мої години', adminBtn: '📊 Статистика (Admin)', statsTitle: 'Статистика', myHoursTitle: 'Мої години', employee: 'Співробітник', all: '-- Всі --', week: 'Тиждень', month: 'Місяць', year: 'Рік', range: 'Період', from: 'Від:', to: 'До:', allStores: 'Всі', export: '📥 Експорт', totals: 'Всього', noShifts: 'Зміни не знайдені.', hoursText: 'год', totalMyHours: 'Всього годин:', details: 'Детально', noRecords: 'Немає записів.', shortDate: 'Дата', shortStore: 'Магазин', unknown: 'Невідомий', errInvalidHours: 'Недійсна кількість.', errSave: 'Помилка.', successSave: 'Збережено!', promptPin: 'Admin PIN для видалення:', errPin: 'Невірний PIN.', errDel: 'Помилка видалення.', successDel: 'Видалено.', noDataExp: 'Немає даних.', scheduleAdminBtn: '📅 Розклад (Admin)', scheduleStaffBtn: '📅 Розклад на тиждень', scheduleAdminTitle: 'РОЗКЛАД ЗМІН', scheduleStaffTitle: 'РОЗКЛАД ЗМІН', startTime: 'З (18:00)', endTime: 'До (02:00)', saveSchedule: 'Додати зміну', copyPrevWeek: '📋 Копіювати мин. тиж.', confirmCopy: 'Копіювати минулий тиждень?', copySuccess: 'Скопійовано!', copyEmpty: 'Порожньо.', dayCol: 'ДЕНЬ', repoCol: 'ВИХІДНИЙ', addBtn: '+ Додати', cancel: 'Скасувати'
+    loading: 'Завантаження...', hello: 'Привіт', wrongPin: 'Невірний PIN.', back: 'Назад', login: 'Увійти', logout: 'Вийти', store: 'Магазин', date: 'Дата', hoursWorked: 'Години', hoursCol: 'Год', egHours: 'напр. 6', save: 'Зберегти', myHoursBtn: '⏱️ Мої години', adminBtn: '📊 Статистика (Admin)', statsTitle: 'Статистика', myHoursTitle: 'Мої години', employee: 'Співробітник', all: '-- Всі --', week: 'Тиждень', month: 'Місяць', year: 'Рік', range: 'Період', from: 'Від:', to: 'До:', allStores: 'Всі', export: '📥 Експорт', totals: 'Всього', noShifts: 'Зміни не знайдені.', hoursText: 'год', totalMyHours: 'Всього годин:', details: 'Детально', noRecords: 'Немає записів.', shortDate: 'Дата', shortStore: 'Магазин', unknown: 'Невідомий', errInvalidHours: 'Недійсна кількість.', errSave: 'Помилка.', successSave: 'Збережено!', promptPin: 'Admin PIN для видалення:', errPin: 'Невірний PIN.', errDel: 'Помилка видалення.', successDel: 'Видалено.', noDataExp: 'Немає даних.', scheduleAdminBtn: '📅 Розклад (Admin)', scheduleStaffBtn: '📅 Розклад на тиждень', scheduleAdminTitle: 'РОЗКЛАД ЗМІН', scheduleStaffTitle: 'РОЗКЛАД ЗМІН', startTime: 'З (18:00)', endTime: 'До (02:00)', saveSchedule: 'Додати зміну', copyPrevWeek: '📋 Копіювати мин. тиж.', confirmCopy: 'Копіювати минулий тиждень?', copySuccess: 'Скопійовано!', copyEmpty: 'Порожньо.', dayCol: 'ДЕНЬ', repoCol: 'ВИХІДНИЙ', addBtn: '+ Додати', cancel: 'Скасувати', clearWeek: '🗑️ Очистити тиждень', confirmClearWeek: 'Видалити розклад на весь тиждень?',
+    bulkDelete: '🗑️ Вибрати для видалення', deleteSelected: 'Видалити вибране', confirmDeleteSelected: 'Видалити вибрані зміни?'
   }
 };
 
@@ -46,11 +49,15 @@ export default function App() {
   const [customStartDate, setCustomStartDate] = useState('');
   const [customEndDate, setCustomEndDate] = useState('');
 
+  // States για τη Μαζική Επιλογή
+  const [isSelectionMode, setIsSelectionMode] = useState(false);
+  const [selectedShiftIds, setSelectedShiftIds] = useState<string[]>([]);
+
   // Schedule States
   const [schedules, setSchedules] = useState<any[]>([]);
   const [scheduleWeekStart, setScheduleWeekStart] = useState(getMonday(new Date()).toISOString().split('T')[0]);
   
-  // Modal (Popup) States για το Κινητό
+  // Modal States
   const [isScheduleModalOpen, setIsScheduleModalOpen] = useState(false);
   const [schedEmpId, setSchedEmpId] = useState('');
   const [schedStore, setSchedStore] = useState('Hellas');
@@ -97,6 +104,7 @@ export default function App() {
   const loadDashboard = async () => {
     const { data } = await supabase.from('shifts').select('*');
     if (data) setShifts(data.filter(s => s.is_deleted !== true));
+    setIsSelectionMode(false); setSelectedShiftIds([]);
     setViewMode('dashboard');
   };
 
@@ -113,6 +121,26 @@ export default function App() {
     if (!isAdmin) return alert(t.errPin);
     const { error: updateErr } = await supabase.from('shifts').update({ is_deleted: true }).eq('id', shiftId);
     if (updateErr) alert(t.errDel); else { setShifts(shifts.filter(s => s.id !== shiftId)); alert(t.successDel); }
+  };
+
+  // ΝΕΟ: ΔΙΑΓΡΑΦΗ ΜΟΝΟ ΤΩΝ ΕΠΙΛΕΓΜΕΝΩΝ (CHECKBOXES)
+  const handleDeleteSelectedShifts = async () => {
+    if (selectedShiftIds.length === 0) return alert(t.noDataExp);
+    if (!window.confirm(t.confirmDeleteSelected)) return;
+    
+    const enteredPin = window.prompt(t.promptPin);
+    if (!enteredPin) return;
+    const isAdmin = employees.some(emp => emp.pin === enteredPin && emp.role?.toLowerCase() === 'admin');
+    if (!isAdmin) return alert(t.errPin);
+
+    const { error: updateErr } = await supabase.from('shifts').update({ is_deleted: true }).in('id', selectedShiftIds);
+    if (updateErr) alert(t.errDel); 
+    else { 
+      setShifts(shifts.filter(s => !selectedShiftIds.includes(s.id))); 
+      alert(t.successDel); 
+      setIsSelectionMode(false);
+      setSelectedShiftIds([]);
+    }
   };
 
   const handleExportCSV = (filteredShifts: any[]) => {
@@ -179,16 +207,12 @@ export default function App() {
     if (!schedStart || !schedEnd) return alert("Παρακαλώ συμπλήρωσε Έναρξη και Λήξη!");
 
     const payload = {
-      employee_id: schedEmpId, 
-      store_location: schedStore, 
-      schedule_date: schedDate, 
-      start_time: schedStart, 
-      end_time: schedEnd
+      employee_id: schedEmpId, store_location: schedStore, schedule_date: schedDate, start_time: schedStart, end_time: schedEnd
     };
 
     const { error: insertErr } = await supabase.from('schedules').insert([payload]);
     if (insertErr) {
-      console.error(insertErr); alert("Αποτυχία: " + insertErr.message);
+      console.error("Σφάλμα Βάσης:", insertErr); alert("Αποτυχία: " + insertErr.message);
     } else {
       setIsScheduleModalOpen(false); setSchedStart(''); setSchedEnd(''); setSchedEmpId('');
       loadSchedules(scheduleWeekStart);
@@ -199,6 +223,24 @@ export default function App() {
     if(!window.confirm("Διαγραφή βάρδιας;")) return;
     await supabase.from('schedules').delete().eq('id', id);
     loadSchedules(scheduleWeekStart);
+  };
+
+  const clearScheduleWeek = async () => {
+    if (!window.confirm(t.confirmClearWeek)) return;
+    const enteredPin = window.prompt(t.promptPin);
+    if (!enteredPin) return;
+    const isAdmin = employees.some(emp => emp.pin === enteredPin && emp.role?.toLowerCase() === 'admin');
+    if (!isAdmin) return alert(t.errPin);
+
+    const start = new Date(scheduleWeekStart);
+    const end = new Date(start); end.setDate(end.getDate() + 6);
+
+    const { error: delErr } = await supabase.from('schedules').delete()
+      .gte('schedule_date', start.toISOString().split('T')[0])
+      .lte('schedule_date', end.toISOString().split('T')[0]);
+
+    if (delErr) alert(t.errDel);
+    else { loadSchedules(scheduleWeekStart); alert(t.successDel); }
   };
 
   const copyPreviousWeek = async () => {
@@ -230,7 +272,7 @@ export default function App() {
     </div>
   );
 
-  // ---------------- UI: SCHEDULE (RESPONSIVE GRID / CARDS) ----------------
+  // ---------------- UI: SCHEDULE ----------------
   if (loggedInUser && (viewMode === 'schedule_admin' || viewMode === 'schedule_staff')) {
     const isSchedAdmin = viewMode === 'schedule_admin';
     const daysOfWeek = Array.from({ length: 7 }).map((_, i) => {
@@ -243,7 +285,6 @@ export default function App() {
       <div className="min-h-screen bg-gray-100 p-2 sm:p-4 flex flex-col items-center pt-6 relative">
         <div className="max-w-5xl w-full">{renderLangButtons()}</div>
         
-        {/* ΑΝΑΔΥΟΜΕΝΟ ΠΑΡΑΘΥΡΟ (MODAL) ΠΡΟΣΘΗΚΗΣ */}
         {isScheduleModalOpen && (
           <div className="fixed inset-0 bg-black bg-opacity-60 flex items-center justify-center p-4 z-50">
             <div className="bg-white rounded-2xl p-6 w-full max-w-sm shadow-2xl">
@@ -274,16 +315,20 @@ export default function App() {
         )}
 
         <div className="bg-white p-3 sm:p-6 rounded-lg shadow-xl border-t-4 border-blue-600 max-w-5xl w-full">
-          <div className="flex flex-col sm:flex-row justify-between items-center mb-6 border-b-2 pb-4">
+          <div className="flex flex-col sm:flex-row justify-between items-center mb-6 border-b-2 pb-4 border-gray-200">
             <h2 className="text-xl sm:text-2xl font-black text-[#1a365d] text-center sm:text-left">{isSchedAdmin ? t.scheduleAdminTitle : t.scheduleStaffTitle}</h2>
             <div className="mt-4 sm:mt-0 flex flex-wrap justify-center gap-2">
               <input type="date" value={scheduleWeekStart} onChange={(e) => setScheduleWeekStart(getMonday(new Date(e.target.value)).toISOString().split('T')[0])} className="p-2 border-2 rounded font-bold text-gray-700 bg-gray-50" />
-              {isSchedAdmin && <button onClick={copyPreviousWeek} className="bg-[#1a365d] text-white px-3 py-2 rounded text-sm font-bold">{t.copyPrevWeek}</button>}
-              <button onClick={() => setViewMode('form')} className="bg-gray-200 text-gray-800 px-4 py-2 rounded text-sm font-bold">{t.back}</button>
+              {isSchedAdmin && (
+                <>
+                  <button onClick={copyPreviousWeek} className="bg-[#1a365d] text-white px-3 py-2 rounded text-sm font-bold shadow-sm">{t.copyPrevWeek}</button>
+                  <button onClick={clearScheduleWeek} className="bg-red-600 text-white px-3 py-2 rounded text-sm font-bold shadow-sm">{t.clearWeek}</button>
+                </>
+              )}
+              <button onClick={() => setViewMode('form')} className="bg-gray-200 text-gray-800 px-4 py-2 rounded text-sm font-bold shadow-sm">{t.back}</button>
             </div>
           </div>
 
-          {/* ----- ΠΡΟΒΟΛΗ ΚΙΝΗΤΟΥ (ΚΑΡΤΕΛΕΣ) ----- */}
           <div className="flex flex-col gap-5 md:hidden">
             {daysOfWeek.map((d) => {
               const dateStr = d.toISOString().split('T')[0];
@@ -298,8 +343,6 @@ export default function App() {
                     <span className="font-black text-lg">📅 {formatDayName(d)}</span>
                     <span className="font-bold text-blue-200">{formatDateObj(d)}</span>
                   </div>
-                  
-                  {/* Καρτέλα Hellas */}
                   <div className="p-3 border-b border-gray-100">
                     <h4 className="font-black text-[#2b6cb0] mb-2 flex items-center gap-2"><span className="w-2 h-2 rounded-full bg-[#2b6cb0]"></span> HELLAS</h4>
                     {hellasShifts.map(s => (
@@ -313,8 +356,6 @@ export default function App() {
                     ))}
                     {isSchedAdmin && <button onClick={() => { setSchedDate(dateStr); setSchedStore('Hellas'); setSchedStart(''); setSchedEnd(''); setSchedEmpId(''); setIsScheduleModalOpen(true); }} className="mt-2 w-full text-sm font-bold text-[#2b6cb0] bg-blue-50 py-3 rounded-lg border border-blue-200 uppercase">{t.addBtn}</button>}
                   </div>
-
-                  {/* Καρτέλα Nordic */}
                   <div className="p-3 border-b border-gray-100">
                     <h4 className="font-black text-[#319795] mb-2 flex items-center gap-2"><span className="w-2 h-2 rounded-full bg-[#319795]"></span> NORDIC MYTHOS</h4>
                     {nordicShifts.map(s => (
@@ -328,8 +369,6 @@ export default function App() {
                     ))}
                     {isSchedAdmin && <button onClick={() => { setSchedDate(dateStr); setSchedStore('Nordic'); setSchedStart(''); setSchedEnd(''); setSchedEmpId(''); setIsScheduleModalOpen(true); }} className="mt-2 w-full text-sm font-bold text-[#319795] bg-teal-50 py-3 rounded-lg border border-teal-200 uppercase">{t.addBtn}</button>}
                   </div>
-
-                  {/* Καρτέλα Ρεπό */}
                   <div className="p-3 bg-gray-50">
                     <h4 className="font-black text-gray-500 mb-1 text-sm">{t.repoCol}</h4>
                     <p className="text-sm text-gray-600 font-medium leading-relaxed">{repoEmployees || '-'}</p>
@@ -339,15 +378,14 @@ export default function App() {
             })}
           </div>
 
-          {/* ----- ΠΡΟΒΟΛΗ ΥΠΟΛΟΓΙΣΤΗ / TABLET (GRID) ----- */}
           <div className="hidden md:block overflow-x-auto border-2 border-gray-300 rounded-lg">
             <table className="w-full min-w-[700px] border-collapse bg-white">
               <thead>
                 <tr>
-                  <th className="bg-[#1a365d] text-white p-3 border-r w-[18%] font-black">{t.dayCol}</th>
-                  <th className="bg-[#2b6cb0] text-white p-3 border-r w-[27%] font-black">HELLAS</th>
-                  <th className="bg-[#319795] text-white p-3 border-r w-[27%] font-black">NORDIC MYTHOS</th>
-                  <th className="bg-[#a0aec0] text-gray-800 p-3 w-[28%] font-black">{t.repoCol}</th>
+                  <th className="bg-[#1a365d] text-white p-3 border-r w-[18%] font-black shadow-inner">{t.dayCol}</th>
+                  <th className="bg-[#2b6cb0] text-white p-3 border-r w-[27%] font-black shadow-inner">HELLAS</th>
+                  <th className="bg-[#319795] text-white p-3 border-r w-[27%] font-black shadow-inner">NORDIC MYTHOS</th>
+                  <th className="bg-[#a0aec0] text-gray-800 p-3 w-[28%] font-black shadow-inner">{t.repoCol}</th>
                 </tr>
               </thead>
               <tbody>
@@ -362,27 +400,27 @@ export default function App() {
                     <tr key={dateStr} className={`border-t border-gray-300 transition-colors ${index % 2 === 0 ? 'bg-gray-50' : 'bg-white'}`}>
                       <td className="p-3 border-r align-middle">
                         <div className="flex flex-col text-[#1a365d]">
-                          <span className="font-black text-lg flex items-center gap-1"><span className="text-xl">📅</span> {formatDayName(d)}</span>
+                          <span className="font-black text-[15px] sm:text-lg flex items-center gap-1"><span className="text-xl">📅</span> {formatDayName(d)}</span>
                           <span className="font-bold text-gray-500 pl-7">{formatDateObj(d)}</span>
                         </div>
                       </td>
                       <td className="p-2 sm:p-3 border-r align-top relative">
                         {hellasShifts.map(s => (
-                          <div key={s.id} className="flex justify-between items-center py-1 border-b border-gray-100 last:border-0">
+                          <div key={s.id} className="flex justify-between items-center py-1.5 border-b border-gray-100 last:border-0">
                             <div className="text-gray-800 font-semibold">{s.start_time && <span className="text-gray-500 font-mono text-sm mr-2">🕒 {s.start_time}</span>}{employees.find(e => e.id === s.employee_id)?.name || t.unknown}</div>
                             {isSchedAdmin && <button onClick={() => deleteSchedule(s.id)} className="text-red-500 hover:text-red-700 font-black px-2 py-1 bg-red-50 rounded">✕</button>}
                           </div>
                         ))}
-                        {isSchedAdmin && <button onClick={() => { setSchedDate(dateStr); setSchedStore('Hellas'); setSchedStart(''); setSchedEnd(''); setSchedEmpId(''); setIsScheduleModalOpen(true); }} className="mt-3 w-full text-xs font-bold text-[#2b6cb0] bg-blue-50 py-2 rounded-lg border border-blue-200 uppercase tracking-wider">{t.addBtn}</button>}
+                        {isSchedAdmin && <button onClick={() => { setSchedDate(dateStr); setSchedStore('Hellas'); setSchedStart(''); setSchedEnd(''); setSchedEmpId(''); setIsScheduleModalOpen(true); }} className="mt-3 w-full text-xs font-bold text-[#2b6cb0] bg-blue-50 py-2 rounded-lg border border-blue-200 shadow-sm uppercase tracking-wider">{t.addBtn}</button>}
                       </td>
                       <td className="p-2 sm:p-3 border-r align-top relative">
                         {nordicShifts.map(s => (
-                          <div key={s.id} className="flex justify-between items-center py-1 border-b border-gray-100 last:border-0">
+                          <div key={s.id} className="flex justify-between items-center py-1.5 border-b border-gray-100 last:border-0">
                             <div className="text-gray-800 font-semibold">{s.start_time && <span className="text-gray-500 font-mono text-sm mr-2">🕒 {s.start_time}</span>}{employees.find(e => e.id === s.employee_id)?.name || t.unknown}</div>
                             {isSchedAdmin && <button onClick={() => deleteSchedule(s.id)} className="text-red-500 hover:text-red-700 font-black px-2 py-1 bg-red-50 rounded">✕</button>}
                           </div>
                         ))}
-                        {isSchedAdmin && <button onClick={() => { setSchedDate(dateStr); setSchedStore('Nordic'); setSchedStart(''); setSchedEnd(''); setSchedEmpId(''); setIsScheduleModalOpen(true); }} className="mt-3 w-full text-xs font-bold text-[#319795] bg-teal-50 py-2 rounded-lg border border-teal-200 uppercase tracking-wider">{t.addBtn}</button>}
+                        {isSchedAdmin && <button onClick={() => { setSchedDate(dateStr); setSchedStore('Nordic'); setSchedStart(''); setSchedEnd(''); setSchedEmpId(''); setIsScheduleModalOpen(true); }} className="mt-3 w-full text-xs font-bold text-[#319795] bg-teal-50 py-2 rounded-lg border border-teal-200 shadow-sm uppercase tracking-wider">{t.addBtn}</button>}
                       </td>
                       <td className="p-3 align-middle text-gray-600 font-medium leading-relaxed">{repoEmployees || '-'}</td>
                     </tr>
@@ -413,8 +451,8 @@ export default function App() {
     
     return (
       <div className="min-h-screen bg-gray-100 p-3 flex flex-col items-center pt-6">
-        <div className="max-w-2xl w-full">{renderLangButtons()}</div>
-        <div className={`bg-white p-4 sm:p-8 rounded-lg shadow-md border-t-4 max-w-2xl w-full ${isDash ? 'border-orange-500' : 'border-blue-500'}`}>
+        <div className="max-w-3xl w-full">{renderLangButtons()}</div>
+        <div className={`bg-white p-4 sm:p-8 rounded-lg shadow-md border-t-4 max-w-3xl w-full ${isDash ? 'border-orange-500' : 'border-blue-500'}`}>
           <div className="flex justify-between items-center mb-6">
             <h2 className="text-lg sm:text-xl font-bold text-gray-800">{isDash ? t.statsTitle : t.myHoursTitle}</h2>
             <div className="space-x-2">
@@ -442,14 +480,8 @@ export default function App() {
 
           {dateFilter === 'custom' && (
             <div className="flex gap-3 mb-4 p-4 rounded border shadow-sm bg-gray-50">
-              <div className="flex-1">
-                <label className="block text-xs font-bold mb-1">{t.from}</label>
-                <input type="date" value={customStartDate} onChange={(e) => setCustomStartDate(e.target.value)} className="w-full p-2 border rounded" />
-              </div>
-              <div className="flex-1">
-                <label className="block text-xs font-bold mb-1">{t.to}</label>
-                <input type="date" value={customEndDate} onChange={(e) => setCustomEndDate(e.target.value)} className="w-full p-2 border rounded" />
-              </div>
+              <div className="flex-1"><label className="block text-xs font-bold mb-1">{t.from}</label><input type="date" value={customStartDate} onChange={(e) => setCustomStartDate(e.target.value)} className="w-full p-2 border rounded" /></div>
+              <div className="flex-1"><label className="block text-xs font-bold mb-1">{t.to}</label><input type="date" value={customEndDate} onChange={(e) => setCustomEndDate(e.target.value)} className="w-full p-2 border rounded" /></div>
             </div>
           )}
 
@@ -459,7 +491,18 @@ export default function App() {
             <button onClick={() => setStoreFilter('Nordic')} className={`flex-1 py-2 rounded border-2 text-sm font-bold ${storeFilter === 'Nordic' ? 'border-blue-500 text-blue-600 bg-blue-50' : 'border-gray-200'}`}>Nordic</button>
           </div>
 
-          <div className="flex justify-end mb-4"><button onClick={() => handleExportCSV(filteredShifts)} className="bg-green-600 text-white font-bold py-2 px-4 rounded">{t.export}</button></div>
+          <div className="flex flex-col sm:flex-row justify-end gap-2 mb-4">
+            {isDash && !isSelectionMode && <button onClick={() => setIsSelectionMode(true)} className="bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-4 rounded shadow">{t.bulkDelete}</button>}
+            
+            {isDash && isSelectionMode && (
+              <>
+                <button onClick={() => { setIsSelectionMode(false); setSelectedShiftIds([]); }} className="bg-gray-400 hover:bg-gray-500 text-white font-bold py-2 px-4 rounded shadow">{t.cancel}</button>
+                <button onClick={handleDeleteSelectedShifts} className="bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-4 rounded shadow">{t.deleteSelected} ({selectedShiftIds.length})</button>
+              </>
+            )}
+            
+            {!isSelectionMode && <button onClick={() => handleExportCSV(filteredShifts)} className="bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-4 rounded shadow">{t.export}</button>}
+          </div>
 
           <div className="bg-gray-50 border rounded p-4 mb-6">
             <h3 className="font-bold mb-3 border-b pb-2">{t.totals}</h3>
@@ -478,20 +521,46 @@ export default function App() {
             <h3 className="font-bold mb-3 border-b pb-2">{t.details}</h3>
             {sortedShifts.length > 0 ? (
               <table className="w-full text-left text-sm">
-                <thead><tr className="text-gray-500 border-b"><th>{t.shortDate}</th>{isDash && <th>{t.employee}</th>}<th>{t.shortStore}</th><th className="text-center">{t.hoursCol}</th><th></th></tr></thead>
+                <thead>
+                  <tr className="text-gray-500 border-b">
+                    {isSelectionMode && <th className="pb-2 w-10 text-center">☑</th>}
+                    <th className="pb-2">{t.shortDate}</th>
+                    {isDash && <th className="pb-2">{t.employee}</th>}
+                    <th className="pb-2">{t.shortStore}</th>
+                    <th className="pb-2 text-center">{t.hoursCol}</th>
+                    {!isSelectionMode && <th className="pb-2"></th>}
+                  </tr>
+                </thead>
                 <tbody>
                   {sortedShifts.map((shift) => (
-                    <tr key={shift.id} className="border-b hover:bg-gray-50">
-                      <td className="py-2">{new Date(shift.shift_date).toLocaleDateString('el-GR').slice(0, 5)}</td>
-                      {isDash && <td className="py-2">{employees.find(e => e.id === shift.employee_id)?.name || t.unknown}</td>}
-                      <td className="py-2">{shift.store_location}</td>
-                      <td className="py-2 text-center font-bold">{shift.hours_worked}</td>
-                      <td className="py-2 text-center"><button onClick={() => handleDeleteShift(shift.id)} className="text-red-500 font-bold">✕</button></td>
+                    <tr key={shift.id} className={`border-b hover:bg-gray-50 ${selectedShiftIds.includes(shift.id) ? 'bg-red-50' : ''}`}>
+                      {isSelectionMode && (
+                        <td className="py-2 text-center">
+                          <input 
+                            type="checkbox" 
+                            checked={selectedShiftIds.includes(shift.id)} 
+                            onChange={(e) => {
+                              if (e.target.checked) setSelectedShiftIds([...selectedShiftIds, shift.id]);
+                              else setSelectedShiftIds(selectedShiftIds.filter(id => id !== shift.id));
+                            }} 
+                            className="w-5 h-5 cursor-pointer accent-red-600"
+                          />
+                        </td>
+                      )}
+                      
+                      <td className="py-3">{new Date(shift.shift_date).toLocaleDateString('el-GR').slice(0, 5)}</td>
+                      {isDash && <td className="py-3 font-semibold">{employees.find(e => e.id === shift.employee_id)?.name || t.unknown}</td>}
+                      <td className="py-3">{shift.store_location}</td>
+                      <td className="py-3 text-center font-bold text-gray-700">{shift.hours_worked}</td>
+                      
+                      {!isSelectionMode && (
+                        <td className="py-3 text-center"><button onClick={() => handleDeleteShift(shift.id)} className="text-red-500 font-bold hover:bg-red-50 px-2 py-1 rounded">✕</button></td>
+                      )}
                     </tr>
                   ))}
                 </tbody>
               </table>
-            ) : <p className="text-center text-gray-500">{t.noRecords}</p>}
+            ) : <p className="text-center text-gray-500 py-4">{t.noRecords}</p>}
           </div>
         </div>
       </div>
@@ -506,7 +575,7 @@ export default function App() {
         <div className="bg-white p-6 sm:p-8 rounded-lg shadow-md border-t-4 border-orange-500 max-w-md w-full">
           <div className="flex justify-between items-center mb-6">
             <h2 className="text-xl font-bold text-gray-800">{t.hello}, {loggedInUser.name}!</h2>
-            <button onClick={handleLogout} className="text-sm text-[#8B5A2B] font-semibold p-2">{t.logout}</button>
+            <button onClick={handleLogout} className="text-sm text-[#8B5A2B] hover:text-orange-600 font-semibold p-2">{t.logout}</button>
           </div>
           <div className="space-y-4">
             <div className="grid grid-cols-2 gap-2 mb-2">
