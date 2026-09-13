@@ -3,17 +3,17 @@ import { supabase } from './supabase';
 
 const dict = {
   el: {
-    loading: 'Φόρτωση...', hello: 'Γεια σου', wrongPin: 'Λάθος PIN.', back: 'Πίσω', login: 'Είσοδος', logout: 'Έξοδος', store: 'Κατάστημα', date: 'Ημερομηνία', hoursWorked: 'Ώρες', hoursCol: 'Ώρες', egHours: 'π.χ. 6 ή 6.5', save: 'Αποθήκευση', myHoursBtn: '⏱️ Οι Ώρες Μου', adminBtn: '📊 Στατιστικά (Admin)', statsTitle: 'Στατιστικά Πληρωμών', myHoursTitle: 'Οι Ώρες Μου', employee: 'Υπάλληλος', all: '-- Όλοι --', week: 'Εβδομάδα', month: 'Μήνας', payroll: 'Μισθοδοσία (25-25)', range: 'Εύρος', from: 'Από:', to: 'Έως:', allStores: 'Όλα', export: '📥 Εξαγωγή', totals: 'Σύνολα', noShifts: 'Δεν βρέθηκαν βάρδιες.', hoursText: 'ώρες', totalMyHours: 'Συνολικές Ώρες:', details: 'Αναλυτικά', noRecords: 'Δεν υπάρχουν καταχωρήσεις.', shortDate: 'Ημ/νία', shortStore: 'Μαγαζί', unknown: 'Άγνωστος', errInvalidHours: 'Παρακαλώ βάλε σωστό αριθμό.', errSave: 'Σφάλμα.', successSave: 'Επιτυχής αποθήκευση!', promptPin: 'Εισάγετε Admin PIN για διαγραφή:', errPin: 'Λάθος PIN.', errDel: 'Σφάλμα διαγραφής.', successDel: 'Διαγράφηκε.', noDataExp: 'Δεν υπάρχουν δεδομένα.', scheduleAdminBtn: '📅 Πρόγραμμα (Admin)', scheduleStaffBtn: '📅 Πρόγραμμα Εβδομάδας', scheduleAdminTitle: 'ΠΡΟΓΡΑΜΜΑ ΒΑΡΔΙΑΣ', scheduleStaffTitle: 'ΠΡΟΓΡΑΜΜΑ ΒΑΡΔΙΑΣ', startTime: 'Έναρξη (π.χ. 18:00)', endTime: 'Λήξη (π.χ. 02:00)', saveSchedule: 'Προσθήκη Βάρδιας', copyPrevWeek: '📋 Αντιγραφή προηγ. εβδομάδας', confirmCopy: 'Αντιγραφή προγράμματος προηγούμενης εβδομάδας;', copySuccess: 'Αντιγράφηκε!', copyEmpty: 'Δεν βρέθηκε πρόγραμμα.', dayCol: 'ΗΜΕΡΑ', repoCol: 'ΡΕΠΟ', addBtn: '+ Προσθήκη', cancel: 'Ακύρωση', clearWeek: '🗑️ Καθαρισμός Εβδομάδας', confirmClearWeek: 'Σίγουρα θέλετε να διαγράψετε ΟΛΟ το πρόγραμμα αυτής της εβδομάδας;',
+    loading: 'Φόρτωση...', hello: 'Γεια σου', wrongPin: 'Λάθος PIN.', back: 'Πίσω', login: 'Είσοδος', logout: 'Έξοδος', store: 'Κατάστημα', date: 'Ημερομηνία', hoursWorked: 'Ώρες', hoursCol: 'Ώρες', egHours: 'π.χ. 6 ή 6.5', save: 'Αποθήκευση', myHoursBtn: '⏱️ Οι Ώρες Μου', adminBtn: '📊 Στατιστικά (Admin)', statsTitle: 'Στατιστικά Πληρωμών', myHoursTitle: 'Οι Ώρες Μου', employee: 'Υπάλληλος', all: '-- Όλοι --', week: 'Εβδομάδα', month: 'Μήνας', payroll: 'Μισθοδοσία (26-25)', range: 'Εύρος', from: 'Από:', to: 'Έως:', allStores: 'Όλα', export: '📥 Εξαγωγή', totals: 'Σύνολα', noShifts: 'Δεν βρέθηκαν βάρδιες.', hoursText: 'ώρες', totalMyHours: 'Συνολικές Ώρες:', details: 'Αναλυτικά', noRecords: 'Δεν υπάρχουν καταχωρήσεις.', shortDate: 'Ημ/νία', shortStore: 'Μαγαζί', unknown: 'Άγνωστος', errInvalidHours: 'Παρακαλώ βάλε σωστό αριθμό.', errSave: 'Σφάλμα.', successSave: 'Επιτυχής αποθήκευση!', promptPin: 'Εισάγετε Admin PIN για διαγραφή:', errPin: 'Λάθος PIN.', errDel: 'Σφάλμα διαγραφής.', successDel: 'Διαγράφηκε.', noDataExp: 'Δεν υπάρχουν δεδομένα.', scheduleAdminBtn: '📅 Πρόγραμμα (Admin)', scheduleStaffBtn: '📅 Πρόγραμμα Εβδομάδας', scheduleAdminTitle: 'ΠΡΟΓΡΑΜΜΑ ΒΑΡΔΙΑΣ', scheduleStaffTitle: 'ΠΡΟΓΡΑΜΜΑ ΒΑΡΔΙΑΣ', startTime: 'Έναρξη (π.χ. 18:00)', endTime: 'Λήξη (π.χ. 02:00)', saveSchedule: 'Προσθήκη Βάρδιας', copyPrevWeek: '📋 Αντιγραφή προηγ. εβδομάδας', confirmCopy: 'Αντιγραφή προγράμματος προηγούμενης εβδομάδας;', copySuccess: 'Αντιγράφηκε!', copyEmpty: 'Δεν βρέθηκε πρόγραμμα.', dayCol: 'ΗΜΕΡΑ', repoCol: 'ΡΕΠΟ', addBtn: '+ Προσθήκη', cancel: 'Ακύρωση', clearWeek: '🗑️ Καθαρισμός Εβδομάδας', confirmClearWeek: 'Σίγουρα θέλετε να διαγράψετε ΟΛΟ το πρόγραμμα αυτής της εβδομάδας;',
     bulkDelete: '🗑️ Επιλογή για Διαγραφή', deleteSelected: 'Διαγραφή Επιλεγμένων', confirmDeleteSelected: 'Σίγουρα θέλετε να διαγράψετε τις επιλεγμένες βάρδιες;',
     print: '🖨️ Εκτύπωση', notes: 'Σημείωση (προαιρετικό)', notesPlaceholder: 'π.χ. Κλείσιμο Ταμείου'
   },
   da: {
-    loading: 'Indlæser...', hello: 'Hej', wrongPin: 'Forkert PIN.', back: 'Tilbage', login: 'Log ind', logout: 'Log ud', store: 'Butik', date: 'Dato', hoursWorked: 'Timer', hoursCol: 'Timer', egHours: 'f.eks. 6', save: 'Gem', myHoursBtn: '⏱️ Mine Timer', adminBtn: '📊 Statistik (Admin)', statsTitle: 'Statistik', myHoursTitle: 'Mine Timer', employee: 'Medarbejder', all: '-- Alle --', week: 'Uge', month: 'Måned', payroll: 'Løn (25-25)', range: 'Periode', from: 'Fra:', to: 'Til:', allStores: 'Alle', export: '📥 Eksporter', totals: 'Totaler', noShifts: 'Ingen vagter.', hoursText: 'timer', totalMyHours: 'Totale timer:', details: 'Detaljer', noRecords: 'Ingen registreringer.', shortDate: 'Dato', shortStore: 'Butik', unknown: 'Ukendt', errInvalidHours: 'Ugyldigt antal.', errSave: 'Fejl.', successSave: 'Gemt!', promptPin: 'Admin PIN for at slette:', errPin: 'Forkert PIN.', errDel: 'Fejl sletning.', successDel: 'Slettet.', noDataExp: 'Ingen data.', scheduleAdminBtn: '📅 Skema (Admin)', scheduleStaffBtn: '📅 Ugeskema', scheduleAdminTitle: 'VAGTSKEMA', scheduleStaffTitle: 'VAGTSKEMA', startTime: 'Start (18:00)', endTime: 'Slut (02:00)', saveSchedule: 'Tilføj Vagt', copyPrevWeek: '📋 Kopier forrige uge', confirmCopy: 'Kopier forrige uge?', copySuccess: 'Kopieret!', copyEmpty: 'Ingen vagter fundet.', dayCol: 'DAG', repoCol: 'FRI', addBtn: '+ Tilføj', cancel: 'Annuller', clearWeek: '🗑️ Ryd Ugen', confirmClearWeek: 'Slet HELE skemaet for denne uge?',
+    loading: 'Indlæser...', hello: 'Hej', wrongPin: 'Forkert PIN.', back: 'Tilbage', login: 'Log ind', logout: 'Log ud', store: 'Butik', date: 'Dato', hoursWorked: 'Timer', hoursCol: 'Timer', egHours: 'f.eks. 6', save: 'Gem', myHoursBtn: '⏱️ Mine Timer', adminBtn: '📊 Statistik (Admin)', statsTitle: 'Statistik', myHoursTitle: 'Mine Timer', employee: 'Medarbejder', all: '-- Alle --', week: 'Uge', month: 'Måned', payroll: 'Løn (26-25)', range: 'Periode', from: 'Fra:', to: 'Til:', allStores: 'Alle', export: '📥 Eksporter', totals: 'Totaler', noShifts: 'Ingen vagter.', hoursText: 'timer', totalMyHours: 'Totale timer:', details: 'Detaljer', noRecords: 'Ingen registreringer.', shortDate: 'Dato', shortStore: 'Butik', unknown: 'Ukendt', errInvalidHours: 'Ugyldigt antal.', errSave: 'Fejl.', successSave: 'Gemt!', promptPin: 'Admin PIN for at slette:', errPin: 'Forkert PIN.', errDel: 'Fejl sletning.', successDel: 'Slettet.', noDataExp: 'Ingen data.', scheduleAdminBtn: '📅 Skema (Admin)', scheduleStaffBtn: '📅 Ugeskema', scheduleAdminTitle: 'VAGTSKEMA', scheduleStaffTitle: 'VAGTSKEMA', startTime: 'Start (18:00)', endTime: 'Slut (02:00)', saveSchedule: 'Tilføj Vagt', copyPrevWeek: '📋 Kopier forrige uge', confirmCopy: 'Kopier forrige uge?', copySuccess: 'Kopieret!', copyEmpty: 'Ingen vagter fundet.', dayCol: 'DAG', repoCol: 'FRI', addBtn: '+ Tilføj', cancel: 'Annuller', clearWeek: '🗑️ Ryd Ugen', confirmClearWeek: 'Slet HELE skemaet for denne uge?',
     bulkDelete: '🗑️ Vælg til Sletning', deleteSelected: 'Slet Valgte', confirmDeleteSelected: 'Slet valgte vagter?',
     print: '🖨️ Udskriv', notes: 'Note (valgfri)', notesPlaceholder: 'f.eks. Lukning'
   },
   uk: {
-    loading: 'Завантаження...', hello: 'Привіт', wrongPin: 'Невірний PIN.', back: 'Назад', login: 'Увійти', logout: 'Вийти', store: 'Магазин', date: 'Дата', hoursWorked: 'Години', hoursCol: 'Год', egHours: 'напр. 6', save: 'Зберегти', myHoursBtn: '⏱️ Мої години', adminBtn: '📊 Статистика (Admin)', statsTitle: 'Статистика', myHoursTitle: 'Мої години', employee: 'Співробітник', all: '-- Всі --', week: 'Тиждень', month: 'Місяць', payroll: 'Зарплата (25-25)', range: 'Період', from: 'Від:', to: 'До:', allStores: 'Всі', export: '📥 Експорт', totals: 'Всього', noShifts: 'Зміни не знайдені.', hoursText: 'год', totalMyHours: 'Всього годин:', details: 'Детально', noRecords: 'Немає записів.', shortDate: 'Дата', shortStore: 'Магазин', unknown: 'Невідомий', errInvalidHours: 'Недійсна кількість.', errSave: 'Помилка.', successSave: 'Збережено!', promptPin: 'Admin PIN для видалення:', errPin: 'Невірний PIN.', errDel: 'Помилка видалення.', successDel: 'Видалено.', noDataExp: 'Немає даних.', scheduleAdminBtn: '📅 Розклад (Admin)', scheduleStaffBtn: '📅 Розклад на тиждень', scheduleAdminTitle: 'РОЗКЛАД ЗМІН', scheduleStaffTitle: 'РОЗКЛАД ЗМІН', startTime: 'З (18:00)', endTime: 'До (02:00)', saveSchedule: 'Додати зміну', copyPrevWeek: '📋 Копіювати мин. тиж.', confirmCopy: 'Копіювати минулий тиждень?', copySuccess: 'Скопійовано!', copyEmpty: 'Порожньо.', dayCol: 'ДЕНЬ', repoCol: 'ВИХІДНИЙ', addBtn: '+ Додати', cancel: 'Скасувати', clearWeek: '🗑️ Очистити тиждень', confirmClearWeek: 'Видалити розклад на весь тиждень?',
+    loading: 'Завантаження...', hello: 'Привіт', wrongPin: 'Невірний PIN.', back: 'Назад', login: 'Увійти', logout: 'Вийти', store: 'Магазин', date: 'Дата', hoursWorked: 'Години', hoursCol: 'Год', egHours: 'напр. 6', save: 'Зберегти', myHoursBtn: '⏱️ Мої години', adminBtn: '📊 Статистика (Admin)', statsTitle: 'Статистика', myHoursTitle: 'Мої години', employee: 'Співробітник', all: '-- Всі --', week: 'Тиждень', month: 'Місяць', payroll: 'Зарплата (26-25)', range: 'Період', from: 'Від:', to: 'До:', allStores: 'Всі', export: '📥 Експорт', totals: 'Всього', noShifts: 'Зміни не знайдені.', hoursText: 'год', totalMyHours: 'Всього годин:', details: 'Детально', noRecords: 'Немає записів.', shortDate: 'Дата', shortStore: 'Магазин', unknown: 'Невідомий', errInvalidHours: 'Недійсна кількість.', errSave: 'Помилка.', successSave: 'Збережено!', promptPin: 'Admin PIN для видалення:', errPin: 'Невірний PIN.', errDel: 'Помилка видалення.', successDel: 'Видалено.', noDataExp: 'Немає даних.', scheduleAdminBtn: '📅 Розклад (Admin)', scheduleStaffBtn: '📅 Розклад на тиждень', scheduleAdminTitle: 'РОЗКЛАД ЗМІН', scheduleStaffTitle: 'РОЗКЛАД ЗМІН', startTime: 'З (18:00)', endTime: 'До (02:00)', saveSchedule: 'Додати зміну', copyPrevWeek: '📋 Копіювати мин. тиж.', confirmCopy: 'Копіювати минулий тиждень?', copySuccess: 'Скопійовано!', copyEmpty: 'Порожньо.', dayCol: 'ДЕНЬ', repoCol: 'ВИХІДНИЙ', addBtn: '+ Додати', cancel: 'Скасувати', clearWeek: '🗑️ Очистити тиждень', confirmClearWeek: 'Видалити розклад на весь тиждень?',
     bulkDelete: '🗑️ Вибрати для видалення', deleteSelected: 'Видалити вибране', confirmDeleteSelected: 'Видалити вибрані зміни?',
     print: '🖨️ Друк', notes: 'Примітка (необов\'язково)', notesPlaceholder: 'напр. Закриття'
   }
@@ -81,7 +81,6 @@ export default function App() {
     };
     fetchEmployees();
   }, []);
-
   const handleLogin = () => {
     if (selectedUser.pin === pin) {
       setLoggedInUser(selectedUser);
@@ -167,8 +166,8 @@ export default function App() {
       let dateMatch = true;
       if (dateFilter === 'payroll') {
         const currentDay = now.getDate();
-        // ΕΞΥΠΝΗ ΛΟΓΙΚΗ ΜΙΣΘΟΔΟΣΙΑΣ
-        const start = new Date(currentYear, currentMonth - (currentDay <= 25 ? 1 : 0), 25);
+        // ΕΞΥΠΝΗ ΛΟΓΙΚΗ ΜΙΣΘΟΔΟΣΙΑΣ (26 έως 25)
+        const start = new Date(currentYear, currentMonth - (currentDay <= 25 ? 1 : 0), 26);
         const end = new Date(currentYear, currentMonth + (currentDay <= 25 ? 0 : 1), 25);
         dateMatch = sDate >= start && sDate <= end;
       }
@@ -269,7 +268,6 @@ export default function App() {
     loadSchedules(scheduleWeekStart);
     alert(t.copySuccess);
   };
-
 const renderLangButtons = () => (
     <div className="w-full flex justify-end gap-2 mb-3 print:hidden">
       <button onClick={() => setLang('el')} className={`px-3 py-1 text-sm font-bold rounded-lg border-2 transition-colors ${lang === 'el' ? 'bg-[#8B5A2B] text-white border-[#8B5A2B]' : 'bg-white text-gray-600 border-gray-200'}`}>🇬🇷 ΕΛ</button>
@@ -321,8 +319,7 @@ const renderLangButtons = () => (
             </div>
           </div>
         )}
-
-        <div className="bg-white p-3 sm:p-6 rounded-lg shadow-xl border-t-4 border-blue-600 max-w-5xl w-full print:border-none print:shadow-none print:p-0">
+  <div className="bg-white p-3 sm:p-6 rounded-lg shadow-xl border-t-4 border-blue-600 max-w-5xl w-full print:border-none print:shadow-none print:p-0">
           <div className="flex flex-col sm:flex-row justify-between items-center mb-6 border-b-2 pb-4 border-gray-200 print:mb-2 print:pb-2">
             <h2 className="text-xl sm:text-2xl font-black text-[#1a365d] text-center sm:text-left">{isSchedAdmin ? t.scheduleAdminTitle : t.scheduleStaffTitle}</h2>
             <div className="mt-4 sm:mt-0 flex flex-wrap justify-center gap-2 print:hidden">
@@ -385,11 +382,10 @@ const renderLangButtons = () => (
                     <p className="text-sm text-gray-600 font-medium leading-relaxed">{repoEmployees || '-'}</p>
                   </div>
                 </div>
-)
+              )
             })}
           </div>
-
-          <div className="hidden md:block print:block overflow-x-auto border-2 border-gray-300 rounded-lg print:border-none print:shadow-none">
+  <div className="hidden md:block print:block overflow-x-auto border-2 border-gray-300 rounded-lg print:border-none print:shadow-none">
             <table className="w-full min-w-[700px] border-collapse bg-white print:text-black">
               <thead>
                 <tr>
@@ -573,7 +569,7 @@ const renderLangButtons = () => (
       </div>
     );
   }
-  // ---------------- UI: MAIN MENU ----------------
+ // ---------------- UI: MAIN MENU ----------------
   if (loggedInUser && viewMode === 'form') {
     return (
       <div className="min-h-screen bg-gray-100 flex flex-col items-center justify-center p-4">
