@@ -66,6 +66,7 @@ export default function App() {
   const [shopText, setShopText] = useState('');
   const [shopImage, setShopImage] = useState<File | null>(null);
   const [isUploading, setIsUploading] = useState(false);
+  const [shopFilter, setShopFilter] = useState<'All' | 'Hellas' | 'Nordic'>('All');
 
   useEffect(() => {
     const savedUser = localStorage.getItem('shiftSheetsUser');
@@ -310,6 +311,8 @@ export default function App() {
 
   // ---------------- UI: SHOPPING LIST ----------------
   if (loggedInUser && viewMode === 'shopping') {
+    const filteredShoppingItems = shoppingItems.filter(item => shopFilter === 'All' || item.store_location === shopFilter);
+
     return (
       <div className="min-h-screen bg-gray-100 p-2 sm:p-4 flex flex-col items-center pt-6">
         <div className="max-w-xl w-full">{renderLangButtons()}</div>
@@ -342,9 +345,16 @@ export default function App() {
             </button>
           </div>
 
+          {/* ΦΙΛΤΡΑ ΚΑΤΑΣΤΗΜΑΤΩΝ ΓΙΑ ΛΙΣΤΑ ΨΩΝΙΩΝ */}
+          <div className="flex gap-2 mb-6">
+            <button onClick={() => setShopFilter('All')} className={`flex-1 py-2 rounded-lg border-2 text-sm font-bold transition-colors ${shopFilter === 'All' ? 'border-green-500 text-green-700 bg-green-50' : 'border-gray-200 text-gray-600'}`}>{t.allStores}</button>
+            <button onClick={() => setShopFilter('Hellas')} className={`flex-1 py-2 rounded-lg border-2 text-sm font-bold transition-colors ${shopFilter === 'Hellas' ? 'border-green-500 text-green-700 bg-green-50' : 'border-gray-200 text-gray-600'}`}>Hellas</button>
+            <button onClick={() => setShopFilter('Nordic')} className={`flex-1 py-2 rounded-lg border-2 text-sm font-bold transition-colors ${shopFilter === 'Nordic' ? 'border-green-500 text-green-700 bg-green-50' : 'border-gray-200 text-gray-600'}`}>Nordic</button>
+          </div>
+
           <div className="space-y-4">
-            {shoppingItems.length === 0 ? <p className="text-center text-gray-500 font-bold py-8">{t.emptyShop}</p> : null}
-            {shoppingItems.map(item => (
+            {filteredShoppingItems.length === 0 ? <p className="text-center text-gray-500 font-bold py-8">{t.emptyShop}</p> : null}
+            {filteredShoppingItems.map(item => (
               <div key={item.id} className="bg-white border-2 border-gray-200 rounded-xl p-4 shadow-sm flex flex-col sm:flex-row gap-4 justify-between items-start sm:items-center">
                 <div className="flex gap-4 items-center w-full sm:w-auto">
                   {item.image_url && (
