@@ -3,22 +3,13 @@ import { supabase } from './supabase';
 
 const dict = {
   el: {
-    loading: 'Φόρτωση...', hello: 'Γεια σου', wrongPin: 'Λάθος PIN.', back: 'Πίσω', login: 'Είσοδος', logout: 'Έξοδος', store: 'Κατάστημα', date: 'Ημερομηνία', hoursWorked: 'Ώρες', hoursCol: 'Ώρες', egHours: 'π.χ. 6 ή 6.5', save: 'Αποθήκευση', myHoursBtn: '⏱️ Οι Ώρες Μου', adminBtn: '📊 Στατιστικά (Admin)', statsTitle: 'Στατιστικά Πληρωμών', myHoursTitle: 'Οι Ώρες Μου', employee: 'Υπάλληλος', all: '-- Όλοι --', week: 'Εβδομάδα', month: 'Μήνας', payroll: 'Μισθοδοσία (26-25)', range: 'Εύρος', from: 'Από:', to: 'Έως:', allStores: 'Όλα', export: '📥 Εξαγωγή', totals: 'Σύνολα', noShifts: 'Δεν βρέθηκαν βάρδιες.', hoursText: 'ώρες', totalMyHours: 'Συνολικές Ώρες:', details: 'Αναλυτικά', noRecords: 'Δεν υπάρχουν καταχωρήσεις.', shortDate: 'Ημ/νία', shortStore: 'Μαγαζί', unknown: 'Άγνωστος', errInvalidHours: 'Παρακαλώ βάλε σωστό αριθμό.', errSave: 'Σφάλμα.', successSave: 'Επιτυχής αποθήκευση!', promptPin: 'Εισάγετε Admin PIN για διαγραφή:', errPin: 'Λάθος PIN.', errDel: 'Σφάλμα διαγραφής.', successDel: 'Διαγράφηκε.', noDataExp: 'Δεν υπάρχουν δεδομένα.', scheduleAdminBtn: '📅 Πρόγραμμα (Admin)', scheduleStaffBtn: '📅 Πρόγραμμα Εβδομάδας', scheduleAdminTitle: 'ΠΡΟΓΡΑΜΜΑ ΒΑΡΔΙΑΣ', scheduleStaffTitle: 'ΠΡΟΓΡΑΜΜΑ ΒΑΡΔΙΑΣ', startTime: 'Έναρξη (π.χ. 18:00)', endTime: 'Λήξη (π.χ. 02:00)', saveSchedule: 'Προσθήκη Βάρδιας', copyPrevWeek: '📋 Αντιγραφή προηγ. εβδομάδας', confirmCopy: 'Αντιγραφή προγράμματος προηγούμενης εβδομάδας;', copySuccess: 'Αντιγράφηκε!', copyEmpty: 'Δεν βρέθηκε πρόγραμμα.', dayCol: 'ΗΜΕΡΑ', repoCol: 'ΡΕΠΟ', addBtn: '+ Προσθήκη', cancel: 'Ακύρωση', clearWeek: '🗑️ Καθαρισμός Εβδομάδας', confirmClearWeek: 'Σίγουρα θέλετε να διαγράψετε ΟΛΟ το πρόγραμμα αυτής της εβδομάδας;',
-    bulkDelete: '🗑️ Επιλογή για Διαγραφή', deleteSelected: 'Διαγραφή Επιλεγμένων', confirmDeleteSelected: 'Σίγουρα θέλετε να διαγράψετε τις επιλεγμένες βάρδιες;',
-    print: '🖨️ Εκτύπωση', notes: 'Σημείωση (προαιρετικό)', notesPlaceholder: 'π.χ. Κλείσιμο Ταμείου',
-    shoppingBtn: '🛒 Λίστα Ψωνίων', shopTitle: 'Λίστα Ψωνίων', shopInput: 'Τι χρειαζόμαστε;', shopAdd: 'Προσθήκη', shopBought: '✔️ Αγοράστηκε', uploading: 'Ανέβασμα...', imgLabel: '📷 Φωτογραφία', emptyShop: 'Η λίστα είναι άδεια! Όλα κομπλέ.', delShop: '🗑️'
+    loading: 'Φόρτωση...', hello: 'Γεια σου', wrongPin: 'Λάθος PIN.', back: 'Πίσω', login: 'Είσοδος', logout: 'Έξοδος', store: 'Κατάστημα', date: 'Ημερομηνία', hoursWorked: 'Ώρες', hoursCol: 'Ώρες', egHours: 'π.χ. 6 ή 6.5', save: 'Αποθήκευση', myHoursBtn: '⏱️ Οι Ώρες Μου', adminBtn: '📊 Στατιστικά (Admin)', statsTitle: 'Στατιστικά Πληρωμών', myHoursTitle: 'Οι Ώρες Μου', employee: 'Υπάλληλος', all: '-- Όλοι --', week: 'Εβδομάδα', month: 'Μήνας', payroll: 'Μισθοδοσία (26-25)', range: 'Εύρος', from: 'Από:', to: 'Έως:', allStores: 'Όλα', export: '📥 Εξαγωγή', totals: 'Σύνολα', noShifts: 'Δεν βρέθηκαν βάρδιες.', hoursText: 'ώρες', totalMyHours: 'Συνολικές Ώρες:', details: 'Αναλυτικά', noRecords: 'Δεν υπάρχουν καταχωρήσεις.', shortDate: 'Ημ/νία', shortStore: 'Μαγαζί', unknown: 'Άγνωστος', errInvalidHours: 'Παρακαλώ βάλε σωστό αριθμό.', errSave: 'Σφάλμα.', successSave: 'Επιτυχής αποθήκευση!', promptPin: 'Εισάγετε Admin PIN για διαγραφή:', errPin: 'Λάθος PIN.', errDel: 'Σφάλμα διαγραφής.', successDel: 'Διαγράφηκε.', noDataExp: 'Δεν υπάρχουν δεδομένα.', scheduleAdminBtn: '📅 Πρόγραμμα (Admin)', scheduleStaffBtn: '📅 Πρόγραμμα Εβδομάδας', scheduleAdminTitle: 'ΠΡΟΓΡΑΜΜΑ ΒΑΡΔΙΑΣ', scheduleStaffTitle: 'ΠΡΟΓΡΑΜΜΑ ΒΑΡΔΙΑΣ', startTime: 'Έναρξη (π.χ. 18:00)', endTime: 'Λήξη (π.χ. 02:00)', saveSchedule: 'Προσθήκη Βάρδιας', copyPrevWeek: '📋 Αντιγραφή προηγ. εβδομάδας', confirmCopy: 'Αντιγραφή προγράμματος προηγούμενης εβδομάδας;', copySuccess: 'Αντιγράφηκε!', copyEmpty: 'Δεν βρέθηκε πρόγραμμα.', dayCol: 'ΗΜΕΡΑ', repoCol: 'ΡΕΠΟ', addBtn: '+ Προσθήκη', cancel: 'Ακύρωση', clearWeek: '🗑️ Καθαρισμός Εβδομάδας', confirmClearWeek: 'Σίγουρα θέλετε να διαγράψετε ΟΛΟ το πρόγραμμα αυτής της εβδομάδας;', bulkDelete: '🗑️ Επιλογή για Διαγραφή', deleteSelected: 'Διαγραφή Επιλεγμένων', confirmDeleteSelected: 'Σίγουρα θέλετε να διαγράψετε τις επιλεγμένες βάρδιες;', print: '🖨️ Εκτύπωση', notes: 'Σημείωση (προαιρετικό)', notesPlaceholder: 'π.χ. Κλείσιμο Ταμείου', shoppingBtn: '🛒 Λίστα Ψωνίων', shopTitle: 'Λίστα Ψωνίων', shopInput: 'Τι χρειαζόμαστε;', shopAdd: 'Προσθήκη', shopBought: '✔️ Αγοράστηκε', uploading: 'Ανέβασμα...', imgLabel: '📷 Φωτογραφία', emptyShop: 'Η λίστα είναι άδεια! Όλα κομπλέ.', delShop: '🗑️'
   },
   da: {
-    loading: 'Indlæser...', hello: 'Hej', wrongPin: 'Forkert PIN.', back: 'Tilbage', login: 'Log ind', logout: 'Log ud', store: 'Butik', date: 'Dato', hoursWorked: 'Timer', hoursCol: 'Timer', egHours: 'f.eks. 6', save: 'Gem', myHoursBtn: '⏱️ Mine Timer', adminBtn: '📊 Statistik (Admin)', statsTitle: 'Statistik', myHoursTitle: 'Mine Timer', employee: 'Medarbejder', all: '-- Alle --', week: 'Uge', month: 'Måned', payroll: 'Løn (26-25)', range: 'Periode', from: 'Fra:', to: 'Til:', allStores: 'Alle', export: '📥 Eksporter', totals: 'Totaler', noShifts: 'Ingen vagter.', hoursText: 'timer', totalMyHours: 'Totale timer:', details: 'Detaljer', noRecords: 'Ingen registreringer.', shortDate: 'Dato', shortStore: 'Butik', unknown: 'Ukendt', errInvalidHours: 'Ugyldigt antal.', errSave: 'Fejl.', successSave: 'Gemt!', promptPin: 'Admin PIN for at slette:', errPin: 'Forkert PIN.', errDel: 'Fejl sletning.', successDel: 'Slettet.', noDataExp: 'Ingen data.', scheduleAdminBtn: '📅 Skema (Admin)', scheduleStaffBtn: '📅 Ugeskema', scheduleAdminTitle: 'VAGTSKEMA', scheduleStaffTitle: 'VAGTSKEMA', startTime: 'Start (18:00)', endTime: 'Slut (02:00)', saveSchedule: 'Tilføj Vagt', copyPrevWeek: '📋 Kopier forrige uge', confirmCopy: 'Kopier forrige uge?', copySuccess: 'Kopieret!', copyEmpty: 'Ingen vagter fundet.', dayCol: 'DAG', repoCol: 'FRI', addBtn: '+ Tilføj', cancel: 'Annuller', clearWeek: '🗑️ Ryd Ugen', confirmClearWeek: 'Slet HELE skemaet for denne uge?',
-    bulkDelete: '🗑️ Vælg til Sletning', deleteSelected: 'Slet Valgte', confirmDeleteSelected: 'Slet valgte vagter?',
-    print: '🖨️ Udskriv', notes: 'Note (valgfri)', notesPlaceholder: 'f.eks. Lukning',
-    shoppingBtn: '🛒 Indkøbsliste', shopTitle: 'Indkøbsliste', shopInput: 'Hvad mangler vi?', shopAdd: 'Tilføj', shopBought: '✔️ Købt', uploading: 'Uploader...', imgLabel: '📷 Foto', emptyShop: 'Listen er tom!', delShop: '🗑️'
+    loading: 'Indlæser...', hello: 'Hej', wrongPin: 'Forkert PIN.', back: 'Tilbage', login: 'Log ind', logout: 'Log ud', store: 'Butik', date: 'Dato', hoursWorked: 'Timer', hoursCol: 'Timer', egHours: 'f.eks. 6', save: 'Gem', myHoursBtn: '⏱️ Mine Timer', adminBtn: '📊 Statistik (Admin)', statsTitle: 'Statistik', myHoursTitle: 'Mine Timer', employee: 'Medarbejder', all: '-- Alle --', week: 'Uge', month: 'Måned', payroll: 'Løn (26-25)', range: 'Periode', from: 'Fra:', to: 'Til:', allStores: 'Alle', export: '📥 Eksporter', totals: 'Totaler', noShifts: 'Ingen vagter.', hoursText: 'timer', totalMyHours: 'Totale timer:', details: 'Detaljer', noRecords: 'Ingen registreringer.', shortDate: 'Dato', shortStore: 'Butik', unknown: 'Ukendt', errInvalidHours: 'Ugyldigt antal.', errSave: 'Fejl.', successSave: 'Gemt!', promptPin: 'Admin PIN for at slette:', errPin: 'Forkert PIN.', errDel: 'Fejl sletning.', successDel: 'Slettet.', noDataExp: 'Ingen data.', scheduleAdminBtn: '📅 Skema (Admin)', scheduleStaffBtn: '📅 Ugeskema', scheduleAdminTitle: 'VAGTSKEMA', scheduleStaffTitle: 'VAGTSKEMA', startTime: 'Start (18:00)', endTime: 'Slut (02:00)', saveSchedule: 'Tilføj Vagt', copyPrevWeek: '📋 Kopier forrige uge', confirmCopy: 'Kopier forrige uge?', copySuccess: 'Kopieret!', copyEmpty: 'Ingen vagter fundet.', dayCol: 'DAG', repoCol: 'FRI', addBtn: '+ Tilføj', cancel: 'Annuller', clearWeek: '🗑️ Ryd Ugen', confirmClearWeek: 'Slet HELE skemaet for denne uge?', bulkDelete: '🗑️ Vælg til Sletning', deleteSelected: 'Slet Valgte', confirmDeleteSelected: 'Slet valgte vagter?', print: '🖨️ Udskriv', notes: 'Note (valgfri)', notesPlaceholder: 'f.eks. Lukning', shoppingBtn: '🛒 Indkøbsliste', shopTitle: 'Indkøbsliste', shopInput: 'Hvad mangler vi?', shopAdd: 'Tilføj', shopBought: '✔️ Købt', uploading: 'Uploader...', imgLabel: '📷 Foto', emptyShop: 'Listen er tom!', delShop: '🗑️'
   },
   uk: {
-    loading: 'Завантаження...', hello: 'Привіт', wrongPin: 'Невірний PIN.', back: 'Назад', login: 'Увійти', logout: 'Вийти', store: 'Магазин', date: 'Дата', hoursWorked: 'Години', hoursCol: 'Год', egHours: 'напр. 6', save: 'Зберегти', myHoursBtn: '⏱️ Мої години', adminBtn: '📊 Статистика (Admin)', statsTitle: 'Статистика', myHoursTitle: 'Мої години', employee: 'Співробітник', all: '-- Всі --', week: 'Тиждень', month: 'Місяць', payroll: 'Зарплата (26-25)', range: 'Період', from: 'Від:', to: 'До:', allStores: 'Всі', export: '📥 Експорт', totals: 'Всього', noShifts: 'Зміни не знайдені.', hoursText: 'год', totalMyHours: 'Всього годин:', details: 'Детально', noRecords: 'Немає записів.', shortDate: 'Дата', shortStore: 'Магазин', unknown: 'Невідомий', errInvalidHours: 'Недійсна кількість.', errSave: 'Помилка.', successSave: 'Збережено!', promptPin: 'Admin PIN для видалення:', errPin: 'Невірний PIN.', errDel: 'Помилка видалення.', successDel: 'Видалено.', noDataExp: 'Немає даних.', scheduleAdminBtn: '📅 Розклад (Admin)', scheduleStaffBtn: '📅 Розклад на тиждень', scheduleAdminTitle: 'РОЗКЛАД ЗМІН', scheduleStaffTitle: 'РОЗКЛАД ЗМІН', startTime: 'З (18:00)', endTime: 'До (02:00)', saveSchedule: 'Додати зміну', copyPrevWeek: '📋 Копіювати мин. тиж.', confirmCopy: 'Копіювати минулий тиждень?', copySuccess: 'Скопійовано!', copyEmpty: 'Порожньо.', dayCol: 'ДЕНЬ', repoCol: 'ВИХІДНИЙ', addBtn: '+ Додати', cancel: 'Скасувати', clearWeek: '🗑️ Очистити тиждень', confirmClearWeek: 'Видалити розклад на весь тиждень?',
-    bulkDelete: '🗑️ Вибрати для видалення', deleteSelected: 'Видалити вибране', confirmDeleteSelected: 'Видалити вибрані зміни?',
-    print: '🖨️ Друк', notes: 'Примітка (необов\'язково)', notesPlaceholder: 'напр. Закриття',
-    shoppingBtn: '🛒 Список покупок', shopTitle: 'Список покупок', shopInput: 'Що нам потрібно?', shopAdd: 'Додати', shopBought: '✔️ Куплено', uploading: 'Завантаження...', imgLabel: '📷 Фото', emptyShop: 'Список порожній!', delShop: '🗑️'
+    loading: 'Завантаження...', hello: 'Привіт', wrongPin: 'Невірний PIN.', back: 'Назад', login: 'Увійти', logout: 'Вийти', store: 'Магазин', date: 'Дата', hoursWorked: 'Години', hoursCol: 'Год', egHours: 'напр. 6', save: 'Зберегти', myHoursBtn: '⏱️ Мої години', adminBtn: '📊 Статистика (Admin)', statsTitle: 'Статистика', myHoursTitle: 'Мої години', employee: 'Співробітник', all: '-- Всі --', week: 'Тиждень', month: 'Місяць', payroll: 'Зарплата (26-25)', range: 'Період', from: 'Від:', to: 'До:', allStores: 'Всі', export: '📥 Експорт', totals: 'Всього', noShifts: 'Зміни не знайдені.', hoursText: 'год', totalMyHours: 'Всього годин:', details: 'Детально', noRecords: 'Немає записів.', shortDate: 'Дата', shortStore: 'Магазин', unknown: 'Невідомий', errInvalidHours: 'Недійсна кількість.', errSave: 'Помилка.', successSave: 'Збережено!', promptPin: 'Admin PIN для видалення:', errPin: 'Невірний PIN.', errDel: 'Помилка видалення.', successDel: 'Видалено.', noDataExp: 'Немає даних.', scheduleAdminBtn: '📅 Розклад (Admin)', scheduleStaffBtn: '📅 Розклад на тиждень', scheduleAdminTitle: 'РОЗКЛАД ЗМІН', scheduleStaffTitle: 'РОЗКЛАД ЗМІН', startTime: 'З (18:00)', endTime: 'До (02:00)', saveSchedule: 'Додати зміну', copyPrevWeek: '📋 Копіювати мин. тиж.', confirmCopy: 'Копіювати минулий тиждень?', copySuccess: 'Скопійовано!', copyEmpty: 'Порожньо.', dayCol: 'ДЕНЬ', repoCol: 'ВИХІДНИЙ', addBtn: '+ Додати', cancel: 'Скасувати', clearWeek: '🗑️ Очистити тиждень', confirmClearWeek: 'Видалити розклад на весь тиждень?', bulkDelete: '🗑️ Вибрати для видалення', deleteSelected: 'Видалити вибране', confirmDeleteSelected: 'Видалити вибрані зміни?', print: '🖨️ Друк', notes: 'Примітка (необов\'язково)', notesPlaceholder: 'напр. Закриття', shoppingBtn: '🛒 Список покупок', shopTitle: 'Список покупок', shopInput: 'Що нам потрібно?', shopAdd: 'Додати', shopBought: '✔️ Куплено', uploading: 'Завантаження...', imgLabel: '📷 Фото', emptyShop: 'Список порожній!', delShop: '🗑️'
   }
 };
 
@@ -46,7 +37,7 @@ export default function App() {
   const [hours, setHours] = useState('');
   const [submitMsg, setSubmitMsg] = useState('');
 
-  // View & Filters 
+  // View & Filters
   const [viewMode, setViewMode] = useState<'form' | 'dashboard' | 'my_hours' | 'schedule_admin' | 'schedule_staff' | 'shopping'>('form');
   const [shifts, setShifts] = useState<any[]>([]);
   const [dateFilter, setDateFilter] = useState<'week' | 'month' | 'payroll' | 'custom'>('payroll');
@@ -54,8 +45,8 @@ export default function App() {
   const [employeeFilter, setEmployeeFilter] = useState<string>('All');
   const [customStartDate, setCustomStartDate] = useState('');
   const [customEndDate, setCustomEndDate] = useState('');
-  
-  // Selection
+
+  // States για τη Μαζική Επιλογή
   const [isSelectionMode, setIsSelectionMode] = useState(false);
   const [selectedShiftIds, setSelectedShiftIds] = useState<string[]>([]);
 
@@ -88,6 +79,7 @@ export default function App() {
     };
     fetchEmployees();
   }, []);
+
   const handleLogin = () => {
     if (selectedUser.pin === pin) {
       setLoggedInUser(selectedUser);
@@ -275,7 +267,6 @@ export default function App() {
     alert(t.copySuccess);
   };
 
-  // ----- SHOPPING LOGIC -----
   const loadShoppingList = async () => {
     const { data } = await supabase.from('shopping_list').select('*').order('created_at', { ascending: false });
     if (data) setShoppingItems(data);
@@ -306,6 +297,7 @@ export default function App() {
   const handleDeleteShoppingItem = async (id: string) => {
     await supabase.from('shopping_list').delete().eq('id', id); loadShoppingList();
   };
+
   const renderLangButtons = () => (
     <div className="w-full flex justify-end gap-2 mb-3 print:hidden">
       <button onClick={() => setLang('el')} className={`px-3 py-1 text-sm font-bold rounded-lg border-2 transition-colors ${lang === 'el' ? 'bg-[#8B5A2B] text-white border-[#8B5A2B]' : 'bg-white text-gray-600 border-gray-200'}`}>🇬🇷 ΕΛ</button>
@@ -329,13 +321,19 @@ export default function App() {
             <select value={storeLocation} onChange={(e) => setStoreLocation(e.target.value)} className="w-full p-3 border-2 border-green-300 rounded mb-3 font-bold bg-white"><option value="Hellas">Hellas</option><option value="Nordic">Nordic</option></select>
             <input type="text" value={shopText} onChange={e => setShopText(e.target.value)} placeholder={t.shopInput} className="w-full p-3 border-2 border-gray-300 rounded-lg mb-3 font-bold text-base" />
             
-            <div className="flex items-center gap-3 mb-4">
-              <label className="flex-1 bg-white border-2 border-dashed border-gray-400 text-gray-600 font-bold py-3 text-center rounded-lg cursor-pointer hover:bg-gray-50 transition-colors">
-                {shopImage ? '✅ Φωτό ΟΚ' : t.imgLabel}
-                <input type="file" accept="image/*" capture="environment" onChange={(e) => { if (e.target.files && e.target.files[0]) setShopImage(e.target.files[0]); }} className="hidden" />
-              </label>
-              {shopImage && <button onClick={() => setShopImage(null)} className="text-red-500 font-black px-3 py-3 bg-red-50 border-2 border-red-200 rounded-lg">✕</button>}
-            </div>
+            {shopImage ? (
+              <div className="relative mb-4 rounded-lg overflow-hidden border-2 border-green-400 bg-black">
+                <img src={URL.createObjectURL(shopImage)} alt="Preview" className="w-full h-48 object-contain" />
+                <button onClick={() => setShopImage(null)} className="absolute top-2 right-2 bg-red-600 text-white font-black w-8 h-8 flex items-center justify-center rounded-full shadow-lg">✕</button>
+              </div>
+            ) : (
+              <div className="flex items-center gap-3 mb-4">
+                <label className="flex-1 bg-white border-2 border-dashed border-gray-400 text-gray-600 font-bold py-4 text-center rounded-lg cursor-pointer hover:bg-gray-50 transition-colors">
+                  {t.imgLabel}
+                  <input type="file" accept="image/*" capture="environment" onChange={(e) => { if (e.target.files && e.target.files[0]) setShopImage(e.target.files[0]); }} className="hidden" />
+                </label>
+              </div>
+            )}
             
             <button onClick={handleAddShoppingItem} disabled={isUploading} className="w-full bg-green-600 text-white font-black py-4 rounded-lg shadow-md text-lg uppercase tracking-wider disabled:bg-gray-400">
               {isUploading ? t.uploading : t.shopAdd}
@@ -676,7 +674,6 @@ export default function App() {
             <button onClick={handleLogout} className="text-sm text-[#8B5A2B] hover:text-orange-600 font-semibold p-2">{t.logout}</button>
           </div>
           <div className="space-y-4">
-            {/* ΝΕΟ: ΚΟΥΜΠΙ ΛΙΣΤΑΣ ΨΩΝΙΩΝ (ΟΡΑΤΟ ΣΕ ΟΛΟΥΣ) */}
             <button onClick={openShoppingList} className="w-full bg-green-50 text-green-700 font-black py-4 rounded-lg border-2 border-green-300 shadow-sm hover:bg-green-100 mb-2 flex items-center justify-center gap-2 text-lg">
               {t.shoppingBtn}
             </button>
