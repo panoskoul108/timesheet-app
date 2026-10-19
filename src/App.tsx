@@ -5,17 +5,20 @@ const dict = {
   el: {
     loading: 'Φόρτωση...', hello: 'Γεια σου', wrongPin: 'Λάθος PIN.', back: 'Πίσω', login: 'Είσοδος', logout: 'Έξοδος', store: 'Κατάστημα', date: 'Ημερομηνία', hoursWorked: 'Ώρες', hoursCol: 'Ώρες', egHours: 'π.χ. 6 ή 6.5', save: 'Αποθήκευση', myHoursBtn: '⏱️ Οι Ώρες Μου', adminBtn: '📊 Στατιστικά (Admin)', statsTitle: 'Στατιστικά Πληρωμών', myHoursTitle: 'Οι Ώρες Μου', employee: 'Υπάλληλος', all: '-- Όλοι --', week: 'Εβδομάδα', month: 'Μήνας', payroll: 'Μισθοδοσία (26-25)', range: 'Εύρος', from: 'Από:', to: 'Έως:', allStores: 'Όλα', export: '📥 Εξαγωγή', totals: 'Σύνολα', noShifts: 'Δεν βρέθηκαν βάρδιες.', hoursText: 'ώρες', totalMyHours: 'Συνολικές Ώρες:', details: 'Αναλυτικά', noRecords: 'Δεν υπάρχουν καταχωρήσεις.', shortDate: 'Ημ/νία', shortStore: 'Μαγαζί', unknown: 'Άγνωστος', errInvalidHours: 'Παρακαλώ βάλε σωστό αριθμό.', errSave: 'Σφάλμα.', successSave: 'Επιτυχής αποθήκευση!', promptPin: 'Εισάγετε Admin PIN για διαγραφή:', errPin: 'Λάθος PIN.', errDel: 'Σφάλμα διαγραφής.', successDel: 'Διαγράφηκε.', noDataExp: 'Δεν υπάρχουν δεδομένα.', scheduleAdminBtn: '📅 Πρόγραμμα (Admin)', scheduleStaffBtn: '📅 Πρόγραμμα Εβδομάδας', scheduleAdminTitle: 'ΠΡΟΓΡΑΜΜΑ ΒΑΡΔΙΑΣ', scheduleStaffTitle: 'ΠΡΟΓΡΑΜΜΑ ΒΑΡΔΙΑΣ', startTime: 'Έναρξη (π.χ. 18:00)', endTime: 'Λήξη (π.χ. 02:00)', saveSchedule: 'Προσθήκη Βάρδιας', copyPrevWeek: '📋 Αντιγραφή προηγ. εβδομάδας', confirmCopy: 'Αντιγραφή προγράμματος προηγούμενης εβδομάδας;', copySuccess: 'Αντιγράφηκε!', copyEmpty: 'Δεν βρέθηκε πρόγραμμα.', dayCol: 'ΗΜΕΡΑ', repoCol: 'ΡΕΠΟ', addBtn: '+ Προσθήκη', cancel: 'Ακύρωση', clearWeek: '🗑️ Καθαρισμός Εβδομάδας', confirmClearWeek: 'Σίγουρα θέλετε να διαγράψετε ΟΛΟ το πρόγραμμα αυτής της εβδομάδας;',
     bulkDelete: '🗑️ Επιλογή για Διαγραφή', deleteSelected: 'Διαγραφή Επιλεγμένων', confirmDeleteSelected: 'Σίγουρα θέλετε να διαγράψετε τις επιλεγμένες βάρδιες;',
-    print: '🖨️ Εκτύπωση', notes: 'Σημείωση (προαιρετικό)', notesPlaceholder: 'π.χ. Κλείσιμο Ταμείου'
+    print: '🖨️ Εκτύπωση', notes: 'Σημείωση (προαιρετικό)', notesPlaceholder: 'π.χ. Κλείσιμο Ταμείου',
+    shoppingBtn: '🛒 Λίστα Ψωνίων', shopTitle: 'Λίστα Ψωνίων', shopInput: 'Τι χρειαζόμαστε;', shopAdd: 'Προσθήκη', shopBought: '✔️ Αγοράστηκε', uploading: 'Ανέβασμα...', imgLabel: '📷 Φωτογραφία', emptyShop: 'Η λίστα είναι άδεια! Όλα κομπλέ.', delShop: '🗑️'
   },
   da: {
     loading: 'Indlæser...', hello: 'Hej', wrongPin: 'Forkert PIN.', back: 'Tilbage', login: 'Log ind', logout: 'Log ud', store: 'Butik', date: 'Dato', hoursWorked: 'Timer', hoursCol: 'Timer', egHours: 'f.eks. 6', save: 'Gem', myHoursBtn: '⏱️ Mine Timer', adminBtn: '📊 Statistik (Admin)', statsTitle: 'Statistik', myHoursTitle: 'Mine Timer', employee: 'Medarbejder', all: '-- Alle --', week: 'Uge', month: 'Måned', payroll: 'Løn (26-25)', range: 'Periode', from: 'Fra:', to: 'Til:', allStores: 'Alle', export: '📥 Eksporter', totals: 'Totaler', noShifts: 'Ingen vagter.', hoursText: 'timer', totalMyHours: 'Totale timer:', details: 'Detaljer', noRecords: 'Ingen registreringer.', shortDate: 'Dato', shortStore: 'Butik', unknown: 'Ukendt', errInvalidHours: 'Ugyldigt antal.', errSave: 'Fejl.', successSave: 'Gemt!', promptPin: 'Admin PIN for at slette:', errPin: 'Forkert PIN.', errDel: 'Fejl sletning.', successDel: 'Slettet.', noDataExp: 'Ingen data.', scheduleAdminBtn: '📅 Skema (Admin)', scheduleStaffBtn: '📅 Ugeskema', scheduleAdminTitle: 'VAGTSKEMA', scheduleStaffTitle: 'VAGTSKEMA', startTime: 'Start (18:00)', endTime: 'Slut (02:00)', saveSchedule: 'Tilføj Vagt', copyPrevWeek: '📋 Kopier forrige uge', confirmCopy: 'Kopier forrige uge?', copySuccess: 'Kopieret!', copyEmpty: 'Ingen vagter fundet.', dayCol: 'DAG', repoCol: 'FRI', addBtn: '+ Tilføj', cancel: 'Annuller', clearWeek: '🗑️ Ryd Ugen', confirmClearWeek: 'Slet HELE skemaet for denne uge?',
     bulkDelete: '🗑️ Vælg til Sletning', deleteSelected: 'Slet Valgte', confirmDeleteSelected: 'Slet valgte vagter?',
-    print: '🖨️ Udskriv', notes: 'Note (valgfri)', notesPlaceholder: 'f.eks. Lukning'
+    print: '🖨️ Udskriv', notes: 'Note (valgfri)', notesPlaceholder: 'f.eks. Lukning',
+    shoppingBtn: '🛒 Indkøbsliste', shopTitle: 'Indkøbsliste', shopInput: 'Hvad mangler vi?', shopAdd: 'Tilføj', shopBought: '✔️ Købt', uploading: 'Uploader...', imgLabel: '📷 Foto', emptyShop: 'Listen er tom!', delShop: '🗑️'
   },
   uk: {
     loading: 'Завантаження...', hello: 'Привіт', wrongPin: 'Невірний PIN.', back: 'Назад', login: 'Увійти', logout: 'Вийти', store: 'Магазин', date: 'Дата', hoursWorked: 'Години', hoursCol: 'Год', egHours: 'напр. 6', save: 'Зберегти', myHoursBtn: '⏱️ Мої години', adminBtn: '📊 Статистика (Admin)', statsTitle: 'Статистика', myHoursTitle: 'Мої години', employee: 'Співробітник', all: '-- Всі --', week: 'Тиждень', month: 'Місяць', payroll: 'Зарплата (26-25)', range: 'Період', from: 'Від:', to: 'До:', allStores: 'Всі', export: '📥 Експорт', totals: 'Всього', noShifts: 'Зміни не знайдені.', hoursText: 'год', totalMyHours: 'Всього годин:', details: 'Детально', noRecords: 'Немає записів.', shortDate: 'Дата', shortStore: 'Магазин', unknown: 'Невідомий', errInvalidHours: 'Недійсна кількість.', errSave: 'Помилка.', successSave: 'Збережено!', promptPin: 'Admin PIN для видалення:', errPin: 'Невірний PIN.', errDel: 'Помилка видалення.', successDel: 'Видалено.', noDataExp: 'Немає даних.', scheduleAdminBtn: '📅 Розклад (Admin)', scheduleStaffBtn: '📅 Розклад на тиждень', scheduleAdminTitle: 'РОЗКЛАД ЗМІН', scheduleStaffTitle: 'РОЗКЛАД ЗМІН', startTime: 'З (18:00)', endTime: 'До (02:00)', saveSchedule: 'Додати зміну', copyPrevWeek: '📋 Копіювати мин. тиж.', confirmCopy: 'Копіювати минулий тиждень?', copySuccess: 'Скопійовано!', copyEmpty: 'Порожньо.', dayCol: 'ДЕНЬ', repoCol: 'ВИХІДНИЙ', addBtn: '+ Додати', cancel: 'Скасувати', clearWeek: '🗑️ Очистити тиждень', confirmClearWeek: 'Видалити розклад на весь тиждень?',
     bulkDelete: '🗑️ Вибрати для видалення', deleteSelected: 'Видалити вибране', confirmDeleteSelected: 'Видалити вибрані зміни?',
-    print: '🖨️ Друк', notes: 'Примітка (необов\'язково)', notesPlaceholder: 'напр. Закриття'
+    print: '🖨️ Друк', notes: 'Примітка (необов\'язково)', notesPlaceholder: 'напр. Закриття',
+    shoppingBtn: '🛒 Список покупок', shopTitle: 'Список покупок', shopInput: 'Що нам потрібно?', shopAdd: 'Додати', shopBought: '✔️ Куплено', uploading: 'Завантаження...', imgLabel: '📷 Фото', emptyShop: 'Список порожній!', delShop: '🗑️'
   }
 };
 
@@ -43,24 +46,22 @@ export default function App() {
   const [hours, setHours] = useState('');
   const [submitMsg, setSubmitMsg] = useState('');
 
-  // View & Filters
-  const [viewMode, setViewMode] = useState<'form' | 'dashboard' | 'my_hours' | 'schedule_admin' | 'schedule_staff'>('form');
+  // View & Filters 
+  const [viewMode, setViewMode] = useState<'form' | 'dashboard' | 'my_hours' | 'schedule_admin' | 'schedule_staff' | 'shopping'>('form');
   const [shifts, setShifts] = useState<any[]>([]);
   const [dateFilter, setDateFilter] = useState<'week' | 'month' | 'payroll' | 'custom'>('payroll');
   const [storeFilter, setStoreFilter] = useState<'All' | 'Hellas' | 'Nordic'>('All');
   const [employeeFilter, setEmployeeFilter] = useState<string>('All');
   const [customStartDate, setCustomStartDate] = useState('');
   const [customEndDate, setCustomEndDate] = useState('');
-
-  // States για τη Μαζική Επιλογή
+  
+  // Selection
   const [isSelectionMode, setIsSelectionMode] = useState(false);
   const [selectedShiftIds, setSelectedShiftIds] = useState<string[]>([]);
 
   // Schedule States
   const [schedules, setSchedules] = useState<any[]>([]);
   const [scheduleWeekStart, setScheduleWeekStart] = useState(getMonday(new Date()).toISOString().split('T')[0]);
-  
-  // Modal States
   const [isScheduleModalOpen, setIsScheduleModalOpen] = useState(false);
   const [schedEmpId, setSchedEmpId] = useState('');
   const [schedStore, setSchedStore] = useState('Hellas');
@@ -68,6 +69,12 @@ export default function App() {
   const [schedStart, setSchedStart] = useState('');
   const [schedEnd, setSchedEnd] = useState('');
   const [schedNotes, setSchedNotes] = useState('');
+
+  // Shopping States
+  const [shoppingItems, setShoppingItems] = useState<any[]>([]);
+  const [shopText, setShopText] = useState('');
+  const [shopImage, setShopImage] = useState<File | null>(null);
+  const [isUploading, setIsUploading] = useState(false);
 
   useEffect(() => {
     const savedUser = localStorage.getItem('shiftSheetsUser');
@@ -267,6 +274,38 @@ export default function App() {
     loadSchedules(scheduleWeekStart);
     alert(t.copySuccess);
   };
+
+  // ----- SHOPPING LOGIC -----
+  const loadShoppingList = async () => {
+    const { data } = await supabase.from('shopping_list').select('*').order('created_at', { ascending: false });
+    if (data) setShoppingItems(data);
+  };
+
+  const openShoppingList = () => { loadShoppingList(); setViewMode('shopping'); };
+
+  const handleAddShoppingItem = async () => {
+    if (!shopText && !shopImage) return alert("Γράψε κάτι ή βάλε φωτογραφία!");
+    setIsUploading(true);
+    let imageUrl = null;
+
+    if (shopImage) {
+      const fileExt = shopImage.name.split('.').pop();
+      const fileName = `${Math.random()}.${fileExt}`;
+      const { error: uploadErr } = await supabase.storage.from('shopping_bucket').upload(fileName, shopImage);
+      if (uploadErr) { alert("Σφάλμα φωτό: Βεβαιώσου ότι έφτιαξες το shopping_bucket και το έκανες Public!"); setIsUploading(false); return; }
+      const { data: pubData } = supabase.storage.from('shopping_bucket').getPublicUrl(fileName);
+      imageUrl = pubData.publicUrl;
+    }
+
+    const { error } = await supabase.from('shopping_list').insert([{ item_text: shopText, image_url: imageUrl, added_by: loggedInUser.name, store_location: storeLocation }]);
+    if (error) alert("Σφάλμα: " + error.message);
+    else { setShopText(''); setShopImage(null); loadShoppingList(); }
+    setIsUploading(false);
+  };
+
+  const handleDeleteShoppingItem = async (id: string) => {
+    await supabase.from('shopping_list').delete().eq('id', id); loadShoppingList();
+  };
   const renderLangButtons = () => (
     <div className="w-full flex justify-end gap-2 mb-3 print:hidden">
       <button onClick={() => setLang('el')} className={`px-3 py-1 text-sm font-bold rounded-lg border-2 transition-colors ${lang === 'el' ? 'bg-[#8B5A2B] text-white border-[#8B5A2B]' : 'bg-white text-gray-600 border-gray-200'}`}>🇬🇷 ΕΛ</button>
@@ -274,6 +313,61 @@ export default function App() {
       <button onClick={() => setLang('uk')} className={`px-3 py-1 text-sm font-bold rounded-lg border-2 transition-colors ${lang === 'uk' ? 'bg-[#8B5A2B] text-white border-[#8B5A2B]' : 'bg-white text-gray-600 border-gray-200'}`}>🇺🇦 UK</button>
     </div>
   );
+
+  // ---------------- UI: SHOPPING LIST ----------------
+  if (loggedInUser && viewMode === 'shopping') {
+    return (
+      <div className="min-h-screen bg-gray-100 p-2 sm:p-4 flex flex-col items-center pt-6">
+        <div className="max-w-xl w-full">{renderLangButtons()}</div>
+        <div className="bg-white p-4 sm:p-6 rounded-lg shadow-xl border-t-4 border-green-500 max-w-xl w-full">
+          <div className="flex justify-between items-center mb-6 border-b-2 pb-4 border-gray-200">
+            <h2 className="text-xl sm:text-2xl font-black text-green-700">{t.shopTitle}</h2>
+            <button onClick={() => setViewMode('form')} className="bg-gray-200 text-gray-800 px-4 py-2 rounded font-bold">{t.back}</button>
+          </div>
+
+          <div className="bg-green-50 p-4 rounded-lg border-2 border-green-200 mb-6">
+            <select value={storeLocation} onChange={(e) => setStoreLocation(e.target.value)} className="w-full p-3 border-2 border-green-300 rounded mb-3 font-bold bg-white"><option value="Hellas">Hellas</option><option value="Nordic">Nordic</option></select>
+            <input type="text" value={shopText} onChange={e => setShopText(e.target.value)} placeholder={t.shopInput} className="w-full p-3 border-2 border-gray-300 rounded-lg mb-3 font-bold text-base" />
+            
+            <div className="flex items-center gap-3 mb-4">
+              <label className="flex-1 bg-white border-2 border-dashed border-gray-400 text-gray-600 font-bold py-3 text-center rounded-lg cursor-pointer hover:bg-gray-50 transition-colors">
+                {shopImage ? '✅ Φωτό ΟΚ' : t.imgLabel}
+                <input type="file" accept="image/*" capture="environment" onChange={(e) => { if (e.target.files && e.target.files[0]) setShopImage(e.target.files[0]); }} className="hidden" />
+              </label>
+              {shopImage && <button onClick={() => setShopImage(null)} className="text-red-500 font-black px-3 py-3 bg-red-50 border-2 border-red-200 rounded-lg">✕</button>}
+            </div>
+            
+            <button onClick={handleAddShoppingItem} disabled={isUploading} className="w-full bg-green-600 text-white font-black py-4 rounded-lg shadow-md text-lg uppercase tracking-wider disabled:bg-gray-400">
+              {isUploading ? t.uploading : t.shopAdd}
+            </button>
+          </div>
+
+          <div className="space-y-4">
+            {shoppingItems.length === 0 ? <p className="text-center text-gray-500 font-bold py-8">{t.emptyShop}</p> : null}
+            {shoppingItems.map(item => (
+              <div key={item.id} className="bg-white border-2 border-gray-200 rounded-xl p-4 shadow-sm flex flex-col sm:flex-row gap-4 justify-between items-start sm:items-center">
+                <div className="flex gap-4 items-center w-full sm:w-auto">
+                  {item.image_url && (
+                    <a href={item.image_url} target="_blank" rel="noreferrer">
+                      <img src={item.image_url} alt="Shopping Item" className="w-16 h-16 object-cover rounded-lg border-2 border-gray-300" />
+                    </a>
+                  )}
+                  <div>
+                    <h3 className="font-black text-gray-800 text-lg">{item.item_text || '(Μόνο Φωτογραφία)'}</h3>
+                    <p className="text-xs text-gray-500 font-bold mt-1">Από: {item.added_by} • {item.store_location}</p>
+                  </div>
+                </div>
+                <div className="flex gap-2 w-full sm:w-auto mt-2 sm:mt-0">
+                  <button onClick={() => handleDeleteShoppingItem(item.id)} className="flex-1 sm:flex-none bg-green-100 hover:bg-green-200 text-green-800 border-2 border-green-300 font-bold py-2 px-4 rounded-lg">{t.shopBought}</button>
+                  {loggedInUser.role?.toLowerCase() === 'admin' && <button onClick={() => handleDeleteShoppingItem(item.id)} className="bg-red-50 text-red-600 border-2 border-red-200 font-bold py-2 px-3 rounded-lg">{t.delShop}</button>}
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   // ---------------- UI: SCHEDULE ----------------
   if (loggedInUser && (viewMode === 'schedule_admin' || viewMode === 'schedule_staff')) {
@@ -582,6 +676,11 @@ export default function App() {
             <button onClick={handleLogout} className="text-sm text-[#8B5A2B] hover:text-orange-600 font-semibold p-2">{t.logout}</button>
           </div>
           <div className="space-y-4">
+            {/* ΝΕΟ: ΚΟΥΜΠΙ ΛΙΣΤΑΣ ΨΩΝΙΩΝ (ΟΡΑΤΟ ΣΕ ΟΛΟΥΣ) */}
+            <button onClick={openShoppingList} className="w-full bg-green-50 text-green-700 font-black py-4 rounded-lg border-2 border-green-300 shadow-sm hover:bg-green-100 mb-2 flex items-center justify-center gap-2 text-lg">
+              {t.shoppingBtn}
+            </button>
+            
             <div className="grid grid-cols-2 gap-2 mb-2">
                <button onClick={openStaffSchedule} className="bg-[#1a365d] text-white font-bold py-3 rounded text-sm shadow-sm hover:bg-[#12284c]">{t.scheduleStaffBtn}</button>
                <button onClick={handleLoadMyHours} className="bg-blue-50 text-blue-700 font-bold py-3 rounded border border-blue-200 text-sm shadow-sm hover:bg-blue-100">{t.myHoursBtn}</button>
